@@ -74,6 +74,11 @@ var options = {
   ignore: ['./client/app.js', './client/', './client/app/', './client/public/js/']
 }
 
+gulp.task('clean', function() {
+  return gulp.src('./client/public/', {read: false, force: true})
+    .pipe(clean());
+});
+
 gulp.task('server-lint', function() {
   return gulp.src(paths.server.js)
     .pipe(plumber())
@@ -146,17 +151,15 @@ gulp.task('build:angular', ['angular-js']);
 gulp.task('build:vendor', ['vendor-js', 'vendor-less', 'vendor-fonts']);
 gulp.task('build:client', ['client-js', 'client-less']);
 
-gulp.task('build', ['build:angular', 'build:vendor', 'build:client'], function() {
-  notify({message: 'Initial build completed', onLast: true });
-});
+gulp.task('build', ['build:angular', 'build:vendor', 'build:client']);
 
 gulp.task('serve', ['server-lint'], function() {
-  return nodemon(options);
+  nodemon(options);
 });
 
 gulp.task('serve:production', ['server-lint'], function() {
   options.env = { 'NODE_ENV': 'production' },
-  return nodemon(options);
+  nodemon(options);
 });
 
 gulp.task('lr', function() {
@@ -174,12 +177,6 @@ gulp.task('watch', function() {
 });
 
 // Main Tasks
-gulp.task('develop:prod', ['build', 'serve:production', 'lr', 'watch'], function() {
-
-});
-
-gulp.task('default', ['build', 'serve', 'lr', 'watch'], function() {
-
-});
-
+gulp.task('default', ['build', 'serve', 'lr', 'watch']);
+gulp.task('develop:prod', ['build', 'serve:production', 'lr', 'watch']);
 gulp.task('production', ['server-lint', 'build']);
