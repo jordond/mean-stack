@@ -53,13 +53,16 @@ var paths = {
   },
   vendor_less: './client/assets/less/vendor.less',
   vendor_css: [
-    ''
+    './client/assets/css/*.css'
   ],
   fonts: [
     './client/vendor/font-awesome/fonts/*',
     './client/vendor/bootstrap/fonts/*'
   ],
-  dest: {
+  build: {
+    css: './client/build/css'
+  },
+  dist: {
     js:     './client/public/js',
     css:    './client/public/css',
     img:    './client/public/images',
@@ -74,10 +77,17 @@ var options = {
   ignore: ['./client/app.js', './client/', './client/app/', './client/public/js/']
 }
 
-gulp.task('clean', function() {
+gulp.task('clean:public', function() {
   return gulp.src('./client/public/', {read: false, force: true})
     .pipe(clean());
+})
+
+gulp.task('clean:build', function() {
+  return gulp.src('./client/build/', {read: false, force: true})
+    .pipe(clean());
 });
+
+gulp.task('clean', ['clean:public', 'clean:build']);
 
 gulp.task('server-lint', function() {
   return gulp.src(paths.server.js)
@@ -87,12 +97,12 @@ gulp.task('server-lint', function() {
     .pipe(notify({message: 'Finished linting server js files', onLast: true}));
 });
 
-gulp.task('angular-js', function() {
+gulp.task('build:angular', function() {
   return gulp.src(paths.vendor_js.angular)
     .pipe(plumber())
     .pipe(concat('angular.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(paths.dest.js));
+    .pipe(gulp.dest(paths.dist.js));
 });
 
 gulp.task('vendor-js', function() {
@@ -100,19 +110,35 @@ gulp.task('vendor-js', function() {
     .pipe(plumber())
     .pipe(concat('vendor.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(paths.dest.js));
+    .pipe(gulp.dest(paths.dist.js));
 });
 
-gulp.task('vendor-less', function() {
+gulp.task('build-vendor-less', function() {
   return gulp.src(paths.vendor_less)
     .pipe(plumber())
     .pipe(less({compress: true}))
-    .pipe(gulp.dest(paths.dest.css));
+    .pipe(gulp.dest(paths.build.css));
+});
+
+gulp.task('build-vendor-css', function() {
+  return gulp.src(paths.vendor_css)
+    .pipe(plumber())
+    .pipe(minifyCSS())
+    .pipe(concat('build-vendor.css'))
+    .pipe(gulp.dest(paths.build.css))
+});
+
+gulp.task('vendor-css', ['build-vendor-less', 'build-vendor-css'], function() {
+  return gulp.src(paths.build.css + '/*.css')
+    .pipe(plumber())
+    .pipe(minifyCSS())
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest(paths.dist.css))
 });
 
 gulp.task('vendor-fonts', function() {
   return gulp.src(paths.fonts)
-    .pipe(gulp.dest(paths.dest.fonts));
+    .pipe(gulp.dest(paths.dist.fonts));
 });
 
 gulp.task('client-js', function() {
@@ -125,7 +151,7 @@ gulp.task('client-js', function() {
       .pipe(ngAnnotate())
       .pipe(uglify())
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest(paths.dest.js))
+    .pipe(gulp.dest(paths.dist.js))
     .pipe(refresh(server))
     .pipe(notify({message: 'Client-side js files built', onLast: true }));
 });
@@ -134,7 +160,7 @@ gulp.task('client-less', function() {
   return gulp.src(paths.client.less)
     .pipe(plumber())
     .pipe(less({compress: true}))
-    .pipe(gulp.dest(paths.dest.css))
+    .pipe(gulp.dest(paths.dist.css))
     .pipe(refresh(server))
     .pipe(notify({message: 'Client-side less files compiled', onLast: true }));
 });
@@ -147,8 +173,7 @@ gulp.task('html', function() {
   });
 });
 
-gulp.task('build:angular', ['angular-js']);
-gulp.task('build:vendor', ['vendor-js', 'vendor-less', 'vendor-fonts']);
+gulp.task('build:vendor', ['vendor-js', 'vendor-css', 'vendor-fonts']);
 gulp.task('build:client', ['client-js', 'client-less']);
 
 gulp.task('build', ['build:angular', 'build:vendor', 'build:client']);

@@ -5,3 +5,5 @@ public
 client/vendor
 dist
 /server/config/local.env.js
+client/public
+client/build
