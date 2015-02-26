@@ -12,6 +12,8 @@ var ngAnnotate = require('gulp-ng-annotate');
 var concat = require('gulp-concat');
 var minifyCSS = require('gulp-minify-css');
 var less = require('gulp-less');
+var imagemin = require('gulp-imagemin');
+var pngquant = require('imagemin-pngquant');
 var nodemon = require('gulp-nodemon')
 var refresh = require('gulp-livereload');
 var server = require('tiny-lr')();
@@ -29,7 +31,8 @@ var paths = {
       './client/app/**/**/*.js',
       './client/components/**/*.js'
     ],
-    less: './client/assets/less/app.less'
+    less: './client/assets/less/app.less',
+    image: './client/assets/images/**/*.{jpg,jpeg,png,gif}'
   },
   server: {
     app: './server/app.js',
@@ -125,7 +128,7 @@ gulp.task('build-vendor-css', function() {
     .pipe(plumber())
     .pipe(minifyCSS())
     .pipe(concat('build-vendor.css'))
-    .pipe(gulp.dest(paths.build.css))
+    .pipe(gulp.dest(paths.build.css));
 });
 
 gulp.task('vendor-css', ['build-vendor-less', 'build-vendor-css'], function() {
@@ -134,6 +137,7 @@ gulp.task('vendor-css', ['build-vendor-less', 'build-vendor-css'], function() {
     .pipe(minifyCSS())
     .pipe(concat('vendor.css'))
     .pipe(gulp.dest(paths.dist.css))
+    .pipe(refresh(server));
 });
 
 gulp.task('vendor-fonts', function() {
@@ -165,6 +169,13 @@ gulp.task('client-less', function() {
     .pipe(notify({message: 'Client-side less files compiled', onLast: true }));
 });
 
+gulp.task('images', function() {
+  return gulp.src(paths.client.image)
+    .pipe(imagemin({progressive: true, optimizationLevel: 3, use: [pngquant()]}))
+    .pipe(gulp.dest(paths.dist.img))
+    .pipe(refresh(server));
+});
+
 gulp.task('html', function() {
   return gulp.task('html', function(){
     gulp.src(paths.client.html)
@@ -176,7 +187,7 @@ gulp.task('html', function() {
 gulp.task('build:vendor', ['vendor-js', 'vendor-css', 'vendor-fonts']);
 gulp.task('build:client', ['client-js', 'client-less']);
 
-gulp.task('build', ['build:angular', 'build:vendor', 'build:client']);
+gulp.task('build', ['build:angular', 'build:vendor', 'build:client', 'images']);
 
 gulp.task('serve', ['server-lint'], function() {
   nodemon(options);
@@ -198,7 +209,9 @@ gulp.task('watch', function() {
   gulp.watch(paths.client.html, ['html']);
   gulp.watch(paths.client.js, ['client-js']);
   gulp.watch(paths.client.less, ['client-less']);
+  gulp.watch(paths.client.image, ['images']);
   gulp.watch(paths.server.js, ['server-lint']);
+  gulp.watch(paths.vendor_css, ['vendor-css']);
 });
 
 // Main Tasks

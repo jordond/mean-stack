@@ -45,6 +45,8 @@
     "gulp-uglify": "^1.1.0",
     "gulp-usemin": "^0.3.11",
     "gulp-util": "^3.0.4",
+    "imagemin": "^3.1.0",
+    "imagemin-pngquant": "^4.0.0",
     "jshint-stylish": "^1.0.1",
     "open": "~0.0.4",
     "optimist": "^0.6.1",
