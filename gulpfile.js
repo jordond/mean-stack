@@ -1,31 +1,30 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
-var changed = require('gulp-changed');
-var notify = require('gulp-notify');
+var gulpif = require('gulp-if');
+var runSequence = require('run-sequence');
+var plumber = require('gulp-plumber');
+var nodemon = require('gulp-nodemon');
+var nodeInspector = require('gulp-node-inspector');
+var browserSync = require('browser-sync');
+
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
-var clean = require('gulp-clean');
-var plumber = require('gulp-plumber');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var ngAnnotate = require('gulp-ng-annotate');
 var concat = require('gulp-concat');
 var minifyCSS = require('gulp-minify-css');
 var less = require('gulp-less');
+
 var imagemin = require('gulp-imagemin');
 var pngquant = require('imagemin-pngquant');
-var nodemon = require('gulp-nodemon')
-var refresh = require('gulp-livereload');
-var server = require('tiny-lr')();
-var port = 35728; // default 35729
+var notify = require('gulp-notify');
+var clean = require('gulp-clean');
+
+var BROWSER_SYNC_RELOAD = 500;
+var DEBUG_FLAG = true;
 
 var paths = {
   client: {
-    html: [
-      './client/index.html',
-      './client/app/**/**/*.html',
-      './client/components/**/**/*.html'
-    ],
     js: [
       './client/app.js',
       './client/app/**/**/*.js',
@@ -40,27 +39,27 @@ var paths = {
   },
   vendor_js: {
     angular: [
-      './client/vendor/angular/angular.js',
-      './client/vendor/angular-resource/angular-resource.js',
-      './client/vendor/angular-cookies/angular-cookies.js',
-      './client/vendor/angular-sanitize/angular-sanitize.js',
-      './client/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
-      './client/vendor/lodash/dist/lodash.compat.js',
-      './client/vendor/angular-socket-io/socket.js',
-      './client/vendor/angular-ui-router/release/angular-ui-router.js'
+      './vendor/angular/angular.min.js',
+      './vendor/angular-resource/angular-resource.min.js',
+      './vendor/angular-cookies/angular-cookies.min.js',
+      './vendor/angular-sanitize/angular-sanitize.min.js',
+      './vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      './vendor/lodash/dist/lodash.compat.min.js',
+      './vendor/angular-socket-io/socket.min.js',
+      './vendor/angular-ui-router/release/angular-ui-router.min.js',
+      './node_modules/socket.io-client/socket.io.js'
     ],
     other: [
-      './client/vendor/jquery/dist/jquery.js',
-      './client/vendor/bootstrap/dist/bootstrap.js',
+      './client/assets/js/*.js',
+      './vendor/jquery/dist/jquery.min.js',
+      './vendor/bootstrap/dist/bootstrap.min.js'
     ]
   },
   vendor_less: './client/assets/less/vendor.less',
-  vendor_css: [
-    './client/assets/css/*.css'
-  ],
+  vendor_css: './client/assets/css/*.css',
   fonts: [
-    './client/vendor/font-awesome/fonts/*',
-    './client/vendor/bootstrap/fonts/*'
+    './vendor/font-awesome/fonts/*',
+    './vendor/bootstrap/fonts/*'
   ],
   build: {
     css: './client/build/css'
@@ -73,148 +72,156 @@ var paths = {
   }
 };
 
-var options = {
+var nodemon_options = {
   script: paths.server.app,
-  env: { 'NODE_ENV': 'development' },
-  watch: './server/',
-  ignore: ['./client/app.js', './client/', './client/app/', './client/public/js/']
+  watch: './server/'
 }
 
-gulp.task('clean:public', function() {
-  return gulp.src('./client/public/', {read: false, force: true})
+gulp.task('clean', function() {
+  return gulp.src(['./client/public/'], {read: false, force: true})
     .pipe(clean());
 })
 
 gulp.task('clean:build', function() {
-  return gulp.src('./client/build/', {read: false, force: true})
+  return gulp.src(['./client/build/'], {read: false, force: true})
     .pipe(clean());
 });
 
-gulp.task('clean', ['clean:public', 'clean:build']);
-
+// Server javascript files
 gulp.task('server-lint', function() {
   return gulp.src(paths.server.js)
-    .pipe(plumber())
-    .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
+    .pipe(jshint()).pipe(jshint.reporter(stylish))
     .pipe(notify({message: 'Finished linting server js files', onLast: true}));
 });
 
+// All client-side javascript files
 gulp.task('build:angular', function() {
   return gulp.src(paths.vendor_js.angular)
-    .pipe(plumber())
     .pipe(concat('angular.js'))
     .pipe(uglify())
     .pipe(gulp.dest(paths.dist.js));
 });
 
-gulp.task('vendor-js', function() {
+gulp.task('build:vendor-js', function() {
   return gulp.src(paths.vendor_js.other)
-    .pipe(plumber())
     .pipe(concat('vendor.js'))
     .pipe(uglify())
     .pipe(gulp.dest(paths.dist.js));
 });
 
-gulp.task('build-vendor-less', function() {
+gulp.task('build:client-js', function() {
+  return gulp.src(paths.client.js)
+    .pipe(sourcemaps.init())
+      .pipe(jshint())
+      .pipe(jshint.reporter(stylish))
+      .pipe(concat('app.js'))
+      .pipe(ngAnnotate())
+      .pipe(gulpif(!DEBUG_FLAG, uglify()))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.dist.js))
+    .pipe(notify({message: 'Client-side js files built', onLast: true }));
+});
+
+// All client-side less and css
+gulp.task('build:vendor-less', function() {
   return gulp.src(paths.vendor_less)
     .pipe(plumber())
     .pipe(less({compress: true}))
     .pipe(gulp.dest(paths.build.css));
 });
 
-gulp.task('build-vendor-css', function() {
+gulp.task('build:other-css', function() {
   return gulp.src(paths.vendor_css)
-    .pipe(plumber())
     .pipe(minifyCSS())
-    .pipe(concat('build-vendor.css'))
+    .pipe(concat('other.css'))
     .pipe(gulp.dest(paths.build.css));
 });
 
-gulp.task('vendor-css', ['build-vendor-less', 'build-vendor-css'], function() {
-  return gulp.src(paths.build.css + '/*.css')
-    .pipe(plumber())
-    .pipe(minifyCSS())
-    .pipe(concat('vendor.css'))
-    .pipe(gulp.dest(paths.dist.css))
-    .pipe(refresh(server));
-});
-
-gulp.task('vendor-fonts', function() {
-  return gulp.src(paths.fonts)
-    .pipe(gulp.dest(paths.dist.fonts));
-});
-
-gulp.task('client-js', function() {
-  return gulp.src(paths.client.js)
-    .pipe(plumber())
-    .pipe(sourcemaps.init())
-      .pipe(jshint())
-      .pipe(jshint.reporter(stylish))
-      .pipe(concat('app.js'))
-      .pipe(ngAnnotate())
-      .pipe(uglify())
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(paths.dist.js))
-    .pipe(refresh(server))
-    .pipe(notify({message: 'Client-side js files built', onLast: true }));
-});
-
-gulp.task('client-less', function() {
+gulp.task('build:client-less', function() {
   return gulp.src(paths.client.less)
-    .pipe(plumber())
     .pipe(less({compress: true}))
     .pipe(gulp.dest(paths.dist.css))
-    .pipe(refresh(server))
     .pipe(notify({message: 'Client-side less files compiled', onLast: true }));
 });
 
+gulp.task('build:move-css', function() {
+  return gulp.src(paths.build.css + '/*.css')
+    .pipe(minifyCSS())
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest(paths.dist.css))
+});
+
+// Assets
 gulp.task('images', function() {
   return gulp.src(paths.client.image)
     .pipe(imagemin({progressive: true, optimizationLevel: 3, use: [pngquant()]}))
     .pipe(gulp.dest(paths.dist.img))
-    .pipe(refresh(server));
 });
 
-gulp.task('html', function() {
-  return gulp.task('html', function(){
-    gulp.src(paths.client.html)
-    .pipe(refresh(server))
-    .pipe(notify({message: 'HTML files were reloaded', onLast: true }));
-  });
+gulp.task('fonts', function() {
+  return gulp.src(paths.fonts)
+    .pipe(gulp.dest(paths.dist.fonts));
 });
 
-gulp.task('build:vendor', ['vendor-js', 'vendor-css', 'vendor-fonts']);
-gulp.task('build:client', ['client-js', 'client-less']);
-
-gulp.task('build', ['build:angular', 'build:vendor', 'build:client', 'images']);
-
-gulp.task('serve', ['server-lint'], function() {
-  nodemon(options);
+gulp.task('build:vendor-css', function(cb) {
+  runSequence('clean:build', 
+              ['build:vendor-less', 'build:other-css'],
+              'build:move-css', cb);
 });
 
-gulp.task('serve:production', ['server-lint'], function() {
-  options.env = { 'NODE_ENV': 'production' },
-  nodemon(options);
+gulp.task('build', function(cb) {
+  runSequence('clean', 'clean:build', 'server-lint',
+              ['build:angular', 'build:vendor-js', 'build:client-js'],
+              ['build:vendor-css', 'build:client-less'],
+              ['fonts', 'images'], cb);
 });
 
-gulp.task('lr', function() {
-  server.listen(port, function(err){
-    if(err) {return console.error(err);}
-    gutil.log('Launched livereload server on port ' + port);
-  });
+gulp.task('serve', function(cb) {
+  var called = false;
+  if (DEBUG_FLAG === true) {
+    nodemon_options.nodeArgs = ['--debug'];
+    nodemon_options.env = { 'NODE_ENV': 'development' };
+  } else {
+    nodemon_options.env = { 'NODE_ENV': 'production' };
+  }
+  return nodemon(nodemon_options)
+    .on('start', function onStart() {
+      if (!called) {cb();}
+      called = true;
+    })
+    .on('restart', function onRestart() {
+      setTimeout(function reload() {
+        browserSync.reload({
+          stream: false
+        })
+      }, BROWSER_SYNC_RELOAD);
+    });
 });
 
 gulp.task('watch', function() {
-  gulp.watch(paths.client.html, ['html']);
-  gulp.watch(paths.client.js, ['client-js']);
-  gulp.watch(paths.client.less, ['client-less']);
+  browserSync.init({
+    files: ['./client/public/**/*.*', 
+            './client/index.html',
+            './client/app/**/**/*.html',
+            './client/components/**/**/*.html'],
+    proxy: 'http://localhost:9000',
+    port: 4000,
+    browser: ['google chrome']
+  });
+
+  gulp.watch(paths.client.js, ['build:client-js']);
+  gulp.watch(paths.client.less, ['build:client-less']);
   gulp.watch(paths.client.image, ['images']);
   gulp.watch(paths.server.js, ['server-lint']);
-  gulp.watch(paths.vendor_css, ['vendor-css']);
+  gulp.watch([paths.vendor_css,paths.vendor_less], ['build:vendor-css']);
+  gulp.watch(paths.vendor_js.other, ['build:vendor-js']);
 });
 
-// Main Tasks
-gulp.task('default', ['build', 'serve', 'lr', 'watch']);
-gulp.task('develop:prod', ['build', 'serve:production', 'lr', 'watch']);
-gulp.task('production', ['server-lint', 'build']);
+gulp.task('default', function(cb) {
+  runSequence('build', 'serve', 'watch', cb);
+});
+
+gulp.task('production', function(cb) {
+  DEBUG_FLAG = false;
+  runSequence('build', 'serve', 'watch', cb);
+});
