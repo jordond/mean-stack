@@ -32,6 +32,8 @@ if (argv.d) {
   DEBUG_FLAG = true;
 }
 
+var dist_base = './client/public';
+
 var paths = {
   client: {
     js: [
@@ -74,10 +76,10 @@ var paths = {
     css: './client/build/css'
   },
   dist: {
-    js:     './client/public/js',
-    css:    './client/public/css',
-    img:    './client/public/images',
-    fonts:  './client/public/fonts'
+    js:     dist_base + '/js',
+    css:    dist_base + '/css',
+    img:    dist_base + '/images',
+    fonts:  dist_base + '/fonts'
   }
 };
 
@@ -87,7 +89,7 @@ var nodemon_options = {
 }
 
 gulp.task('clean', function() {
-  return gulp.src(['./client/public/'], {read: false, force: true})
+  return gulp.src(['./public/'], {read: false, force: true})
     .pipe(clean());
 })
 
@@ -172,6 +174,11 @@ gulp.task('fonts', function() {
     .pipe(gulp.dest(paths.dist.fonts));
 });
 
+gulp.task('index', function() {
+  return gulp.src(['./client/index.html', './client/favicon.ico', './client/robots.txt'])
+    .pipe(gulp.dest(dist_base));
+});
+
 gulp.task('build:vendor-css', function(cb) {
   runSequence('clean:build', 
               ['build:vendor-less', 'build:other-css'],
@@ -182,7 +189,7 @@ gulp.task('build', function(cb) {
   runSequence('clean', 'clean:build', 'server-lint',
               ['build:angular', 'build:vendor-js', 'build:client-js'],
               ['build:vendor-css', 'build:client-less'],
-              ['fonts', 'images'], cb);
+              ['fonts', 'images', 'index'], cb);
 });
 
 gulp.task('serve', function(cb) {
@@ -208,12 +215,13 @@ gulp.task('serve', function(cb) {
 });
 
 gulp.task('watch', function() {
+  var port = (DEBUG_FLAG) ? '9000' : '8080';
   browserSync.init({
-    files: ['./client/public/**/*.*', 
+    files: ['./public/**/*.*', 
             './client/index.html',
             './client/app/**/**/*.html',
             './client/components/**/**/*.html'],
-    proxy: 'http://localhost:9000',
+    proxy: 'http://localhost:' + port,
     port: 3000,
     browser: ['google chrome']
   });
