@@ -24,7 +24,7 @@ function onConnect(socket) {
 module.exports = function (socketio) {
   // socket.io (v1.x.x) is powered by debug.
   // In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.
-  //
+  // dfdf
   // ex: DEBUG: "http*,socket.io:socket"
 
   // We can authenticate socket.io users and access their token through socket.handshake.decoded_token
@@ -39,8 +39,7 @@ module.exports = function (socketio) {
 
   socketio.on('connection', function (socket) {
     socket.address = socket.handshake.address !== null ?
-            socket.handshake.address.address + ':' + socket.handshake.address.port :
-            process.env.DOMAIN;
+            socket.handshake.address : process.env.DOMAIN;
 
     socket.connectedAt = new Date();
 

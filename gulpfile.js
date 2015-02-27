@@ -20,7 +20,7 @@ var pngquant = require('imagemin-pngquant');
 var notify = require('gulp-notify');
 var clean = require('gulp-clean');
 
-var BROWSER_SYNC_RELOAD = 500;
+var BROWSER_SYNC_RELOAD = 1000;
 var DEBUG_FLAG = true;
 
 var paths = {
@@ -205,7 +205,7 @@ gulp.task('watch', function() {
             './client/app/**/**/*.html',
             './client/components/**/**/*.html'],
     proxy: 'http://localhost:9000',
-    port: 4000,
+    port: 3000,
     browser: ['google chrome']
   });
 
