@@ -2,7 +2,7 @@ node_modules
 public
 .tmp
 .idea
-client/vendor
+vendor
 dist
 /server/config/local.env.js
 client/public
