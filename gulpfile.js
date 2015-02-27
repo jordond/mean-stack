@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
+var argv = require('yargs').argv;
 var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
 var nodemon = require('gulp-nodemon');
@@ -21,7 +22,15 @@ var notify = require('gulp-notify');
 var clean = require('gulp-clean');
 
 var BROWSER_SYNC_RELOAD = 1000;
-var DEBUG_FLAG = true;
+var DEBUG_FLAG = false;
+
+if (argv.dev) {
+  DEBUG_FLAG = argv.dev
+}
+
+if (argv.d) {
+  DEBUG_FLAG = true;
+}
 
 var paths = {
   client: {
@@ -218,6 +227,11 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', function(cb) {
+  runSequence('build', cb);
+});
+
+gulp.task('develop', function(cb) {
+  DEBUG_FLAG = true;
   runSequence('build', 'serve', 'watch', cb);
 });
 
