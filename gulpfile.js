@@ -189,7 +189,7 @@ gulp.task('build', function(cb) {
   runSequence('clean', 'clean:build', 'server-lint',
               ['build:angular', 'build:vendor-js', 'build:client-js'],
               ['build:vendor-css', 'build:client-less'],
-              ['fonts', 'images', 'index'], cb);
+              ['fonts', 'images'], cb);
 });
 
 gulp.task('serve', function(cb) {
