@@ -222,7 +222,7 @@ gulp.task('watch', function() {
   var port = (DEBUG_FLAG) ? '9000' : '8080';
   browserSync.init({
     files: ['./public/**/*.*', 
-            './client/index.html',
+            './dist/public/index.html',
             './client/app/**/**/*.html',
             './client/components/**/**/*.html'],
     proxy: 'http://localhost:' + port,
@@ -230,6 +230,7 @@ gulp.task('watch', function() {
     browser: ['google chrome']
   });
 
+  gulp.watch('./client/index.html', ['index']);
   gulp.watch(paths.client.js, ['build:client-js']);
   gulp.watch(paths.client.less, ['build:client-less']);
   gulp.watch(paths.client.image, ['images']);
