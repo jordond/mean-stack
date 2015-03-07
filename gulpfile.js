@@ -32,7 +32,7 @@ if (argv.d) {
   DEBUG_FLAG = true;
 }
 
-var dist_base = './client/public';
+var dist_base = './dist';
 
 var paths = {
   client: {
@@ -45,7 +45,7 @@ var paths = {
     image: './client/assets/images/**/*.{jpg,jpeg,png,gif}'
   },
   server: {
-    app: './server/app.js',
+    app: './dist/server/app.js',
     js: ['./server/**/*.js'],
   },
   vendor_js: {
@@ -73,13 +73,12 @@ var paths = {
     './vendor/bootstrap/fonts/*'
   ],
   build: {
-    css: './client/build/css'
+    css: './build/css'
   },
   dist: {
-    js:     dist_base + '/js',
-    css:    dist_base + '/css',
-    img:    dist_base + '/images',
-    fonts:  dist_base + '/fonts'
+    app:     dist_base + '/public/assets',
+    img:    dist_base + '/public/images',
+    fonts:  dist_base + '/public/fonts'
   }
 };
 
@@ -89,12 +88,12 @@ var nodemon_options = {
 }
 
 gulp.task('clean', function() {
-  return gulp.src(['./public/'], {read: false, force: true})
+  return gulp.src([dist_base], {read: false, force: true})
     .pipe(clean());
 })
 
 gulp.task('clean:build', function() {
-  return gulp.src(['./client/build/'], {read: false, force: true})
+  return gulp.src(['./build/'], {read: false, force: true})
     .pipe(clean());
 });
 
@@ -110,14 +109,14 @@ gulp.task('build:angular', function() {
   return gulp.src(paths.vendor_js.angular)
     .pipe(concat('angular.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(paths.dist.js));
+    .pipe(gulp.dest(paths.dist.app));
 });
 
 gulp.task('build:vendor-js', function() {
   return gulp.src(paths.vendor_js.other)
     .pipe(concat('vendor.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(paths.dist.js));
+    .pipe(gulp.dest(paths.dist.app));
 });
 
 gulp.task('build:client-js', function() {
@@ -129,7 +128,7 @@ gulp.task('build:client-js', function() {
       .pipe(ngAnnotate())
       .pipe(gulpif(!DEBUG_FLAG, uglify()))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest(paths.dist.js))
+    .pipe(gulp.dest(paths.dist.app))
     .pipe(notify({message: 'Client-side js files built', onLast: true }));
 });
 
@@ -151,7 +150,7 @@ gulp.task('build:other-css', function() {
 gulp.task('build:client-less', function() {
   return gulp.src(paths.client.less)
     .pipe(less({compress: true}))
-    .pipe(gulp.dest(paths.dist.css))
+    .pipe(gulp.dest(paths.dist.app))
     .pipe(notify({message: 'Client-side less files compiled', onLast: true }));
 });
 
@@ -159,7 +158,7 @@ gulp.task('build:move-css', function() {
   return gulp.src(paths.build.css + '/*.css')
     .pipe(minifyCSS())
     .pipe(concat('vendor.css'))
-    .pipe(gulp.dest(paths.dist.css))
+    .pipe(gulp.dest(paths.dist.app))
 });
 
 // Assets
@@ -176,20 +175,25 @@ gulp.task('fonts', function() {
 
 gulp.task('index', function() {
   return gulp.src(['./client/index.html', './client/favicon.ico', './client/robots.txt'])
-    .pipe(gulp.dest(dist_base));
+    .pipe(gulp.dest(dist_base + '/public'));
+});
+
+gulp.task('server', function() {
+  return gulp.src(['./server/**/**/**/*'])
+    .pipe(gulp.dest(dist_base + '/server'));
 });
 
 gulp.task('build:vendor-css', function(cb) {
-  runSequence('clean:build', 
-              ['build:vendor-less', 'build:other-css'],
-              'build:move-css', cb);
+  runSequence(['build:vendor-less', 'build:other-css'],
+              'build:move-css',
+              'clean:build', cb);
 });
 
 gulp.task('build', function(cb) {
   runSequence('clean', 'clean:build', 'server-lint',
               ['build:angular', 'build:vendor-js', 'build:client-js'],
               ['build:vendor-css', 'build:client-less'],
-              ['fonts', 'images'], cb);
+              ['fonts', 'images', 'index', 'server'], cb);
 });
 
 gulp.task('serve', function(cb) {
