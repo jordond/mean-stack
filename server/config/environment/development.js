@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/mediahub-dev'
+    uri: 'mongodb://localhost/mean-stack-dev'
   },
 
   seedDB: true

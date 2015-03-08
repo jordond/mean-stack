@@ -5,6 +5,6 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/mediahub-test'
+    uri: 'mongodb://localhost/mean-stack-test'
   }
 };
