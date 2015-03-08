@@ -248,7 +248,7 @@ gulp.task('develop', function(cb) {
   runSequence('build', 'serve', 'watch', cb);
 });
 
-gulp.task('production', function(cb) {
+gulp.task('prod', function(cb) {
   DEBUG_FLAG = false;
   runSequence('build', 'serve', 'watch', cb);
 });
