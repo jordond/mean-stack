@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('client')
+    .module('app')
     .config(config);
 
   function config($urlRouterProvider) {

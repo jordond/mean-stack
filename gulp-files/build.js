@@ -21,7 +21,8 @@ module.exports = function (gulp, $, config) {
 
   gulp.task('markup', ['clean-app'], function () {
     return gulp.src([
-      config.appMarkupFiles
+      config.appMarkupFiles,
+      config.appDir + '/favicon.ico'
     ])
       .pipe(gulp.dest(config.buildDir));
   });

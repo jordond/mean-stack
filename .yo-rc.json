@@ -44,5 +44,18 @@
     "decoratorTemplates": "",
     "providerTemplates": "",
     "routeTemplates": ""
+  },
+  "generator-ng-poly": {
+    "moduleName": "app",
+    "markup": "html",
+    "appScript": "js",
+    "controllerAs": true,
+    "skipController": false,
+    "testScript": "js",
+    "testFramework": "jasmine",
+    "e2eTestFramework": "jasmine",
+    "style": "less",
+    "ngRoute": false,
+    "lastUsedModule": "app"
   }
 }

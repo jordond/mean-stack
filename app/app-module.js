@@ -2,12 +2,12 @@
   'use strict';
 
   /* @ngdoc object
-   * @name client
+   * @name app
    * @description
    *
    */
   angular
-    .module('client', [
+    .module('app', [
       'ui.router',
       'mgcrea.ngStrap',
       'home'
