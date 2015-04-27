@@ -90,7 +90,7 @@ module.exports = function (gulp, $, config) {
       .pipe($.if(isProd, htmlFilter))
       .pipe($.if(isProd, $.ngHtml2js({
         // lower camel case all app names
-        moduleName: _.camelize(_.slugify(_.humanize(require('../package.json').name))),
+        moduleName: _.camelize(_.slugify(_.humanize(config.appName))),
         declareModule: false
       })))
       .pipe($.if(isProd, htmlFilter.restore()))

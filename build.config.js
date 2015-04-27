@@ -8,6 +8,8 @@ module.exports = {
   syncPort: 3020,
   openBrowser: 'external',
 
+  appName: 'app',
+
   // app directories
   appDir: 'app',
   serverDir: 'server',
