@@ -7,6 +7,7 @@ module.exports = {
   nodePort: 9001,
   syncPort: 3020,
   openBrowser: 'external',
+  ghostMode: false,
 
   appName: 'app',
 

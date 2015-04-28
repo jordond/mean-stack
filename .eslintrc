@@ -146,7 +146,7 @@
     "no-undef": [2, true],
     "no-undef-init": [2, true],
     "no-undefined": [],
-    "no-underscore-dangle": [2, true],
+    "no-underscore-dangle": false,
     "no-unreachable": [2, true],
     "no-unused-expressions": [2, true],
     "no-unused-vars": [2, {

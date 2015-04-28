@@ -12,7 +12,8 @@ module.exports = function (gulp, $, config) {
     $.browserSync({
       open: config.openBrowser,
       proxy: config.proxyHost + ':' + config.nodePort,
-      port: config.syncPort
+      port: config.syncPort,
+      ghostMode: config.ghostMode
     });
   });
 
