@@ -226,5 +226,11 @@ module.exports = function (gulp, $, config) {
       .pipe(gulp.dest(config.buildImages));
   });
 
+  gulp.task('json', ['clean-app'], function () {
+    return gulp.src(config.appJsonFiles)
+    .pipe(concat_json('app.json'))
+    .pipe(gulp.dest(config.buildJson));
+  });
+
   gulp.task('build', ['bowerInject', 'bowerAssets', 'images', 'fonts']);
 };

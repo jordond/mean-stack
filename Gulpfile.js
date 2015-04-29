@@ -33,6 +33,7 @@ config.appImageFiles = path.join(config.appDir, 'images/**/*');
 config.appMarkupFiles = path.join(config.appDir, '**/*.html');
 config.appScriptFiles = path.join(config.appDir, '**/*.js');
 config.appStyleFiles = path.join(config.appDir, '**/*.{css,less}');
+config.appJsonFiles = path.join(config.appDir, '**/*.json');
 
 config.buildDirectiveTemplateFiles = path.join(config.buildDir, '**/*directive.tpl.html');
 config.buildJsFiles = path.join(config.buildJs, '**/*.js');

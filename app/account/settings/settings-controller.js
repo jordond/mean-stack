@@ -14,6 +14,6 @@
 
   function SettingsCtrl() {
     var vm = this;
-    vm.name = "SettingsCtrl";
+    vm.name = 'SettingsCtrl';
   }
 }());
