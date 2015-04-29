@@ -228,9 +228,9 @@ module.exports = function (gulp, $, config) {
 
   gulp.task('json', ['clean-app'], function () {
     return gulp.src(config.appJsonFiles)
-    .pipe(concat_json('app.json'))
+    .pipe($.concatJson('app.json'))
     .pipe(gulp.dest(config.buildJson));
   });
 
-  gulp.task('build', ['bowerInject', 'bowerAssets', 'images', 'fonts']);
+  gulp.task('build', ['bowerInject', 'bowerAssets', 'images', 'fonts', 'json']);
 };
