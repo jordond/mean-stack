@@ -11,7 +11,8 @@
         url: '/',
         templateUrl: 'home/home.tpl.html',
         controller: 'HomeCtrl',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        authenticate: true
       });
   }
 }());

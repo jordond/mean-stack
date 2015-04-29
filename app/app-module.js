@@ -14,7 +14,8 @@
       'ngSanitize',
       'mgcrea.ngStrap',
       'components',
-      'home'
+      'home',
+      'account'
     ]);
 
   angular
