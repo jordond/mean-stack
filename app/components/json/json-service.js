@@ -36,5 +36,9 @@
         .first()
         .value();
     };
+
+    self.retrieve = function (key) {
+      return _.get(self.json[0], key);
+    };
   }
 }());

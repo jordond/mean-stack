@@ -1,0 +1,139 @@
+@import (reference) "../../app.less";
+
+.navbar {
+  width: 100%;
+  margin-bottom: 0;
+  > .navbar-collapse {
+    text-align: center;
+  }
+  .navbar-nav {
+    float: none;
+    vertical-align: top;
+  }
+}
+.navbar-default .navbar-nav > li > a:hover {
+  background-color: @alt;
+  color: @colHighlight;
+}
+.fixed {
+  position: fixed;
+}
+body.aside-open {
+  overflow: hidden;
+}
+
+.aside {
+  background-color: @bgWhite;
+  .aside-dialog {
+    .aside-header {
+      background: @base;
+      border-bottom: 4px solid;
+      border-bottom-color: @alt;
+      min-height: 60px;
+      max-height: 100%;
+    }
+    .aside-body {
+      padding-top: 20px;
+      padding-left: 0px;
+      padding-right: 0px;
+      .bs-sidebar {
+        width: 100%;
+      }
+      a {
+        color: @base;
+      }
+      li {
+        padding-left: 20px;
+        &:hover {
+          background-color: @base;
+        }
+        &:focus {
+          background-color: @base;
+        }
+        a {
+          &:hover {
+            background-color: @base;
+            color: @bgWhite;
+          }
+          &:focus {
+            background-color: @base;
+            color: @bgWhite;
+          }
+        }
+      }
+    }
+  }
+}
+
+@dropDown: false;
+.ddm() when (@dropDown) {
+  > .dropdown-menu {
+    background-color: @bgDefault;
+    > li > a {
+      color: @colDefault;
+      &:hover,  &:focus {
+        color: @colHighlight;
+        background-color: @bgHighlight; }}
+    .divider {
+      background-color: @bgHighlight;}}}
+.navbar-default {
+  background-color: @bgDefault;
+  border-color: @bgHighlight;
+  .navbar-brand {
+    color: @colDefault;
+    &:hover, &:focus { 
+      color: @colHighlight; }}
+  .navbar-text {
+    color: @colDefault; }
+  .navbar-nav {
+    > li {
+      > a {
+        color: @colDefault;
+        &:hover,  &:focus {
+          color: @colHighlight; }}
+      .ddm }
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: @colHighlight;
+        background-color: @alt; }}
+    > .open {
+      > a, > a:hover, > a:focus {
+        color: @colHighlight;
+        background-color: @bgHighlight; }}}
+  .navbar-toggle {
+    border-color: @bgHighlight;
+    &:hover, &:focus {
+      background-color: @bgHighlight; }
+    .icon-bar {
+      background-color: @colDefault; }}
+  .navbar-collapse,
+  .navbar-form {
+    border-color: @colDefault; }
+  .navbar-link {
+    color: @colDefault;
+    &:hover {
+      color: @colHighlight; }}}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu {
+    > li > a {
+      color: @colDefault;
+      &:hover, &:focus {
+        color: @colHighlight; }}
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: @colHighlight;
+        background-color: @bgHighlight; }}}
+
+  .navbar-toggle {
+    float: left;
+    margin-left: 15px;
+  }
+
+  .navbar {
+    .navbar-header {
+      margin-left: 0;
+    }
+  }
+  .fixed { top: 0px; }
+}
