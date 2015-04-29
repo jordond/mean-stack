@@ -2,15 +2,15 @@
   'use strict';
 
   angular
-    .module('home')
+    .module('dashboard')
     .config(config);
 
   function config($stateProvider) {
     $stateProvider
-      .state('home', {
+      .state('dashboard', {
         url: '/',
-        templateUrl: 'home/home.tpl.html',
-        controller: 'HomeCtrl',
+        templateUrl: 'dashboard/dashboard.tpl.html',
+        controller: 'DashboardCtrl',
         controllerAs: 'vm',
         authenticate: true
       });

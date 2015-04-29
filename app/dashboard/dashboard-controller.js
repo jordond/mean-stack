@@ -3,16 +3,16 @@
 
   /**
    * @ngdoc object
-   * @name home.controller:HomeCtrl
+   * @name dashboard.controller:DashboardCtrl
    *
    * @description
    *
    */
   angular
-    .module('home')
-    .controller('HomeCtrl', HomeCtrl);
+    .module('dashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
 
-  function HomeCtrl($scope, $http, socket) {
+  function DashboardCtrl($scope, $http, socket) {
     var vm = this;
 
     vm.awesomeThings = [];

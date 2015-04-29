@@ -2,12 +2,12 @@
   'use strict';
 
   /* @ngdoc object
-   * @name home
+   * @name dashboard
    * @description
    *
    */
   angular
-    .module('home', [
+    .module('dashboard', [
       'ui.router'
     ]);
 }());

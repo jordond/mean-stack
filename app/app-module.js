@@ -14,7 +14,7 @@
       'ngSanitize',
       'mgcrea.ngStrap',
       'components',
-      'home',
+      'dashboard',
       'account'
     ]);
 
