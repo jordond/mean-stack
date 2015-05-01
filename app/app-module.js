@@ -23,8 +23,7 @@
     .config(config)
     .run(run);
 
-  function config($httpProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
+  function config($httpProvider) {
     $httpProvider.interceptors.push('authInterceptor');
   }
 
@@ -32,6 +31,7 @@
     $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function (loggedIn) {
         if (next.restricted && !loggedIn) {
+          event.preventDefault();
           $state.go('login');
         }
       });
