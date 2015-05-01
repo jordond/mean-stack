@@ -3,7 +3,12 @@
 module.exports = function(gulp, $, config) {
   var isProd = $.yargs.argv.env === 'prod';
 
-  gulp.task('clean-server', function (cb) {
+  gulp.task('install:node', function () {
+    return gulp.src(['./package.json'])
+      .pipe($.install());
+  });
+
+  gulp.task('clean-server', ['install:node'], function (cb) {
     return $.del(config.serverBuildDir, cb);
   });
 

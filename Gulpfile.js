@@ -51,6 +51,10 @@ for (key in gulpFiles) {
   gulpFiles[key](gulp, $, config);
 }
 
+gulp.task('install', function (cb) {
+  $.runSequence('install:bower', 'install:node', cb);
+});
+
 gulp.task('dev', ['server', 'build'], function () {
   gulp.start('browserSync');
   gulp.start('watch');
