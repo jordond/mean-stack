@@ -17,7 +17,7 @@ angular.module('app')
           // Logged in, redirect to home
           $location.path('/');
         })
-        .catch( function(err) {
+        .catch( function(err, test, test2) {
           $scope.errors.other = err.message;
         });
       }

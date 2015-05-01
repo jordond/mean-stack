@@ -5,8 +5,11 @@
 'use strict';
 
 var errors = require('./components/errors');
+var auth = require('./auth/auth.service');
 
 module.exports = function(app) {
+
+  app.use('/api', auth.isAuthenticated());
 
   // Insert routes below
   app.use('/api/things', require('./api/thing'));

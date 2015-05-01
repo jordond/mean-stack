@@ -17,6 +17,20 @@ angular.module('app')
         url: '/settings',
         templateUrl: 'app/account/settings/settings.html',
         controller: 'SettingsCtrl',
-        authenticate: true
+        resolve: { authenticate: authenticate }
       });
+
+      function authenticate($q, Auth, $state, $timeout) {
+        Auth.isLoggedInAsync(function (loggedIn) {
+          if (loggedIn) {
+            return $q.when();
+          } else {
+            $timeout(function() {
+              $state.go('login');
+            });
+            return $q.reject();
+          }
+        });
+      }
+
   });

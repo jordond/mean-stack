@@ -219,15 +219,14 @@ gulp.task('serve', function(cb) {
 });
 
 gulp.task('watch', function() {
-  var port = (DEBUG_FLAG) ? '9000' : '8080';
+  var port = (DEBUG_FLAG) ? '9000' : '8088';
   browserSync.init({
     files: ['./public/**/*.*', 
             './dist/public/index.html',
             './client/app/**/**/*.html',
             './client/components/**/**/*.html'],
     proxy: 'http://localhost:' + port,
-    port: 3000,
-    browser: ['google chrome']
+    port: 3009
   });
 
   gulp.watch('./client/index.html', ['index']);
