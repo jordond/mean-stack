@@ -11,13 +11,15 @@
         url: '/login',
         templateUrl: 'account/login/login.tpl.html',
         controller: 'LoginCtrl',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        restricted: false
       })
       .state('settings', {
         url: '/settings',
-        templateUrl: 'account/settings/login.tpl.html',
+        templateUrl: 'account/settings/settings.tpl.html',
         controller: 'SettingsCtrl',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        restricted: true
       });
   }
 }());

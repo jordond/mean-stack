@@ -23,15 +23,16 @@
     .config(config)
     .run(run);
 
-  function config($httpProvider) {
+  function config($httpProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $location, Auth) {
+  function run($rootScope, $state, Auth) {
     $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function (loggedIn) {
-        if (next.authenticate && !loggedIn) {
-          $location.path('/login');
+        if (next.restricted && !loggedIn) {
+          $state.go('login');
         }
       });
     });

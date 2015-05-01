@@ -12,7 +12,7 @@
         templateUrl: 'dashboard/dashboard.tpl.html',
         controller: 'DashboardCtrl',
         controllerAs: 'vm',
-        authenticate: true
+        restricted: true
       });
   }
 }());

@@ -4,16 +4,21 @@
 
 'use strict';
 
+var auth = require('./auth/auth.service');
 var errors = require('./components/errors');
 
 module.exports = function(app) {
 
+  // Lock down entire api
+  //app.get('/api/*', auth.isAuthenticated);
+
   // Insert routes below
+  app.use('/api/tests', require('./api/test'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
 
   app.use('/auth', require('./auth'));
-  
+
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|vendor|assets|fonts|images)/*')
    .get(errors[404]);

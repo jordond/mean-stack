@@ -14,9 +14,9 @@
 
   /*jshint undef:false */
   /*eslint-disable*/
-  function socketConfig(_, socketFactory) {
+  function socketConfig(_, socketFactory, Auth) {
     var ioSocket = io('', {
-      //query: 'token=' + Auth.getToken(),
+      query: 'token=' + Auth.getToken(),
       path: '/socket.io-client'
     })
     , socket = socketFactory({
