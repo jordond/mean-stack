@@ -52,7 +52,7 @@ for (key in gulpFiles) {
 }
 
 gulp.task('install', function (cb) {
-  $.runSequence('install:bower', 'install:node', cb);
+  $.runSequence(['install:bower', 'install:node'], cb);
 });
 
 gulp.task('dev', ['server', 'build'], function () {
