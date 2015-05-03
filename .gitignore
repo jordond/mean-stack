@@ -7,3 +7,6 @@ dist
 /server/config/local.env.js
 client/public
 client/build
+bower_components/
+build/
+report/
