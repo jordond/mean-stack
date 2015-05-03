@@ -27,8 +27,12 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, Auth) {
+  function run($rootScope, $state, Auth, JsonService) {
+    JsonService.get();
+
     $rootScope.$on('$stateChangeStart', function (event, next) {
+      $rootScope.$broadcast('stateChanged', next.name);
+
       Auth.isLoggedInAsync(function (loggedIn) {
         if (next.restricted && !loggedIn) {
           event.preventDefault();
