@@ -4,13 +4,13 @@
 
 'use strict';
 
-var auth = require('./auth/auth.service');
 var errors = require('./components/errors');
+var auth = require('./auth/auth.service');
 
 module.exports = function(app) {
 
-  // Lock down entire api
-  // app.use('/api', auth.isAuthenticated);
+  // Lock down api
+  app.use('/api', auth.isAuthenticated());
 
   // Insert routes below
   app.use('/api/things', require('./api/thing'));
@@ -25,6 +25,6 @@ module.exports = function(app) {
   // All other routes should redirect to the index.html
   app.route('/*')
     .get(function(req, res) {
-      res.sendFile(app.get('appPath') + '/index.html');
+      res.sendfile(app.get('appPath') + '/index.html');
     });
 };
