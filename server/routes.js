@@ -10,10 +10,9 @@ var errors = require('./components/errors');
 module.exports = function(app) {
 
   // Lock down entire api
-  //app.get('/api/*', auth.isAuthenticated);
+  // app.use('/api', auth.isAuthenticated);
 
   // Insert routes below
-  app.use('/api/tests', require('./api/test'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
 

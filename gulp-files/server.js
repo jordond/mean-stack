@@ -8,7 +8,7 @@ module.exports = function(gulp, $, config) {
       .pipe($.install());
   });
 
-  gulp.task('clean-server', ['install:node'], function (cb) {
+  gulp.task('clean-server', function (cb) {
     return $.del(config.serverBuildDir, cb);
   });
 
