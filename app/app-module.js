@@ -30,7 +30,7 @@
   function run($rootScope, $state, Auth) {
     $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function (loggedIn) {
-        if (next.restricted && !loggedIn && false) {
+        if (next.restricted && !loggedIn) {
           event.preventDefault();
           $state.go('login');
         }

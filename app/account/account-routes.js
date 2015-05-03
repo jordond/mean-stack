@@ -14,6 +14,13 @@
         controllerAs: 'vm',
         restricted: false
       })
+      .state('logout', {
+        url: '/logout',
+        template: '<div ng-init="vm.logout()"></div>',
+        controller: 'LogoutCtrl',
+        controllerAs: 'vm',
+        restricted: false
+      })
       .state('settings', {
         url: '/settings',
         templateUrl: 'account/settings/settings.tpl.html',
