@@ -12,14 +12,11 @@
     .module('account')
     .controller('LoginCtrl', LoginCtrl);
 
-  function LoginCtrl(Auth, $location) {
+  function LoginCtrl($location, Auth) {
     var vm = this
-      , user = {}
-      , submitted = false;
+      , user = {};
 
     function login(form) {
-      submitted = true;
-
       if (form.$valid) {
         Auth.login({
           email: user.email,
@@ -27,12 +24,15 @@
         })
         .then(function () {
           $location.path('/');
+        })
+        .catch(function () {
+          vm.user = {};
+          form.$setPristine();
         });
       }
     }
 
     vm.user = user;
-    vm.submitted = submitted;
     vm.login = login;
   }
 }());

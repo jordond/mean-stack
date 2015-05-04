@@ -1,0 +1,9 @@
+{
+  "login": {
+    "errors": {
+      "required": "please enter ",
+      "email": "you've entered an invalid email",
+      "minLength": "must be a minimum of 8 characters"
+    }
+  }
+}

@@ -11,6 +11,7 @@
       'ui.router',
       'ngCookies',
       'ngResource',
+      'ngMessages',
       'ngSanitize',
       'ngAnimate',
       'mgcrea.ngStrap',
