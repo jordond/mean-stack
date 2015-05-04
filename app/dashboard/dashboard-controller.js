@@ -12,10 +12,14 @@
     .module('dashboard')
     .controller('DashboardCtrl', DashboardCtrl);
 
-  function DashboardCtrl($scope, $http, socket) {
+  function DashboardCtrl($scope, $http, socket, Auth) {
     var vm = this;
 
     vm.awesomeThings = [];
+
+    Auth.isLoggedInAsync(function (loggedIn) {
+      vm.loggedIn = loggedIn;
+    });
 
     $http.get('/api/things').success(function (awesomeThings) {
       vm.awesomeThings = awesomeThings;

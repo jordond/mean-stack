@@ -14,15 +14,16 @@
     .module('components')
     .directive('navbar', navbar);
 
-  function navbar(JsonService) {
+  function navbar($location, JsonService) {
     return {
       restrict: 'EA',
       scope: {},
       templateUrl: 'components/navbar/navbar-directive.tpl.html',
       replace: true,
       controllerAs: 'vm',
-      controller: function () {
-        var vm = this;
+      controller: function ($scope) {
+        var vm = this
+          , isLogin = $location.url() === '/login';
         if (angular.equals({}, JsonService.json)) {
           JsonService.get()
             .then(function () {
@@ -31,6 +32,12 @@
         } else {
           vm.title = JsonService.retrieve('title');
         }
+
+        $scope.$on('stateChanged', function (event, stateName) {
+          vm.isLogin = stateName === 'login';
+        });
+
+        vm.isLogin = isLogin;
       }
     };
   }

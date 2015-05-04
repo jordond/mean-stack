@@ -1,7 +1,13 @@
 {
   "title": "Mean-Stack",
   "sections": [
-    "dashboard",
-    "settings"
+    {
+      "title": "dashboard",
+      "icon": "fa-tachometer"
+    },
+    {
+      "title": "settings",
+      "icon": "fa-cog"
+    }
   ]
 }

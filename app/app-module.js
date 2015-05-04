@@ -12,7 +12,9 @@
       'ngCookies',
       'ngResource',
       'ngSanitize',
+      'ngAnimate',
       'mgcrea.ngStrap',
+      'toastr',
       'components',
       'dashboard',
       'account'
@@ -27,11 +29,16 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $location, Auth) {
+  function run($rootScope, $state, Auth, JsonService) {
+    JsonService.get();
+
     $rootScope.$on('$stateChangeStart', function (event, next) {
+      $rootScope.$broadcast('stateChanged', next.name);
+
       Auth.isLoggedInAsync(function (loggedIn) {
-        if (next.authenticate && !loggedIn) {
-          $location.path('/login');
+        if (next.restricted && !loggedIn) {
+          event.preventDefault();
+          $state.go('login');
         }
       });
     });

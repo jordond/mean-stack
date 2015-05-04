@@ -14,8 +14,13 @@ module.exports = function (gulp, $, config) {
     isMinify = false;
   }
 
+  gulp.task('install:bower', function () {
+    return gulp.src(['./bower.json'])
+      .pipe($.install());
+  });
+
   // delete build directory
-  gulp.task('clean-app', function (cb) {
+  gulp.task('clean-app', ['install:bower'], function (cb) {
     return $.del(config.buildDir, cb);
   });
 

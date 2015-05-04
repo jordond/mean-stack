@@ -37,7 +37,6 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
-    console.log(config.root);
     app.use(express.static(path.join(config.root, 'app')));
     app.use('/', express.static(path.join(config.client, 'client')));
     app.set('appPath', config.root + '/app');

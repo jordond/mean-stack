@@ -5,9 +5,15 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-      <div class="aside-body bs-sidebar" ng-click="$hide();">
+      <div class="aside-body bs-sidebar" ng-click="$hide()">
         <ul class="nav bs-sidenav">
           <li navbar-items></li>
+          <li>
+          <a data-ui-sref="logout">
+            <i class="fa fa-fw fa-power-off"></i>
+            Logout
+          </a>
+        </li>
         </ul>
       </div>
     </div>
