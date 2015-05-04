@@ -1,35 +1,37 @@
 <div class="row login-container">
-  <div class="login-title">
-    <h1>Sign In</h1>
-  </div>
-  <div class="login-body">
-    <form class="form" name="loginForm" ng-submit="vm.login(loginForm)" novalidate>
-      <div class="form-group">
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-user"></i></span>
-          <input type="email" name="email"
-                 placeholder="email"
-                 class="form-control"
-                 ng-model="vm.user.email"
-                 required>
+  <div class="login-wrap">
+    <div class="login-title">
+      <h1>Sign In</h1>
+    </div>
+    <div class="login-body">
+      <form class="form" name="loginForm" ng-submit="vm.login(loginForm)" novalidate>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="email" name="email"
+                   placeholder="email"
+                   class="form-control"
+                   ng-model="vm.user.email"
+                   required>
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
-          <input type="password" name="password"
-                 placeholder="password"
-                 class="form-control"
-                 ng-model="vm.user.password"
-                 required>
+        <div class="form-group">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+            <input type="password" name="password"
+                   placeholder="password"
+                   class="form-control"
+                   ng-model="vm.user.password"
+                   required>
+          </div>
         </div>
-      </div>
-      <div>
-        <button class="btn btn-primary btn-block" type="submit"
-                ng-disabled="loginForm.$invalid || vm.submitted">
-          <i class="fa fa-sign-in"></i> Login
-        </button>
-      </div>
-    </form>
+        <div>
+          <button class="btn btn-primary btn-block" type="submit"
+                  ng-disabled="loginForm.$invalid || vm.submitted">
+            <i class="fa fa-sign-in"></i> Login
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
