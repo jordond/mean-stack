@@ -32,9 +32,10 @@
           // implement error state if server dies
           // $state.go('error');
           console.log('server died');
+          return $q.reject(response);
         }
 
-        errorMessage = angular.isUndefinedOrNull ?
+        errorMessage = angular.isUndefinedOrNull === response.data.message ?
           'Something went wrong...' : response.data.message;
         toastr.error(errorMessage, 'Error');
 

@@ -47,6 +47,7 @@
         currentUser = {};
       },
 
+      // REFACTOR - admin creates users now
       createUser: function (user, callback) {
         var cb = callback || angular.noop;
 

@@ -62,6 +62,37 @@ function hasRole(roleRequired) {
 }
 
 /**
+ * Checks if it is the current user, or is an admin
+ */
+function isMeOrHasRole(roleRequired) {
+  return compose()
+    .use(function checkIsMe(req, res, next) {
+      var userId = req.params.id;
+      if (req.user._id) {
+        if (req.user._id === userId) {
+          next();
+        } else {
+          hasRole(roleRequired);
+        }
+      } else {
+        res.sendStatus(401);
+      }
+    });
+}
+
+/**
+ * Helper function
+ * Check if the user is admin
+ */
+function checkIsAdmin(roleToCheck) {
+  if (config.userRoles.indexOf(roleToCheck) >= config.userRoles.indexOf('admin')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
@@ -80,5 +111,6 @@ function setTokenCookie(req, res) {
 
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
+exports.isMeOrHasRole = isMeOrHasRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;

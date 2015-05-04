@@ -27,6 +27,13 @@
         controller: 'SettingsCtrl',
         controllerAs: 'vm',
         restricted: true
+      })
+      .state('profile', {
+        url: '/profile',
+        templateUrl: 'account/profile/profile.tpl.html',
+        controller: 'ProfileCtrl',
+        controllerAs: 'vm',
+        restricted: true
       });
   }
 }());

@@ -34,12 +34,14 @@ User.find({}).remove(function() {
   User.create({
     provider: 'local',
     name: 'Test User',
+    username: 'tester',
     email: 'test@test.com',
     password: 'test'
   }, {
     provider: 'local',
     role: 'admin',
     name: 'Admin',
+    username: 'Admin',
     email: 'admin@admin.com',
     password: 'admin'
   }, function() {
