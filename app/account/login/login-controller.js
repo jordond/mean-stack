@@ -15,7 +15,6 @@
   function LoginCtrl(Auth, $location) {
     var vm = this
       , user = {}
-      , errors = {}
       , submitted = false;
 
     function login(form) {
@@ -28,15 +27,11 @@
         })
         .then(function () {
           $location.path('/');
-        })
-        .catch(function (err) {
-          errors.other = err.message;
         });
       }
     }
 
     vm.user = user;
-    vm.errors = errors;
     vm.submitted = submitted;
     vm.login = login;
   }

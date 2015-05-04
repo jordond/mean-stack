@@ -1,0 +1,14 @@
+@import (reference) "../../../bower_components/bootstrap/less/bootstrap";
+
+.responsive(@sm, @md) {
+  .make-sm-column(@sm);
+  .make-sm-column-offset((12 - @sm) / 2);
+  .make-md-column(@md);
+  .make-md-column-offset((12 - @md) / 2);
+}
+
+.login-container {
+  .login-title, .login-body {
+    .responsive(8, 6);
+  }
+}

@@ -22,7 +22,9 @@
         return config;
       },
       responseError: function (response) {
-        var $state = $injector.get('$state');
+        var $state = $injector.get('$state')
+          , toastr = $injector.get('toastr')
+          , errorMessage = '';
         if (response.status === 401) {
           $state.go('login');
           $cookieStore.remove('token');
@@ -31,6 +33,11 @@
           // $state.go('error');
           console.log('server died');
         }
+
+        errorMessage = angular.isUndefinedOrNull ?
+          'Something went wrong...' : response.data.message;
+        toastr.error(errorMessage, 'Error');
+
         return $q.reject(response);
       }
     };

@@ -12,7 +12,9 @@
       'ngCookies',
       'ngResource',
       'ngSanitize',
+      'ngAnimate',
       'mgcrea.ngStrap',
+      'toastr',
       'components',
       'dashboard',
       'account'

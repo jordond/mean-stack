@@ -26,7 +26,7 @@ function isAuthenticated() {
     // Handle the validation errors
     .use(function (err, req, res, next) {
       if (err) {
-        return res.status(err.status).send(err.message);
+        return res.status(err.status).json(err);
       } else {
         next();
       }
