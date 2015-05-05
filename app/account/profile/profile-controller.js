@@ -12,8 +12,8 @@
     .module('account')
     .controller('ProfileCtrl', ProfileCtrl);
 
-  function ProfileCtrl() {
+  function ProfileCtrl(Auth) {
     var vm = this;
-    vm.name = 'ProfileCtrl';
+    vm.user = Auth.getCurrentUser();
   }
 }());

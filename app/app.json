@@ -6,6 +6,10 @@
       "icon": "fa-tachometer"
     },
     {
+      "title": "profile",
+      "icon": "fa-user"
+    },
+    {
       "title": "settings",
       "icon": "fa-cog"
     }

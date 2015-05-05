@@ -1,4 +1,5 @@
-<li ui-sref-active="active" ng-repeat="section in navbarItems.sections">
+<li ui-sref-active="active"
+    ng-repeat="section in navbarItems.sections">
     <a data-ui-sref="{{ ::section.title }}" ng-click="$hide();">
       <i class="fa fa-fw {{ ::section.icon }}"></i>
       {{ ::section.title | capitalize }}
