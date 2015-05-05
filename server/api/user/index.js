@@ -9,9 +9,9 @@ var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.get('/:id', auth.hasRole('admin'), controller.show);
-router.post('/', auth.hasRole('admin'), controller.create);
 router.get('/me', controller.me);
+router.post('/', auth.hasRole('admin'), controller.create);
+router.get('/:id', auth.hasRole('admin'), controller.show);
 router.put('/:id', auth.isMeOrHasRole('admin'), controller.update)
 router.put('/:id/password', auth.isMeOrHasRole('admin'), controller.changePassword);
 

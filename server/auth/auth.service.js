@@ -68,11 +68,15 @@ function isMeOrHasRole(roleRequired) {
   return compose()
     .use(function checkIsMe(req, res, next) {
       var userId = req.params.id;
-      if (req.user._id) {
-        if (req.user._id === userId) {
+      if (req.user.id) {
+        if (req.user.id === userId) {
           next();
         } else {
-          hasRole(roleRequired);
+          if (compareRole(roleRequired, req.user.role)) {
+            next();
+          } else {
+            res.status(403).json({message: 'You don\'t have the authority for that'});
+          }
         }
       } else {
         res.sendStatus(401);
@@ -86,6 +90,14 @@ function isMeOrHasRole(roleRequired) {
  */
 function checkIsAdmin(roleToCheck) {
   if (config.userRoles.indexOf(roleToCheck) >= config.userRoles.indexOf('admin')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function compareRole(roleRequired, roleToCheck) {
+  if (config.userRoles.indexOf(roleToCheck) >= config.userRoles.indexOf(roleRequired)) {
     return true;
   } else {
     return false;
@@ -112,5 +124,8 @@ function setTokenCookie(req, res) {
 exports.isAuthenticated = isAuthenticated;
 exports.hasRole = hasRole;
 exports.isMeOrHasRole = isMeOrHasRole;
+
+exports.checkIsAdmin = checkIsAdmin;
+exports.compareRole = compareRole;
 exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;

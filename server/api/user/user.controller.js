@@ -4,7 +4,7 @@ var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
-var auth = require('../../auth/auth.service')
+var auth = require('../../auth/auth.service');
 
 var validationError = function (res, err) {
   return res.json(422, err);
@@ -83,7 +83,7 @@ exports.changePassword = function (req, res, next) {
  */
 exports.me = function (req, res, next) {
   var userId = req.user._id;
-  console.log("USERID " + userId);
+
   User.findOne({
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
@@ -98,16 +98,16 @@ exports.me = function (req, res, next) {
  * restriction: self || 'admin'
  */
 exports.update = function (req, res, next) {
-  var userId = req.user._id;
-  User.findOne(userId, function (err, user) {
+  var userId = req.params.id;
+  User.findOne(userId, '-salt -hashedPassword', function (err, user) {
     user.username = req.body.username;
     user.email = req.body.email;
-    if (auth.checkIsAdmin(user.role)) {
+    if (auth.checkIsAdmin(req.user.role)) {
       user.role = req.body.role;
     }
     user.save(function(err) {
       if (err) return validationError(res, err);
-      res.send(200).json({message: 'User was successfully updated'});
+      res.status(200).json({message: 'User was successfully updated', user: user});
     });
   });
 };
