@@ -7,7 +7,7 @@ var jwt = require('jsonwebtoken');
 var auth = require('../../auth/auth.service');
 
 var validationError = function (res, err) {
-  return res.json(422, err);
+  return res.status(422).json(err);
 };
 
 /**
@@ -16,8 +16,8 @@ var validationError = function (res, err) {
  */
 exports.index = function (req, res) {
   User.find({}, '-salt -hashedPassword', function (err, users) {
-    if(err) return res.send(500, err);
-    res.json(200, users);
+    if(err) return res.status(500).json(err);
+    res.status(200).json(users);
   });
 };
 
@@ -29,7 +29,7 @@ exports.create = function (req, res, next) {
   newUser.provider = 'local';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
-    res.json({ message: 'User ' + user.username + ' was successfully created.' });
+    res.status(200).json({ message: 'User ' + user.username + ' was successfully created!' });
   });
 };
 
@@ -41,8 +41,8 @@ exports.show = function (req, res, next) {
 
   User.findById(userId, function (err, user) {
     if (err) return next(err);
-    if (!user) return res.send(401);
-    res.json(user.profile);
+    if (!user) return res.sendStatus(404);
+    res.status(200).json(user.profile);
   });
 };
 
@@ -52,8 +52,8 @@ exports.show = function (req, res, next) {
  */
 exports.destroy = function (req, res) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.send(500, err);
-    return res.send(204);
+    if(err) return res.status(500).json(err);
+    return res.status(204).json({message: 'User was successfully deleted!'});
   });
 };
 
@@ -61,19 +61,19 @@ exports.destroy = function (req, res) {
  * Change a users password
  */
 exports.changePassword = function (req, res, next) {
-  var userId = req.user._id;
+  var userId = req.params.id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
   User.findById(userId, function (err, user) {
-    if(user.authenticate(oldPass)) {
+    if(user.authenticate(oldPass) || auth.checkIsAdmin(req.user.role)) {
       user.password = newPass;
       user.save(function(err) {
         if (err) return validationError(res, err);
-        res.send(200);
+        res.status(200).json({message: 'Password successfully updated!'});
       });
     } else {
-      res.send(403);
+      res.sendStatus(403);
     }
   });
 };
@@ -99,7 +99,7 @@ exports.me = function (req, res, next) {
  */
 exports.update = function (req, res, next) {
   var userId = req.params.id;
-  User.findOne(userId, '-salt -hashedPassword', function (err, user) {
+  User.findOne(userId, function (err, user) {
     user.username = req.body.username;
     user.email = req.body.email;
     if (auth.checkIsAdmin(req.user.role)) {
@@ -107,7 +107,7 @@ exports.update = function (req, res, next) {
     }
     user.save(function(err) {
       if (err) return validationError(res, err);
-      res.status(200).json({message: 'User was successfully updated', user: user});
+      res.status(200).json({message: 'User was successfully updated!', user: user.profile});
     });
   });
 };
