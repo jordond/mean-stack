@@ -88,7 +88,7 @@ exports.me = function (req, res, next) {
     _id: userId
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    if (!user) return res.json(401);
+    if (!user) return res.status(401).json({message: 'Either you were logged out, or server restarted'});
     res.json(user);
   });
 };

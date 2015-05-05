@@ -37,10 +37,10 @@
       Auth.isLoggedInAsync(function (loggedIn) {
         if (next.restricted && !loggedIn) {
           event.preventDefault();
-          $rootScope.$broadcast('stateChanged', 'login');
           $state.go('login');
         }
       });
+      $rootScope.$broadcast('stateChanged', next.name);
     });
   }
 }());

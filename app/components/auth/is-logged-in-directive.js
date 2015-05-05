@@ -18,10 +18,10 @@
     return {
       restrict: 'A',
       link: function ($scope) {
-        Auth.isLoggedInAsync(function (loggedIn) {
-          if (!loggedIn) {
-            $scope.loggedIn = loggedIn;
-          }
+        $scope.loggedIn = Auth.isLoggedIn();
+
+        $scope.$on('stateChanged', function () {
+          $scope.loggedIn = Auth.isLoggedIn();
         });
       }
     };
