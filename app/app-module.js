@@ -34,8 +34,6 @@
     JsonService.get();
 
     $rootScope.$on('$stateChangeStart', function (event, next) {
-      $rootScope.$broadcast('stateChanged', next.name);
-
       Auth.isLoggedInAsync(function (loggedIn) {
         if (next.restricted && !loggedIn) {
           event.preventDefault();

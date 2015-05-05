@@ -3,7 +3,7 @@
 
   /**
    * @ngdoc directive
-   * @name components.directive:addClassOnState
+   * @name components.directive:getCurrentState
    * @restrict A
    * @element
    *
@@ -12,15 +12,21 @@
    */
   angular
     .module('components')
-    .directive('addStateAsClass', addStateAsClass);
+    .directive('getCurrentState', getCurrentState);
 
-  function addStateAsClass($location) {
+  function getCurrentState($location, Auth) {
     return {
       restrict: 'A',
       link: function ($scope) {
         var initialState = $location.url();
 
         $scope.currentState = initialState.replace('/', '');
+
+        Auth.isLoggedInAsync(function (loggedIn) {
+          if (!loggedIn) {
+            $scope.currentState = 'login';
+          }
+        });
 
         $scope.$on('stateChanged', function (event, stateName) {
           $scope.currentState = stateName;

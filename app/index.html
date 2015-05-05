@@ -12,9 +12,11 @@
     <!-- inject:css -->
     <!-- endinject -->
   </head>
-  <body add-state-as-class ng-class="currentState">
+  <body is-logged-in ng-class="{'login': !loggedIn}">
 
-    <div navbar></div>
+    <div navbar
+         is-logged-in ng-show="loggedIn">
+    </div>
     <div class='container'>
       <div data-ui-view>
 
