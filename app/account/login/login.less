@@ -1,11 +1,7 @@
-@import (reference) "../../../bower_components/bootstrap/less/bootstrap";
 @import (reference) "../../app.less";
 
-.responsive(@sm, @md) {
-  .make-sm-column(@sm);
-  .make-sm-column-offset((12 - @sm) / 2);
-  .make-md-column(@md);
-  .make-md-column-offset((12 - @md) / 2);
+.login-column {
+  .responsive-column(8, 6, 4);
 }
 
 body {
@@ -15,7 +11,7 @@ body {
 }
 
 .login-container {
-  .responsive(8, 6);
+  .login-column();
   margin-top: 7%;
   .login-wrap {
     background-color: @bgWhite;

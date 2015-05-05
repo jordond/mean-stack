@@ -1,3 +1,4 @@
+@import (reference) "../bower_components/bootstrap/less/bootstrap";
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @bgDefault      : #34495e;
 @bgHighlight    : #34495e;
@@ -30,4 +31,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, strong, b {
 
 .container {
 
+}
+
+.responsive-column(@sm, @md, @lg) {
+  .make-sm-column(@sm);
+  .make-sm-column-offset((12 - @sm) / 2);
+  .make-md-column(@md);
+  .make-md-column-offset((12 - @md) / 2);
+  .make-lg-column(@lg);
+  .make-lg-column-offset((12 - @lg) / 2);
 }
