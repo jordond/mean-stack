@@ -4,10 +4,27 @@
     <div class="profile-wrap">
       <div class="panel panel-success">
         <div class="panel-heading">
-          <h3 class="panel-title">{{ vm.user.username }}, here's your Profile!</h3>
+          <h3 class="panel-title">
+            {{ vm.userCopy.username }}, here's your Profile!
+          </h3>
         </div>
         <div class="panel-body">
-          <div user-form user="'me'"></div>
+          <form class="form-horizontal profile-form"
+                name="profileForm"
+                ng-submit="vm.submit(profileForm)"
+                novalidate>
+            <div user-form user="vm.user"></div>
+          </form>
+        </div>
+        <div class="panel-footer clearfix"
+             ng-hide="profileForm.$pristine">
+            <div class="pull-right"
+                 user-form-buttons
+                 form="profileForm"
+                 action="update"
+                 submit="vm.submit"
+                 cancel="vm.reset">
+            </div>
         </div>
       </div>
     </div>

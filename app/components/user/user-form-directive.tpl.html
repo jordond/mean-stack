@@ -1,8 +1,4 @@
-<form class="form-horizontal user-form"
-      name="userForm"
-      ng-submit="vm.save()"
-      novalidate>
-
+<div class="user-form">
   <div class="form-group">
     <label for="username" class="control-label col-sm-2">Username </label>
     <div class="input-group col-sm-6">
@@ -12,7 +8,7 @@
              placeholder="Enter username"
              class="form-control"
              minlength="5"
-             ng-model="vm.user.username"
+             ng-model="user.username"
              required>
     </div>
   </div>
@@ -26,7 +22,7 @@
              placeholder="Enter name or comment"
              class="form-control"
              minlength="3"
-             ng-model="vm.user.name"
+             ng-model="user.name"
              required>
     </div>
   </div>
@@ -39,7 +35,7 @@
              name="email"
              placeholder="Enter your email"
              class="form-control"
-             ng-model="vm.user.email"
+             ng-model="user.email"
              required>
     </div>
   </div>
@@ -50,21 +46,21 @@
       <span class="input-group-addon"><i class="fa fa-key"></i></span>
       <select name="role"
               class="form-control"
-              ng-model="vm.user.role"
-              ng-options="role as role for role in vm.user.roles"
-              ng-disabled="vm.user.role !== 'admin'"
+              ng-model="user.role"
+              ng-options="role as role for role in vm.roles"
+              ng-disabled="!vm.isAdmin"
               required>
       </select>
     </div>
   </div>
 
-  <div class="form-group" ng-if="vm.user.role === 'admin'">
+  <div class="form-group" ng-if="vm.isAdmin">
     <label for="email" class="control-label col-sm-2">Token </label>
     <div class="input-group col-sm-6">
       <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
       <input type="text"
              class="form-control"
-             ng-model="vm.user.token"
+             ng-model="user.token"
              disabled>
       <span class="input-group-addon btn btn-success"
             ng-click="vm.showToken()">
@@ -72,5 +68,4 @@
       </span>
     </div>
   </div>
-
-</form>
+</div>

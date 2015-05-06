@@ -26,17 +26,16 @@
       controller: function ($scope, Auth, toastr) {
         var vm = this;
 
-        vm.user = {};
-        if ($scope.user === 'me') {
-          vm.user = angular.copy(Auth.getCurrentUser());
-        } else if (angular.isUndefinedOrNull !== $scope.user) {
-          vm.user = $scope.user;
+        if ($scope.user) {
+          $scope.user = $scope.user;
+          $scope.user.token = Auth.getToken();
         }
-        vm.user.token = Auth.getToken();
-        vm.user.roles = Auth.getRoles();
+
+        vm.roles = Auth.getRoles();
+        vm.isAdmin = Auth.isAdmin();
 
         function showToken() {
-          toastr.success(vm.user.token, 'Your Token', {
+          toastr.success($scope.user.token, 'Your Token', {
             closeButton: true,
             maxOpened: 1,
             tapToDismiss: false,
