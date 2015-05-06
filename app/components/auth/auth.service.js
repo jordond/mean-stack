@@ -78,6 +78,20 @@
         .$promise;
       },
 
+      getRoles: function () {
+        var deferred = $q.defer();
+
+        $http.get('/api/users/roles')
+        .success(function (data) {
+          deferred.resolve(data.roles);
+        })
+        .error(function (err) {
+          deferred.reject(err);
+        });
+
+        return deferred.promise;
+      },
+
       getCurrentUser: function () {
         return currentUser;
       },

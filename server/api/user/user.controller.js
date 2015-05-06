@@ -94,6 +94,18 @@ exports.me = function (req, res, next) {
 };
 
 /**
+ * Return all the user roles
+ */
+exports.roles = function (req, res, next) {
+  var userRoles = config.userRoles;
+  if (userRoles.length > 0) {
+    return res.status(200).json({roles: userRoles});
+  } else {
+    return res.status(404).json({message: 'No user roles were found...'});
+  }
+};
+
+/**
  * Update user with given id
  * restriction: self || 'admin'
  */
