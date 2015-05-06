@@ -28,6 +28,12 @@
         params: {
           id: 'me'
         }
+      },
+      getRoles: {
+        method: 'GET',
+        params: {
+          id: 'roles'
+        }
       }
     });
   }

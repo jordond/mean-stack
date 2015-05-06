@@ -23,15 +23,28 @@
       templateUrl: 'components/user/user-form-directive.tpl.html',
       replace: false,
       controllerAs: 'vm',
-      controller: function (Auth) {
+      controller: function ($scope, Auth, toastr) {
         var vm = this;
 
-        vm.user = angular.copy(Auth.getCurrentUser());
+        vm.user = {};
+        if ($scope.user === 'me') {
+          vm.user = angular.copy(Auth.getCurrentUser());
+        } else if (angular.isUndefinedOrNull !== $scope.user) {
+          vm.user = $scope.user;
+        }
+        vm.user.token = Auth.getToken();
+        vm.user.roles = Auth.getRoles();
 
-        Auth.getRoles()
-        .then(function (roles) {
-          vm.roles = roles;
-        });
+        function showToken() {
+          toastr.success(vm.user.token, 'Your Token', {
+            closeButton: true,
+            maxOpened: 1,
+            tapToDismiss: false,
+            timeout: 7000
+          });
+        }
+
+        vm.showToken = showToken;
       },
       link: function (scope, element, attrs) {
         /*jshint unused:false */

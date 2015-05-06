@@ -13,9 +13,11 @@
     .factory('Auth', Auth);
 
   function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
-    var currentUser = {};
+    var currentUser = {}
+      , roles = [];
     if ($cookieStore.get('token')) {
       currentUser = User.get();
+      roles = User.getRoles();
     }
 
     return {
@@ -79,17 +81,7 @@
       },
 
       getRoles: function () {
-        var deferred = $q.defer();
-
-        $http.get('/api/users/roles')
-        .success(function (data) {
-          deferred.resolve(data.roles);
-        })
-        .error(function (err) {
-          deferred.reject(err);
-        });
-
-        return deferred.promise;
+        return roles.roles;
       },
 
       getCurrentUser: function () {
