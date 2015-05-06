@@ -23,7 +23,7 @@
           controller: 'password'
         }
       },
-      get: {
+      me: {
         method: 'GET',
         params: {
           id: 'me'
@@ -34,6 +34,9 @@
         params: {
           id: 'roles'
         }
+      },
+      update: {
+        method: 'PUT'
       }
     });
   }

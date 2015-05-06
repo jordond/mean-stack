@@ -111,7 +111,7 @@ exports.roles = function (req, res, next) {
  */
 exports.update = function (req, res, next) {
   var userId = req.params.id;
-  User.findOne(userId, function (err, user) {
+  User.findById(userId, function (err, user) {
     user.username = req.body.username;
     user.email = req.body.email;
     if (auth.checkIsAdmin(req.user.role)) {

@@ -28,14 +28,14 @@
 
         if ($scope.user) {
           $scope.user = $scope.user;
-          $scope.user.token = Auth.getToken();
         }
 
+        vm.token = Auth.getToken();
         vm.roles = Auth.getRoles();
         vm.isAdmin = Auth.isAdmin();
 
         function showToken() {
-          toastr.success($scope.user.token, 'Your Token', {
+          toastr.info(vm.token, 'Your Full Token', {
             closeButton: true,
             maxOpened: 1,
             tapToDismiss: false,

@@ -16,7 +16,7 @@
     var currentUser = {}
       , roles = [];
     if ($cookieStore.get('token')) {
-      currentUser = User.get();
+      currentUser = User.me();
       roles = User.getRoles();
     }
 
@@ -31,7 +31,7 @@
         })
         .success(function (data) {
           $cookieStore.put('token', data.token);
-          currentUser = User.get();
+          currentUser = User.me();
           deferred.resolve(data);
           return cb();
         })
@@ -56,7 +56,7 @@
         return User.save(user,
           function (data) {
             $cookieStore.put('token', data.token);
-            currentUser = User.get();
+            currentUser = User.me();
             return cb(user);
           },
           function (err) {
