@@ -26,10 +26,6 @@
       controller: function ($scope, Auth, toastr) {
         var vm = this;
 
-        if ($scope.user) {
-          $scope.user = $scope.user;
-        }
-
         vm.token = Auth.getToken();
         vm.roles = Auth.getRoles();
         vm.isAdmin = Auth.isAdmin();
@@ -46,8 +42,7 @@
         vm.showToken = showToken;
       },
       link: function (scope, element, attrs) {
-        /*jshint unused:false */
-        /*eslint "no-unused-vars": [2, {"args": "none"}]*/
+        scope.existingUser = attrs.hasOwnProperty('existingUser');
       }
     };
   }

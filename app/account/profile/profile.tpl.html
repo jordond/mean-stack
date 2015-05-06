@@ -13,11 +13,12 @@
                 name="profileForm"
                 ng-submit="vm.submit(profileForm)"
                 novalidate>
-            <div user-form user="vm.user"></div>
+            <div user-form
+                 user="vm.user"
+                 existing-user></div>
           </form>
         </div>
-        <div class="panel-footer clearfix"
-             ng-hide="profileForm.$pristine">
+        <div class="panel-footer clearfix">
             <div class="pull-right"
                  user-form-buttons
                  form="profileForm"

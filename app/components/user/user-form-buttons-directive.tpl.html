@@ -2,7 +2,7 @@
   <div class="btn btn-action"
        ng-class="{'btn-warning': form.$invalid,
                   'btn-success': form.$valid}"
-       ng-disabled="form.$submitted || form.$invalid"
+       ng-disabled="form.$submitted || form.$invalid || form.$pristine"
        ng-click="submit(form)">
     <i class="fa"
        ng-class="{'fa-check': form.$valid && form.$dirty,
@@ -10,7 +10,7 @@
     {{ form.$invalid ? 'invalid' : action | capitalize }}
   </div>
   <div class="btn btn-default btn-cancel"
-       ng-hide="form.$pristine"
+       ng-disabled="form.$pristine"
        ng-click="cancel(form)">
     <i class="fa fa-{{ vm.cancelIcon }}"></i>
     {{ action === 'update' ? 'reset' : 'cancel' | capitalize }}
