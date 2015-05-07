@@ -2,22 +2,26 @@
   'use strict';
 
   /**
-   * @ngdoc service
-   * @name home.service:User
+   * @ngdoc factory
+   * @name home.service:UserData
    *
    * @description
    *
    */
   angular
     .module('components')
-    .factory('UserService', UserService);
+    .factory('UserData', UserData);
 
-  function UserService(User) {
-    return {
-      createUser: createUser,
+  UserData.$inject = ['User'];
+
+  function UserData(User) {
+    var service = {
+      createUser    : createUser,
       changePassword: changePassword,
-      update: update
+      update        : update
     };
+
+    return service;
 
     /**
      * Create a new user
@@ -25,8 +29,10 @@
      * @return {promise}        Promise of a better tomorrow
      */
     function createUser(newUser) {
-      return User.save(newUser,
-        createComplete, createFailed);
+      return User.save(newUser)
+        .$promise
+        .then(createComplete)
+        .catch(createFailed);
 
       function createComplete(response) {
         return response.data;
@@ -48,7 +54,10 @@
       return User.changePassword({id: id}, {
           oldPassword: oldPassword,
           newPassword: newPassword
-        }, changePasswordComplete, changePasswordFailed);
+        })
+        .$promise
+        .then(changePasswordComplete)
+        .catch(changePasswordFailed);
 
       function changePasswordComplete(response) {
         return response.data;
@@ -65,9 +74,10 @@
      * @return {promise}     Success or failure
      */
     function update(user) {
-      return User.update({id: user._id}, user,
-        updateComplete, updateFailed)
-        .$promise;
+      return User.update({id: user._id}, user)
+        .$promise
+        .then(updateComplete)
+        .catch(updateFailed);
 
       function updateComplete(response) {
         return response.data;
