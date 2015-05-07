@@ -26,6 +26,12 @@
   "overrides": {
     "socket.io-client": {
       "main": "socket.io.js"
+    },
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/fonts/*"
+      ]
     }
   }
 }

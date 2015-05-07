@@ -33,7 +33,7 @@ module.exports = function(app) {
     app.use(express.static(path.join(config.root, 'app')));
     app.use('/', express.static(path.join(config.client, 'client')));
     app.set('appPath', config.root + '/app');
-    app.use(morgan('dev'));
+    app.use(morgan('tiny'));
   }
 
   if ('development' === env || 'test' === env) {

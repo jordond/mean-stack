@@ -28,7 +28,7 @@
 
         vm.token = Auth.getToken();
         vm.roles = Auth.getRoles();
-        vm.isAdmin = Auth.isAdmin();
+        vm.isAdmin = Auth.isAdmin;
 
         function showToken() {
           toastr.info(vm.token, 'Your Full Token', {
