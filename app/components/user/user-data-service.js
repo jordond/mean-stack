@@ -12,16 +12,21 @@
     .module('components')
     .factory('UserData', UserData);
 
-  UserData.$inject = ['User'];
+  UserData.$inject = ['$q', 'User', 'logger'];
 
-  function UserData(User) {
+  function UserData($q, User, logger) {
     var service = {
-      createUser    : createUser,
+      create        : createUser,
+      roles         : getUserRoles,
       changePassword: changePassword,
       update        : update
     };
 
     return service;
+
+    /**
+     * Public Methods
+     */
 
     /**
      * Create a new user
@@ -31,15 +36,26 @@
     function createUser(newUser) {
       return User.save(newUser)
         .$promise
-        .then(createComplete)
+        .then(success)
         .catch(createFailed);
 
-      function createComplete(response) {
-        return response.data;
-      }
-
       function createFailed(error) {
-        console.log(error);
+        failed(error, 'Failed to Create User');
+      }
+    }
+
+    /**
+     * Get the supported user roles
+     * @return {Array} List of all the accepted roles
+     */
+    function getUserRoles() {
+      return User.getRoles()
+        .$promise
+        .then(success)
+        .catch(userRolesFailed);
+
+      function userRolesFailed(error) {
+        failed(error, 'Couldn\'t get roles');
       }
     }
 
@@ -56,15 +72,11 @@
           newPassword: newPassword
         })
         .$promise
-        .then(changePasswordComplete)
+        .then(success)
         .catch(changePasswordFailed);
 
-      function changePasswordComplete(response) {
-        return response.data;
-      }
-
       function changePasswordFailed(error) {
-        console.log(error);
+        failed(error, 'Couldn\' change password');
       }
     }
 
@@ -76,16 +88,36 @@
     function update(user) {
       return User.update({id: user._id}, user)
         .$promise
-        .then(updateComplete)
+        .then(success)
         .catch(updateFailed);
 
-      function updateComplete(response) {
-        return response.data;
-      }
-
       function updateFailed(error) {
-        console.log(error);
+        failed(error, 'Update failed');
       }
+    }
+
+    /**
+     * Private Response functions
+     */
+
+    /**
+     * Reusable success function for a successful Promise
+     * @param  {Object} response Response from the server
+     * @return {Object}          Response data
+     */
+    function success(response) {
+      return response;
+    }
+
+    /**
+     * Reusable rejection function for a failed promise
+     * @param  {Object} error   The error object from the $promise
+     * @param  {String} message Title for the toast notification
+     * @return {String}         Error message
+     */
+    function failed(error, message) {
+      logger.error(error.data.message, error, message);
+      return $q.reject(error.data.message);
     }
   }
 }());
