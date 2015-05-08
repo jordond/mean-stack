@@ -30,7 +30,6 @@
           // implement error state if server dies
           // $state.go('error');
           console.log('server died');
-          return $q.reject(response);
         }
 
         return $q.reject(response);

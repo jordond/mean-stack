@@ -21,7 +21,10 @@
         $scope.loggedIn = Auth.isLoggedIn();
 
         $scope.$on('stateChanged', function () {
-          $scope.loggedIn = Auth.isLoggedIn();
+          Auth.isLoggedInAsync()
+            .then(function (loggedIn) {
+              $scope.loggedIn = loggedIn;
+            });
         });
       }
     };
