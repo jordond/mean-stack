@@ -12,9 +12,9 @@
     .module('components')
     .factory('Auth', Auth);
 
-  Auth.$inject = ['$http', '$location', '$q', 'User', 'logger', '$cookieStore'];
+  Auth.$inject = ['$http', '$location', '$q', 'User', 'Token', 'logger'];
 
-  function Auth($http, $location, $q, User, logger, $cookieStore) {
+  function Auth($http, $location, $q, User, Token, logger) {
     var currentUser = {}
       , service = {
           login          : login,
@@ -27,9 +27,12 @@
           isLoggedInAsync: isLoggedInAsync
         };
 
-    if ($cookieStore.get('token')) {
-      currentUser = service.getSelf();
-    }
+    Token.init()
+      .then(function () {
+        if (Token.has()) {
+          currentUser = service.getSelf();
+        }
+      });
 
     return service;
 
@@ -51,7 +54,7 @@
         .catch(loginFailed);
 
       function loginSuccess(response) {
-        $cookieStore.put('token', response.data.token);
+        Token.store(response.data.token);
         currentUser = service.getSelf();
         $location.path('/');
         return response.data.token;
@@ -68,7 +71,7 @@
      * Log the user out by removing the token
      */
     function logout() {
-      $cookieStore.remove('token');
+      Token.remove();
       currentUser = {};
     }
 
@@ -108,7 +111,7 @@
     }
 
     function getToken() {
-      return $cookieStore.get('token');
+      return Token.get();
     }
 
     function isAdmin() {

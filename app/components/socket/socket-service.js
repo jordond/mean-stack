@@ -12,9 +12,7 @@
     .module('components')
     .service('socket', socketConfig);
 
-  /*jshint undef:false */
-  /*eslint-disable*/
-  function socketConfig(_, socketFactory, Auth, logger) {
+  function socketConfig(_, socketFactory, Auth, logger, io) {
     var ioSocket = io('', {
       query: 'token=' + Auth.getToken(),
       path: '/socket.io-client'
@@ -46,6 +44,7 @@
         socket.on(modelName + ':remove', function (item) {
           var event = 'deleted';
           _.remove(array, {_id: item._id});
+          console.log('deleted');
           cb(event, item, array);
         });
 
@@ -62,6 +61,4 @@
       }
     };
   }
-  /*jshint undef:true */
-  /*eslint-enable*/
 }());

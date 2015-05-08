@@ -12,28 +12,37 @@
     .module('app')
     .factory('authInterceptor', authInterceptor);
 
-  function authInterceptor($rootScope, $q, $cookieStore, $injector) {
-    return {
-      request: function (config) {
-        config.headers = config.headers || {};
-        if ($cookieStore.get('token')) {
-          config.headers.Authorization = 'Bearer ' + $cookieStore.get('token');
-        }
-        return config;
-      },
-      responseError: function (response) {
-        var $state = $injector.get('$state');
-        if (response.status === 401) {
-          $state.go('login');
-          $cookieStore.remove('token');
-        } else if (response.status === 0) {
-          // implement error state if server dies
-          // $state.go('error');
-          console.log('server died');
-        }
+  function authInterceptor($rootScope, $q, $injector) {
+    var $state = {}
+      , Token = {}
+      , service = {
+          request: request,
+          responseError: responseError
+        };
 
-        return $q.reject(response);
+    return service;
+
+    function request(config) {
+      Token = $injector.get('Token');
+      config.headers = config.headers || {};
+      if (Token.has()) {
+        config.headers.Authorization = 'Bearer ' + Token.get();
       }
-    };
+      return config;
+    }
+
+    function responseError(response) {
+      Token = $injector.get('Token');
+      $state = $injector.get('$state');
+      if (response.status === 401) {
+        $state.go('login');
+        Token.remove();
+      } else if (response.status === 0) {
+        // implement error state if server dies
+        // $state.go('error');
+        console.log('server died');
+      }
+      return $q.reject(response);
+    }
   }
 }());
