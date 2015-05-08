@@ -14,7 +14,7 @@
 
   /*jshint undef:false */
   /*eslint-disable*/
-  function socketConfig(_, socketFactory, Auth) {
+  function socketConfig(_, socketFactory, Auth, logger) {
     var ioSocket = io('', {
       query: 'token=' + Auth.getToken(),
       path: '/socket.io-client'
@@ -47,6 +47,12 @@
           var event = 'deleted';
           _.remove(array, {_id: item._id});
           cb(event, item, array);
+        });
+
+        socket.on('error', function (error) {
+          if (error.type === 'UnauthorizedError' || error.code === 'invalid_token') {
+            logger.error('socketio token error', error);
+          }
         });
       },
 
