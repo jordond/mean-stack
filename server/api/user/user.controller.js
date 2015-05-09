@@ -17,7 +17,7 @@ var validationError = function (res, err) {
 exports.index = function (req, res) {
   User.find({}, '-salt -hashedPassword', function (err, users) {
     if(err) return res.status(500).json(err);
-    res.status(200).json(users);
+    res.status(200).json({data: users});
   });
 };
 
@@ -29,7 +29,7 @@ exports.create = function (req, res, next) {
   newUser.provider = 'local';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
-    res.status(200).json({ message: 'User ' + user.username + ' was successfully created!' });
+    res.status(200).json({ message: 'User ' + user.username + ' was successfully created!', data: user });
   });
 };
 
@@ -42,7 +42,7 @@ exports.show = function (req, res, next) {
   User.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.sendStatus(404);
-    res.status(200).json(user.profile);
+    res.status(200).json({data: user.profile});
   });
 };
 
@@ -89,7 +89,7 @@ exports.me = function (req, res, next) {
   }, '-salt -hashedPassword', function(err, user) {
     if (err) return next(err);
     if (!user) return res.status(401).json({message: 'Either you were logged out, or server restarted'});
-    res.status(200).json(user);
+    res.status(200).json({data: user});
   });
 };
 
@@ -99,7 +99,7 @@ exports.me = function (req, res, next) {
 exports.roles = function (req, res, next) {
   var userRoles = config.userRoles;
   if (userRoles.length > 0) {
-    return res.status(200).json({roles: userRoles});
+    return res.status(200).json({data: userRoles});
   } else {
     return res.status(404).json({message: 'No user roles were found...'});
   }
@@ -119,7 +119,7 @@ exports.update = function (req, res, next) {
     }
     user.save(function(err) {
       if (err) return validationError(res, err);
-      res.status(200).json({message: 'User was successfully updated!', user: user.profile});
+      res.status(200).json({message: 'User was successfully updated!', data: user.profile});
     });
   });
 };

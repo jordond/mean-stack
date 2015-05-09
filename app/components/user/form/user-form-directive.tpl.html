@@ -50,6 +50,7 @@
          ng-show="existingUser"
          user-form-edit
          value="user.email"
+         original="{{ user.email }}"
          unlocked="emailUnlocked"></div>
   </div>
 
@@ -71,6 +72,7 @@
          ng-show="existingUser && vm.isAdmin"
          user-form-edit
          value="user.role"
+         original="admin"
          unlocked="roleUnlocked"></div>
   </div>
 

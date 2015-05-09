@@ -19,12 +19,13 @@
       restrict: 'EA',
       scope: {
         value: '=',
+        original: '@',
         unlocked: '='
       },
-      templateUrl: 'components/user/user-form-edit-directive.tpl.html',
+      templateUrl: 'components/user/form/user-form-edit-directive.tpl.html',
       replace: false,
       link: function (scope, element, attrs) {
-        var originalValue = scope.value;
+        var original = angular.copy(scope.original);
 
         scope.unlocked = !attrs.hasOwnProperty('unlocked');
 
@@ -32,7 +33,7 @@
 
         function clicked() {
           scope.unlocked = !scope.unlocked;
-          scope.value = originalValue;
+          scope.value = original;
         }
       }
     };

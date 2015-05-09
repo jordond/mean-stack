@@ -88,8 +88,13 @@
     function update(user) {
       return User.update({id: user._id}, user)
         .$promise
-        .then(success)
+        .then(updateSuccess)
         .catch(updateFailed);
+
+      function updateSuccess(response) {
+        logger.success(response.message, '', 'Update Succesful');
+        return response.data;
+      }
 
       function updateFailed(error) {
         failed(error, 'Update failed');
@@ -106,7 +111,7 @@
      * @return {Object}          Response data
      */
     function success(response) {
-      return response;
+      return response.data;
     }
 
     /**

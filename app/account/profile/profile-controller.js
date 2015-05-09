@@ -12,30 +12,37 @@
     .module('account')
     .controller('ProfileCtrl', ProfileCtrl);
 
-  function ProfileCtrl(_, Auth, UserData) {
+  function ProfileCtrl($state, _, Auth, UserData) {
     var vm = this;
+    vm.user = {};
+    vm.copy = {};
 
-    vm.user = Auth.getCurrentUser();
-    vm.userCopy = angular.copy(vm.user);
+    activate();
 
-    function submit(form) {
+    function activate() {
+      return Auth.getCurrentUser()
+        .then(function (user) {
+          vm.user = user;
+          vm.copy = angular.copy(user);
+        });
+    }
+
+    function submit() {
       return updateUser(vm.user)
         .then(function () {
-          vm.userCopy = angular.copy(vm.user);
-          form.$setPristine();
+          Auth.getSelf()
+            .then(function () {
+              $state.reload();
+            });
         });
     }
 
     function updateUser(user) {
-      return UserData
-        .update(user)
-          .then(function (data) {
-            return data;
-          });
+      return UserData.update(user);
     }
 
     function reset(form) {
-      vm.user = angular.copy(vm.userCopy);
+      vm.user = angular.copy(vm.copy);
       form.$setPristine();
     }
 

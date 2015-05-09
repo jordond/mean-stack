@@ -130,7 +130,6 @@
       }
 
       function refreshFailed(error) {
-        logger.error(error.data.message, error, 'Refreshing token failed');
         self.deactivate();
         return $q.reject(error.data.message);
       }

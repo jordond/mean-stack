@@ -20,15 +20,29 @@
       scope: {
         user: '='
       },
-      templateUrl: 'components/user/user-form-directive.tpl.html',
+      templateUrl: 'components/user/form/user-form-directive.tpl.html',
       replace: false,
       controllerAs: 'vm',
-      controller: function ($scope, Auth, toastr) {
-        var vm = this;
+      controller: function ($scope, Auth, UserData, toastr) {
+        var vm = this
+          , role = $scope.user.role;
+        vm.token = '';
+        vm.roles = [];
+        vm.isAdmin = false;
 
-        vm.token = Auth.getToken();
-        vm.roles = Auth.getRoles();
-        vm.isAdmin = Auth.isAdmin;
+        activate();
+
+        function activate() {
+          vm.token = Auth.getToken();
+          vm.isAdmin = Auth.isAdmin();
+
+          $scope.user.role = '';
+          UserData.roles()
+            .then(function (roles) {
+              vm.roles = roles;
+              $scope.user.role = role;
+            });
+        }
 
         function showToken() {
           toastr.info(vm.token, 'Your Full Token', {

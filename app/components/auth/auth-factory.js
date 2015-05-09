@@ -22,6 +22,7 @@
           getSelf        : getSelf,
           getCurrentUser : getCurrentUser,
           getToken       : getToken,
+          setUser        : setCurrentUser,
           isAdmin        : isAdmin,
           isLoggedIn     : isLoggedIn,
           isLoggedInAsync: isLoggedInAsync
@@ -84,12 +85,12 @@
       return currentUser;
 
       function success(response) {
-        currentUser = response;
-        return response;
+        currentUser = response.data;
+        return response.data;
       }
 
       function failed(error) {
-        logger.error(error.data.message, error);
+        logger.error(error.data, error);
         service.logout();
         return $q.reject(error.data.message);
       }
@@ -98,14 +99,6 @@
     /**
      * Synchronous Getters
      */
-
-    /**
-     * Get the currently logged in user
-     * @return {object} Logged in use
-     */
-    function getCurrentUser() {
-      return currentUser;
-    }
 
     function getToken() {
       return Token.get();
@@ -120,8 +113,28 @@
     }
 
     /**
+     * Synchronous Setters
+     */
+
+    /**
+     * Update the current user
+     * @param {Object} user new user object
+     */
+    function setCurrentUser(user) {
+      currentUser = user;
+    }
+
+    /**
      * Async Getters
      */
+
+    /**
+     * Get the currently logged in user
+     * @return {object} Logged in user
+     */
+    function getCurrentUser() {
+      return $q.when(currentUser);
+    }
 
     /**
      * Creates a promise out of the currentUser object

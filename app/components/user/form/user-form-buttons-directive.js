@@ -23,7 +23,7 @@
         submit: '=',
         cancel: '='
       },
-      templateUrl: 'components/user/user-form-buttons-directive.tpl.html',
+      templateUrl: 'components/user/form/user-form-buttons-directive.tpl.html',
       replace: false,
       controllerAs: 'vm',
       controller: function () {
