@@ -27,13 +27,6 @@
           isLoggedInAsync: isLoggedInAsync
         };
 
-    Token.init()
-      .then(function () {
-        if (Token.has()) {
-          currentUser = service.getSelf();
-        }
-      });
-
     return service;
 
     /**
@@ -55,6 +48,7 @@
 
       function loginSuccess(response) {
         Token.store(response.data.token);
+        Token.activate();
         currentUser = service.getSelf();
         $location.path('/');
         return response.data.token;
@@ -72,6 +66,7 @@
      */
     function logout() {
       Token.remove();
+      Token.deactivate();
       currentUser = {};
     }
 
@@ -81,10 +76,12 @@
      * @return {String} Error message
      */
     function getSelf() {
-      return User.me()
+      currentUser = User.me()
         .$promise
         .then(success)
         .catch(failed);
+
+      return currentUser;
 
       function success(response) {
         currentUser = response;
