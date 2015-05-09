@@ -12,24 +12,26 @@
     .module('account')
     .controller('ProfileCtrl', ProfileCtrl);
 
-  function ProfileCtrl(_, Auth, UserService) {
+  function ProfileCtrl(_, Auth, UserData) {
     var vm = this;
 
     vm.user = Auth.getCurrentUser();
     vm.userCopy = angular.copy(vm.user);
 
     function submit(form) {
-      return updateUser(vm.user).then(function () {
-        vm.userCopy = angular.copy(vm.user);
-        form.$setPristine();
-      });
+      return updateUser(vm.user)
+        .then(function () {
+          vm.userCopy = angular.copy(vm.user);
+          form.$setPristine();
+        });
     }
 
     function updateUser(user) {
-      return UserService.update(user)
-        .then(function (data) {
-          return data;
-        });
+      return UserData
+        .update(user)
+          .then(function (data) {
+            return data;
+          });
     }
 
     function reset(form) {

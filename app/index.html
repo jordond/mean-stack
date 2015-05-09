@@ -12,7 +12,7 @@
     <!-- inject:css -->
     <!-- endinject -->
   </head>
-  <body get-current-state ng-class="currentState">
+  <body is-logged-in ng-class="{'login': !loggedIn}">
 
       <div data-ui-view>
 

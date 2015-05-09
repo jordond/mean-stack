@@ -59,10 +59,6 @@
     "guard-for-in": [2, true],
     "handle-callback-err": [2, true],
     "indent": [2, 2, {"indentSwitchCase": true}],
-    "key-spacing": [2, {
-      "afterColon": true,
-      "beforeColon": false
-    }],
     "max-nested-callbacks": [2, 5],
     "new-cap": [2, {
       "capIsNew": true,
@@ -163,6 +159,7 @@
         "xxx"
       ]
     }],
+    "key-spacing": [0],
     "no-with": [2, true],
     "no-wrap-func": [2, true],
     "one-var": [2, true],

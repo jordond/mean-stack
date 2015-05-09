@@ -4,7 +4,7 @@
       <h1>Sign In</h1>
     </div>
     <div class="login-body">
-      <form class="form" name="loginForm" ng-submit="vm.login(loginForm)" novalidate>
+      <form class="form" name="loginForm" ng-submit="vm.tryLogin(loginForm)" novalidate>
         <div class="form-group"
              ng-class="{'has-error': loginForm.email.$invalid && loginForm.email.$dirty,
                         'has-success': loginForm.email.$valid}">

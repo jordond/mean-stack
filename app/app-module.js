@@ -30,16 +30,25 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, Auth, JsonService) {
+  function run($rootScope, $state, Auth, Token, JsonService) {
+    Token.init()
+      .then(function () {
+        if (Token.has()) {
+          Auth.getSelf();
+          Token.activate();
+        }
+      });
+
     JsonService.get();
 
     $rootScope.$on('$stateChangeStart', function (event, next) {
-      Auth.isLoggedInAsync(function (loggedIn) {
-        if (next.restricted && !loggedIn) {
-          event.preventDefault();
-          $state.go('login');
-        }
-      });
+      Auth.isLoggedInAsync()
+        .then(function (loggedIn) {
+          if (next.restricted && !loggedIn) {
+            event.preventDefault();
+            $state.go('login');
+          }
+        });
       $rootScope.$broadcast('stateChanged', next.name);
     });
   }

@@ -9,7 +9,6 @@
   angular
     .module('components', [
       'underscore',
-      'btford.socket-io',
-      'account'
+      'btford.socket-io'
     ]);
 }());
