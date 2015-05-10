@@ -98,6 +98,7 @@
 
       function updateFailed(error) {
         failed(error, 'Update failed');
+        return $q.reject(error.data);
       }
     }
 
@@ -122,7 +123,7 @@
      */
     function failed(error, message) {
       logger.error(error.data.message, error, message);
-      return $q.reject(error.data.message);
+      return $q.reject(error.data);
     }
   }
 }());

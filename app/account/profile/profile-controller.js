@@ -31,14 +31,19 @@
       return updateUser(vm.user)
         .then(function () {
           Auth.getSelf()
-            .then(function () {
-              $state.reload();
+            .then(function (success) {
+              if (success) {
+                $state.reload();
+              }
             });
         });
     }
 
     function updateUser(user) {
-      return UserData.update(user);
+      return UserData.update(user)
+        .catch(function () {
+          return false;
+        })
     }
 
     function reset(form) {
