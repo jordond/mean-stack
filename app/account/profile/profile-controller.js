@@ -27,15 +27,19 @@
         });
     }
 
-    function submit() {
+    function submit(form) {
       return updateUser(vm.user)
-        .then(function () {
-          Auth.getSelf()
-            .then(function (success) {
-              if (success) {
-                $state.reload();
-              }
-            });
+        .then(function (updated) {
+          if (updated) {
+            Auth.getSelf()
+              .then(function (success) {
+                if (success) {
+                  $state.reload();
+                }
+              });
+          } else {
+            form.$invalid = true;
+          }
         });
     }
 
@@ -43,7 +47,7 @@
       return UserData.update(user)
         .catch(function () {
           return false;
-        })
+        });
     }
 
     function reset(form) {

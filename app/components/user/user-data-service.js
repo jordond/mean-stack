@@ -97,7 +97,14 @@
       }
 
       function updateFailed(error) {
-        failed(error, 'Update failed');
+        var errors = error.data.errors
+          , err;
+        for (err in errors) {
+          if ({}.hasOwnProperty.call(errors, err)) {
+            err = errors[err];
+            logger.warning(err.message, err, error.message);
+          }
+        }
         return $q.reject(error.data);
       }
     }

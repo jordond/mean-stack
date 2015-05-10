@@ -112,6 +112,8 @@ exports.roles = function (req, res, next) {
 exports.update = function (req, res, next) {
   var userId = req.params.id;
   User.findById(userId, function (err, user) {
+    if (err) return next(err);
+    if (!user) return res.status(404).json({message: 'Specified user not found'});
     user.username = req.body.username;
     user.email = req.body.email;
     if (auth.checkIsAdmin(req.user.role)) {
