@@ -27,7 +27,7 @@
     function activate() {
       return Auth.getCurrentUser()
         .then(function (user) {
-          vm.user = user;
+          vm.user = angular.copy(user);
           vm.copy = angular.copy(user);
         });
     }

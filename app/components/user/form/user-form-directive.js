@@ -18,7 +18,8 @@
     return {
       restrict: 'EA',
       scope: {
-        user: '='
+        user: '=',
+        form: '='
       },
       templateUrl: 'components/user/form/user-form-directive.tpl.html',
       replace: false,
