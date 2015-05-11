@@ -12,9 +12,9 @@
     .module('components')
     .factory('Auth', Auth);
 
-  Auth.$inject = ['$http', '$location', '$q', 'User', 'Token', 'logger'];
+  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'Token', 'logger'];
 
-  function Auth($http, $location, $q, User, Token, logger) {
+  function Auth($http, $location, $q, $state, User, Token, logger) {
     var currentUser = {}
       , service = {
           login          : login,
@@ -69,6 +69,7 @@
       Token.remove();
       Token.deactivate();
       currentUser = {};
+      $state.go('login');
     }
 
     /**
@@ -91,7 +92,6 @@
 
       function failed(error) {
         logger.error(error.data, error);
-        service.logout();
         return $q.reject(error.data.message);
       }
     }

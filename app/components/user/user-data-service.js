@@ -15,12 +15,13 @@
   UserData.$inject = ['$q', 'User', 'logger'];
 
   function UserData($q, User, logger) {
-    var service = {
-      create        : createUser,
-      roles         : getUserRoles,
-      changePassword: changePassword,
-      update        : update
-    };
+    var roles = []
+      , service = {
+          create        : createUser,
+          roles         : getUserRoles,
+          changePassword: changePassword,
+          update        : update
+        };
 
     return service;
 
@@ -49,10 +50,18 @@
      * @return {Array} List of all the accepted roles
      */
     function getUserRoles() {
+      if (roles.length > 0) {
+        return $q.when(roles);
+      }
       return User.getRoles()
         .$promise
-        .then(success)
+        .then(userRolesSuccess)
         .catch(userRolesFailed);
+
+      function userRolesSuccess(response) {
+        roles = response.data;
+        return roles;
+      }
 
       function userRolesFailed(error) {
         failed(error, 'Couldn\'t get roles');
