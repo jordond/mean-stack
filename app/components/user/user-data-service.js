@@ -96,6 +96,12 @@
         return response.data;
       }
 
+      /**
+       * Iterate through all of the error properties and
+       * create a warning toast about it
+       * @param  {Object} error Error object returned from server
+       * @return {Object}       Rejected promise containing error data
+       */
       function updateFailed(error) {
         var errors = error.data.errors
           , err;
