@@ -15,12 +15,13 @@
   UserData.$inject = ['$q', 'User', 'logger'];
 
   function UserData($q, User, logger) {
-    var service = {
-      create        : createUser,
-      roles         : getUserRoles,
-      changePassword: changePassword,
-      update        : update
-    };
+    var roles = []
+      , service = {
+          create        : createUser,
+          roles         : getUserRoles,
+          changePassword: changePassword,
+          update        : update
+        };
 
     return service;
 
@@ -49,10 +50,18 @@
      * @return {Array} List of all the accepted roles
      */
     function getUserRoles() {
+      if (roles.length > 0) {
+        return $q.when(roles);
+      }
       return User.getRoles()
         .$promise
-        .then(success)
+        .then(userRolesSuccess)
         .catch(userRolesFailed);
+
+      function userRolesSuccess(response) {
+        roles = response.data;
+        return roles;
+      }
 
       function userRolesFailed(error) {
         failed(error, 'Couldn\'t get roles');
@@ -96,8 +105,21 @@
         return response.data;
       }
 
+      /**
+       * Iterate through all of the error properties and
+       * create a warning toast about it
+       * @param  {Object} error Error object returned from server
+       * @return {Object}       Rejected promise containing error data
+       */
       function updateFailed(error) {
-        failed(error, 'Update failed');
+        var errors = error.data.errors
+          , err;
+        for (err in errors) {
+          if ({}.hasOwnProperty.call(errors, err)) {
+            err = errors[err];
+            logger.warning(err.message, err, error.message);
+          }
+        }
         return $q.reject(error.data);
       }
     }

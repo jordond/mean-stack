@@ -13,8 +13,8 @@
     .factory('authInterceptor', authInterceptor);
 
   function authInterceptor($rootScope, $q, $injector) {
-    var $state = {}
-      , Token = {}
+    var Token = {}
+      , Auth = {}
       , service = {
           request: request,
           responseError: responseError
@@ -32,11 +32,9 @@
     }
 
     function responseError(response) {
-      Token = $injector.get('Token');
-      $state = $injector.get('$state');
+      Auth = $injector.get('Auth');
       if (response.status === 401) {
-        $state.go('login');
-        Token.remove();
+        Auth.logout();
       } else if (response.status === 0) {
         // implement error state if server dies
         // $state.go('error');
