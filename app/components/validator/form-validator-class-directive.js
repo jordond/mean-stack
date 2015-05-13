@@ -22,7 +22,6 @@
       },
       replace: false,
       link: function (scope, element) {
-        var that = scope;
         scope.$watch('control.$viewValue', function () {
           updateClass();
         });

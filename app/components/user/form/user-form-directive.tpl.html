@@ -8,6 +8,7 @@
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-user"></i></span>
         <input type="text"
+               id="username"
                name="username"
                placeholder="Enter username"
                class="form-control"
@@ -28,6 +29,7 @@
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-comment"></i></span>
         <input type="text"
+               id="name"
                name="name"
                placeholder="Enter name or comment"
                class="form-control"
@@ -48,6 +50,7 @@
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
         <input type="email"
+               id="email"
                name="email"
                placeholder="Enter your email"
                class="form-control"
@@ -74,6 +77,7 @@
       <div class="input-group col-sm-6">
         <span class="input-group-addon"><i class="fa fa-key"></i></span>
         <select name="role"
+                id="role"
                 class="form-control"
                 ng-model="user.role"
                 ng-options="role as role for role in vm.roles"
@@ -93,11 +97,12 @@
   </div>
 
   <div class="form-group" ng-if="vm.isAdmin && existingUser">
-    <label for="email" class="control-label col-sm-2">Token </label>
+    <label for="token" class="control-label col-sm-2">Token </label>
     <div class="col-sm-8">
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
         <input type="text"
+               id="token"
                class="form-control"
                ng-model="vm.token"
                disabled>
