@@ -33,7 +33,7 @@
       compile: function (element, attrs) {
         if (!attrs.action) {
           attrs.action = 'save';
-          console.error('No action provided, defaulting to "save".');
+          console.info('No action provided, defaulting to "save".');
         }
       }
     };
