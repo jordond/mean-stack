@@ -25,15 +25,9 @@
       },
       templateUrl: 'components/user/form/user-form-buttons-directive.tpl.html',
       replace: false,
-      controllerAs: 'vm',
-      controller: function () {
-        var vm = this;
-        vm.name = 'test';
-      },
       compile: function (element, attrs) {
         if (!attrs.action) {
           attrs.action = 'save';
-          console.info('No action provided, defaulting to "save".');
         }
       }
     };

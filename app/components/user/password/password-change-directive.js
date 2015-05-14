@@ -22,13 +22,20 @@
       templateUrl: 'components/user/password/password-change-directive.tpl.html',
       replace: false,
       controllerAs: 'vm',
-      controller: function () {
+      controller: function ($modal) {
         var vm = this;
 
-        function submit() {
-          console.log('submit');
+        init();
+
+        function init() {
+          vm.password = {};
         }
 
+        function submit() {
+          console.log(vm.password);
+        }
+
+        vm.init = init;
         vm.submit = submit;
       },
       link: function (scope, element, attrs) {
