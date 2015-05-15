@@ -25,9 +25,12 @@
         scope.$watch('control.$viewValue', function () {
           updateClass();
         });
+        scope.$watch('control.$invalid', function () {
+          updateClass();
+        });
 
         function updateClass() {
-          if (scope.control.$dirty) {
+          if (angular.isDefined(scope.control) && scope.control.$dirty) {
             if (scope.control.$invalid) {
               element.removeClass('has-success').addClass('has-error');
             } else if (scope.control.$valid) {

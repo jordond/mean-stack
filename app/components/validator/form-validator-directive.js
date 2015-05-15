@@ -21,16 +21,7 @@
         control: '='
       },
       templateUrl: 'components/validator/form-validator-directive.tpl.html',
-      replace: false,
-      controllerAs: 'vm',
-      controller: function () {
-        var vm = this;
-        vm.name = 'formValidator';
-      },
-      link: function (scope, element, attrs) {
-        /*jshint unused:false */
-        /*eslint "no-unused-vars": [2, {"args": "none"}]*/
-      }
+      replace: false
     };
   }
 }());

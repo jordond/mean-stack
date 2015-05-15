@@ -10,9 +10,7 @@
     {{ form.$invalid ? 'invalid' : action | capitalize }}
   </div>
   <div class="btn btn-default btn-cancel"
-       ng-disabled="form.$pristine"
        ng-click="cancel(form)">
-    <i class="fa fa-{{ vm.cancelIcon }}"></i>
     {{ action === 'update' ? 'reset' : 'cancel' | capitalize }}
   </div>
 </div>

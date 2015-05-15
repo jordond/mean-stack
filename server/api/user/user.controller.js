@@ -73,7 +73,7 @@ exports.changePassword = function (req, res, next) {
         res.status(200).json({message: 'Password successfully updated!'});
       });
     } else {
-      res.sendStatus(403);
+      res.status(403).json({message: 'Old password was incorrect'});
     }
   });
 };
