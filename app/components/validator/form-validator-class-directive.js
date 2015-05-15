@@ -28,6 +28,11 @@
         scope.$watch('control.$invalid', function () {
           updateClass();
         });
+        scope.$watch('control.$pristine', function (pristine) {
+          if (pristine) {
+            reset();
+          }
+        });
 
         function updateClass() {
           if (angular.isDefined(scope.control) && scope.control.$dirty) {
@@ -36,9 +41,13 @@
             } else if (scope.control.$valid) {
               element.removeClass('has-error').addClass('has-success');
             } else {
-              element.removeClass('has-success has-error');
+              reset();
             }
           }
+        }
+
+        function reset() {
+          element.removeClass('has-success has-error');
         }
       }
     };

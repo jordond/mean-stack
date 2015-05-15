@@ -21,7 +21,11 @@
       scope: {
         id: '@'
       },
-      templateUrl: 'components/user/password/password-change-directive.tpl.html',
+      template: [
+        '<div class="btn btn-info" ng-click="vm.init()">',
+          'Change Password',
+        '</div>'
+      ].join(''),
       replace: false,
       controllerAs: 'vm',
       controller: function ($scope, $modal, Auth, UserData) {
