@@ -16,23 +16,29 @@
     var vm = this
       , user = {};
 
-    function login(form) {
+    function tryLogin(form) {
       if (form.$valid) {
-        Auth.login({
-          email: user.email,
-          password: user.password
-        })
-        .then(function () {
-          $location.path('/');
-        })
-        .catch(function () {
-          vm.user = {};
-          form.$setPristine();
-        });
+        return login(vm.user)
+          .then(function (success) {
+            if (!success) {
+              vm.user = {};
+              form.$setPristine();
+            }
+          });
       }
     }
 
+    function login(userDetails) {
+      return Auth.login(userDetails)
+        .then(function (token) {
+          return token;
+        })
+        .catch(function () {
+          return false;
+        });
+    }
+
     vm.user = user;
-    vm.login = login;
+    vm.tryLogin = tryLogin;
   }
 }());

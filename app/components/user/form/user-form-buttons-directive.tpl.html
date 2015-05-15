@@ -1,0 +1,16 @@
+<div class="user-form-buttons">
+  <div class="btn btn-action"
+       ng-class="{'btn-warning': form.$invalid,
+                  'btn-success': form.$valid}"
+       ng-disabled="form.$submitted || form.$invalid || form.$pristine"
+       ng-click="submit(form)">
+    <i class="fa"
+       ng-class="{'fa-check': form.$valid && form.$dirty,
+                  'fa-times': form.$invalid}"></i>
+    {{ form.$invalid ? 'invalid' : action | capitalize }}
+  </div>
+  <div class="btn btn-default btn-cancel"
+       ng-click="cancel(form)">
+    {{ action === 'update' ? 'reset' : 'cancel' | capitalize }}
+  </div>
+</div>

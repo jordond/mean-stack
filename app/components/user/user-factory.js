@@ -23,11 +23,20 @@
           controller: 'password'
         }
       },
-      get: {
+      me: {
         method: 'GET',
         params: {
           id: 'me'
         }
+      },
+      getRoles: {
+        method: 'GET',
+        params: {
+          id: 'roles'
+        }
+      },
+      update: {
+        method: 'PUT'
       }
     });
   }

@@ -12,9 +12,7 @@
     .module('components')
     .service('socket', socketConfig);
 
-  /*jshint undef:false */
-  /*eslint-disable*/
-  function socketConfig(_, socketFactory, Auth) {
+  function socketConfig(_, socketFactory, Auth, logger, io) {
     var ioSocket = io('', {
       query: 'token=' + Auth.getToken(),
       path: '/socket.io-client'
@@ -46,7 +44,14 @@
         socket.on(modelName + ':remove', function (item) {
           var event = 'deleted';
           _.remove(array, {_id: item._id});
+          console.log('deleted');
           cb(event, item, array);
+        });
+
+        socket.on('error', function (error) {
+          if (error.type === 'UnauthorizedError' || error.code === 'invalid_token') {
+            logger.error('socketio token error', error);
+          }
         });
       },
 
@@ -56,6 +61,4 @@
       }
     };
   }
-  /*jshint undef:true */
-  /*eslint-enable*/
 }());

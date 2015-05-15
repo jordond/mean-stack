@@ -6,6 +6,7 @@ var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
+var moment = require('moment');
 var User = require('../api/user/user.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 
@@ -40,6 +41,33 @@ function isAuthenticated() {
         req.user = user;
         next();
       });
+    });
+}
+
+/**
+ * Check to see if the token needs to be refreshed.
+ * The token expires in 7 days, so if it less than a day
+ * before it expires, then issue a new one.
+ * If a user doesn't use the app or login for 7 days, their
+ * token will expire
+ * @return {String} Either their current token or a new one
+ */
+function refreshToken() {
+  return compose()
+    .use(isAuthenticated())
+    .use(function (req, res, next) {
+      var token = getToken(req.headers.authorization),
+        decoded,
+        now = moment().unix().valueOf();
+
+      if (token) {
+        decoded = jwt.decode(token);
+        if ((decoded.exp - now) < (24 * 60 * 60)) {
+          token = signToken(req.user.id);
+        }
+        return res.status(200).json({token: token});
+      }
+      return res.status(401).json({message: 'Token error'});
     });
 }
 
@@ -104,11 +132,19 @@ function compareRole(roleRequired, roleToCheck) {
   }
 }
 
+function getToken(header) {
+  var token = '';
+  if (header.indexOf('Bearer ') !== -1) {
+    token = header.split(' ')[1];
+  }
+  return token;
+}
+
 /**
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*5 });
+  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*168 });
 }
 
 /**
@@ -122,6 +158,7 @@ function setTokenCookie(req, res) {
 }
 
 exports.isAuthenticated = isAuthenticated;
+exports.refreshToken = refreshToken;
 exports.hasRole = hasRole;
 exports.isMeOrHasRole = isMeOrHasRole;
 

@@ -17,9 +17,10 @@
 
     vm.awesomeThings = [];
 
-    Auth.isLoggedInAsync(function (loggedIn) {
-      vm.loggedIn = loggedIn;
-    });
+    Auth.isLoggedInAsync()
+      .then(function (loggedIn) {
+        vm.loggedIn = loggedIn;
+      });
 
     $http.get('/api/things').success(function (awesomeThings) {
       vm.awesomeThings = awesomeThings;
