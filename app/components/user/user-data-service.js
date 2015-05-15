@@ -76,13 +76,23 @@
      * @return {promise}            Success or failure
      */
     function changePassword(id, oldPassword, newPassword) {
+      if (angular.equals(oldPassword, newPassword)) {
+        logger.info('Passwords were the same!', '', 'Update Failed');
+        return $q.when(false);
+      }
+
       return User.changePassword({id: id}, {
           oldPassword: oldPassword,
           newPassword: newPassword
         })
         .$promise
-        .then(success)
+        .then(changePasswordSuccess)
         .catch(changePasswordFailed);
+
+      function changePasswordSuccess(response) {
+        logger.success(response.message);
+        return response;
+      }
 
       function changePasswordFailed(error) {
         failed(error, 'Couldn\' change password');
@@ -134,6 +144,7 @@
      * @return {Object}          Response data
      */
     function success(response) {
+      logger.success(response.message);
       return response.data;
     }
 
@@ -145,7 +156,7 @@
      */
     function failed(error, message) {
       logger.error(error.data.message, error, message);
-      return $q.reject(error.data);
+      return $q.reject(false);
     }
   }
 }());

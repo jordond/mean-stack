@@ -27,7 +27,7 @@
         });
         scope.$watch('control.$invalid', function () {
           updateClass();
-        })
+        });
 
         function updateClass() {
           if (angular.isDefined(scope.control) && scope.control.$dirty) {
