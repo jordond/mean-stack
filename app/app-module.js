@@ -18,7 +18,8 @@
       'toastr',
       'components',
       'dashboard',
-      'account'
+      'account',
+      'admin'
     ]);
 
   angular
