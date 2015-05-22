@@ -1,8 +1,8 @@
-<div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+<div class="col-xs-12 col-md-8 col-md-offset-2">
   <div class="panel panel-success">
     <div class="panel-heading">
       <h3 class="panel-title">
-        Create a New User!
+        <i class="fa fa-plus-square"></i> Create a New User!
       </h3>
     </div>
     <div class="panel-body">
@@ -11,7 +11,8 @@
             ng-submit="vm.submit(userForm)"
             novalidate>
         <div user-form
-             form="userForm"></div>
+             form="userForm"
+             user="vm.user"></div>
       </form>
     </div>
     <div class="panel-footer clearfix">

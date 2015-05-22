@@ -15,7 +15,7 @@
         restricted: true
       })
       .state('admin.new', {
-        url: '/admin/new',
+        url: '/new',
         templateUrl: 'admin/newUser/new-user.tpl.html',
         controller: 'NewUserCtrl',
         controllerAs: 'vm',

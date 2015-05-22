@@ -12,7 +12,7 @@
     .module('admin')
     .controller('NewUserCtrl', NewUserCtrl);
 
-  function NewUserCtrl(UserData) {
+  function NewUserCtrl($state, UserData) {
     var vm = this;
     vm.user = {};
 
@@ -28,6 +28,7 @@
           if (created) {
             vm.user = {};
             form.$setPristine();
+            $state.go('admin');
           } else {
             form.$invalid = true;
           }
@@ -55,6 +56,7 @@
     function reset(form) {
       vm.user = {};
       form.$setPristine();
+      $state.go('admin');
     }
 
     vm.submit = submit;
