@@ -30,7 +30,7 @@ exports.create = function (req, res, next) {
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
     res.status(200).json({
-      message: 'User ' + user.username + ' was successfully created!',
+      message: user.username + ' was successfully created!',
       data: user.profile
     });
   });

@@ -1,16 +1,17 @@
 <div navbar></div>
 <div class="container admin-container">
-  <div class="panel-wrap col-sm-12">
-    <div class="panel panel-info">
+  <div class="panel-wrap col-sm-10 col-sm-offset-1">
+    <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title">
           <i class="fa fa-users"></i> All Users
+          <span class="badge">{{ vm.users.length }}</span>
         </h3>
       </div>
       <div class="panel-body">
         <div class="row">
           <div class="col-sm-12">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates iusto, accusamus sit odit soluta amet quod sint a nihil aperiam minus quaerat, est iure ad nam facilis voluptatibus voluptas inventore.</p>
+            <users-table users="vm.users"></users-table>
           </div>
         </div>
         <div class="row">

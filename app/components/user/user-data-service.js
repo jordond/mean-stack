@@ -12,9 +12,9 @@
     .module('components')
     .factory('UserData', UserData);
 
-  UserData.$inject = ['$q', 'User', 'logger'];
+  UserData.$inject = ['$q', 'User', 'logger', '_'];
 
-  function UserData($q, User, logger) {
+  function UserData($q, User, logger, _) {
     var roles = []
       , users
       , service = {
@@ -57,7 +57,7 @@
      * @return {Object}    Found user
      */
     function findUser(id) {
-      if (angular.equals(id, '') || angular.isUnDefined(id)) {
+      if (angular.equals(id, '') || angular.isUndefined(id)) {
         logger.warning('No user ID given');
         return $q.when(false);
       }
@@ -89,7 +89,8 @@
 
       function createSuccess(response) {
         users.push(response.data);
-        success(response);
+        logger.success(response.message, '', 'User Created');
+        return response.data;
       }
 
       function createFailed(error) {
@@ -163,7 +164,7 @@
         .catch(updateFailed);
 
       function updateSuccess(response) {
-        service.queryAllUsers();
+        updateUsersArray(response.data);
         logger.success(response.message, '', 'Update Succesful');
         return response.data;
       }
@@ -175,15 +176,21 @@
        * @return {Object}       Rejected promise containing error data
        */
       function updateFailed(error) {
-        var errors = error.data.errors
+        var errors = []
           , err;
-        for (err in errors) {
-          if ({}.hasOwnProperty.call(errors, err)) {
-            err = errors[err];
-            logger.warning(err.message, err, error.message);
+
+        if (error.hasOwnProperty('data')) {
+          errors = error.data.errors;
+          for (err in errors) {
+            if ({}.hasOwnProperty.call(errors, err)) {
+              err = errors[err];
+              logger.warning(err.message, err, error.message);
+            }
           }
+        } else {
+          failed(error, 'Uncaught Exception on update');
         }
-        return $q.reject(error.data);
+        return $q.reject(error);
       }
     }
 
@@ -200,18 +207,8 @@
     }
 
     /**
-     * Private Response functions
+     * Private functions
      */
-
-    /**
-     * Reusable success function for a successful Promise
-     * @param  {Object} response Response from the server
-     * @return {Object}          Response data
-     */
-    function success(response) {
-      logger.success(response.message);
-      return response.data;
-    }
 
     /**
      * Reusable rejection function for a failed promise
@@ -223,6 +220,15 @@
       var errMsg = error.hasOwnProperty('data') ? error.data.message : '';
       logger.error(errMsg, error, message);
       return $q.reject(false);
+    }
+
+    function updateUsersArray(user) {
+      var oldUser = _.find(users, {_id: user._id})
+        , index = users.indexOf(oldUser);
+
+      if (oldUser) {
+        users.splice(index, 1, user);
+      }
     }
   }
 }());

@@ -34,10 +34,9 @@
      * @return {Promise}     Status of the call
      */
     function submit(form) {
-      return createUser(vm.user)
-        .then(function (created) {
-          if (created) {
-            vm.user = {};
+      return updateUser(vm.user)
+        .then(function (success) {
+          if (success) {
             form.$setPristine();
             $state.go('admin');
           } else {
@@ -47,14 +46,14 @@
     }
 
     /**
-     * Attempt to add the user to the database, if it fails
-     * return false
-     * @param  {Object} user To be added to database
-     * @return {Promise}     Success response from server
-     * @return {Boolean}     Failed to create
+     * Call the User Data service, and attempt to update the
+     * user with the new values.
+     * @param  {Object} user Updated user information
+     * @return {Promise}     handle success or failure
+     * @return {Boolean}     If update fails return false
      */
-    function createUser(user) {
-      return UserData.create(user)
+    function updateUser(user) {
+      return UserData.update(user)
         .catch(function () {
           return false;
         });

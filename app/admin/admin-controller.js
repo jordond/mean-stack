@@ -16,7 +16,6 @@
 
   function AdminCtrl(usersPrepService) {
     var vm = this;
-    vm.ctrlName = 'AdminCtrl';
-    vm.test = usersPrepService;
+    vm.users = usersPrepService;
   }
 }());

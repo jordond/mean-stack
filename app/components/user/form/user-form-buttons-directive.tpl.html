@@ -1,5 +1,5 @@
 <div class="user-form-buttons">
-  <div class="btn btn-action"
+  <div class="btn btn-action btn-sm"
        ng-class="{'btn-warning': form.$invalid,
                   'btn-success': form.$valid}"
        ng-disabled="form.$submitted || form.$invalid || form.$pristine"
@@ -9,7 +9,7 @@
                   'fa-times': form.$invalid}"></i>
     {{ form.$invalid ? 'invalid' : action | capitalize }}
   </div>
-  <div class="btn btn-default btn-cancel"
+  <div class="btn btn-default btn-cancel btn-sm"
        ng-click="cancel(form)">
     {{ action === 'update' ? 'reset' : 'cancel' | capitalize }}
   </div>
