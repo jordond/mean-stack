@@ -19,7 +19,8 @@
       restrict: 'EA',
       scope: {
         user: '=',
-        form: '='
+        form: '=',
+        existingUser: '@'
       },
       templateUrl: 'components/user/form/user-form-directive.tpl.html',
       replace: false,
@@ -61,9 +62,6 @@
         }
 
         vm.showToken = showToken;
-      },
-      link: function (scope, element, attrs) {
-        scope.existingUser = attrs.hasOwnProperty('existingUser');
       }
     };
   }

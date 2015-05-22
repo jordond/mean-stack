@@ -57,6 +57,11 @@
      * @return {Object}    Found user
      */
     function findUser(id) {
+      if (angular.equals(id, '') || angular.isUnDefined(id)) {
+        logger.warning('No user ID given');
+        return $q.when(false);
+      }
+
       return User.get({id: id})
         .$promise
         .then(findSuccess)

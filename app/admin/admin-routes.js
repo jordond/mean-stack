@@ -19,15 +19,31 @@
       })
       .state('admin.new', {
         url: '/new',
-        templateUrl: 'admin/newUser/new-user.tpl.html',
+        templateUrl: 'admin/user/user.tpl.html',
         controller: 'NewUserCtrl',
         controllerAs: 'vm',
         restricted: true
+      })
+      .state('admin.edit', {
+        url: '/edit/:userId',
+        templateUrl: 'admin/user/user.tpl.html',
+        controller: 'EditUserCtrl',
+        controllerAs: 'vm',
+        restricted: true,
+        resolve: {
+          editUserPrepService: editUserPrepService
+        }
       });
   }
 
   usersPrepService.$inject = ['UserData'];
   function usersPrepService(UserData) {
     return UserData.all();
+  }
+
+  editUserPrepService.$inject = ['$stateParams', 'UserData'];
+  function editUserPrepService($stateParams, UserData) {
+    var id = $stateParams.userId;
+    return UserData.find(id);
   }
 }());

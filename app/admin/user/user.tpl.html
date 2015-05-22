@@ -2,7 +2,7 @@
   <div class="panel panel-success">
     <div class="panel-heading">
       <h3 class="panel-title">
-        <i class="fa fa-plus-square"></i> Create a New User!
+        <i class="fa fa-plus-square"></i> {{ vm.title }}
       </h3>
     </div>
     <div class="panel-body">
@@ -12,7 +12,8 @@
             novalidate>
         <div user-form
              form="userForm"
-             user="vm.user"></div>
+             user="vm.user"
+             existing-user="{{ vm.isExisting }}"></div>
       </form>
     </div>
     <div class="panel-footer clearfix">

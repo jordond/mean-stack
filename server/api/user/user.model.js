@@ -17,7 +17,7 @@ var UserSchema = new Schema({
   hashedPassword: String,
   provider: String,
   salt: String,
-  lastLoggedIn: {
+  lastLogin: {
     type: Date,
     default: null
   }
@@ -42,10 +42,12 @@ UserSchema
   .virtual('profile')
   .get(function () {
     return {
+      'id': this._id,
       'name': this.name,
       'email': this.email,
       'username': this.username,
-      'role': this.role
+      'role': this.role,
+      'lastLogin': this.lastLogin
     };
   });
 

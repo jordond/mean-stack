@@ -29,7 +29,10 @@ exports.create = function (req, res, next) {
   newUser.provider = 'local';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
-    res.status(200).json({ message: 'User ' + user.username + ' was successfully created!', data: user });
+    res.status(200).json({
+      message: 'User ' + user.username + ' was successfully created!',
+      data: user.profile
+    });
   });
 };
 
