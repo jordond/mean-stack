@@ -12,7 +12,7 @@
     .module('account')
     .controller('ProfileCtrl', ProfileCtrl);
 
-  function ProfileCtrl($state, _, Auth, UserData) {
+  function ProfileCtrl($state, Auth, UserData) {
     var vm = this;
     vm.user = {};
     vm.copy = {};

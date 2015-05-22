@@ -37,7 +37,7 @@
           vm.token = Auth.getToken();
           vm.isAdmin = Auth.isAdmin();
 
-          if ($scope.user) {
+          if ($scope.user.role) {
             role = $scope.user.role;
             $scope.user.role = '';
           }
@@ -45,7 +45,7 @@
           UserData.roles()
             .then(function (roles) {
               vm.roles = roles;
-              if ($scope.user) {
+              if ($scope.user.role) {
                 $scope.user.role = role;
               }
             });
