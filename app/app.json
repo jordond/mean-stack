@@ -12,6 +12,10 @@
     {
       "title": "settings",
       "icon": "fa-cog"
+    },
+    {
+      "title": "admin",
+      "icon": "fa-lock"
     }
   ]
 }

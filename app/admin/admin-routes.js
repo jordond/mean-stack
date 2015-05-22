@@ -11,7 +11,22 @@
         url: '/admin',
         templateUrl: 'admin/admin.tpl.html',
         controller: 'AdminCtrl',
-        controllerAs: 'admin'
+        controllerAs: 'vm',
+        restricted: true
+      })
+      .state('admin.new', {
+        url: '/admin/new',
+        templateUrl: 'admin/newUser/new-user.tpl.html',
+        controller: 'NewUserCtrl',
+        controllerAs: 'vm',
+        restricted: true
       });
+      // .state('admin.edit', {
+      //   url: '/admin/edit',
+      //   templateUrl: 'admin/newUser/new-user.tpl.html',
+      //   controller: 'NewUserCtrl',
+      //   controllerAs: 'vm',
+      //   restricted: true
+      // });
   }
 }());

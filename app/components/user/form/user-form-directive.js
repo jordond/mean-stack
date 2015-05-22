@@ -26,7 +26,7 @@
       controllerAs: 'vm',
       controller: function ($scope, Auth, UserData, toastr) {
         var vm = this
-          , role = $scope.user.role;
+          , role;
         vm.token = '';
         vm.roles = [];
         vm.isAdmin = false;
@@ -37,11 +37,17 @@
           vm.token = Auth.getToken();
           vm.isAdmin = Auth.isAdmin();
 
-          $scope.user.role = '';
+          if ($scope.user) {
+            role = $scope.user.role;
+            $scope.user.role = '';
+          }
+
           UserData.roles()
             .then(function (roles) {
               vm.roles = roles;
-              $scope.user.role = role;
+              if ($scope.user) {
+                $scope.user.role = role;
+              }
             });
         }
 
