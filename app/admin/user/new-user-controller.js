@@ -15,6 +15,7 @@
   function NewUserCtrl($state, UserData) {
     var vm = this;
     vm.user = {};
+    vm.title = 'Create a new User';
 
     /**
      * Submit the form in an attempt to create a new user.

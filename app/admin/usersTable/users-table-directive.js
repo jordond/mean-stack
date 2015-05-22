@@ -15,20 +15,26 @@
     .directive('usersTable', usersTable);
 
   function usersTable() {
-    return {
+    var directive = {
       restrict: 'EA',
       scope: {},
       templateUrl: 'admin/usersTable/users-table-directive.tpl.html',
       replace: false,
-      controllerAs: 'vm',
-      controller: function () {
-        var vm = this;
-        vm.name = 'usersTable';
-      },
-      link: function (scope, element, attrs) {
-        /*jshint unused:false */
-        /*eslint "no-unused-vars": [2, {"args": "none"}]*/
-      }
+      link: linkFunct,
+      controller: UsersTableCtrl,
+      controllerAs: 'vm'
     };
+
+    return directive;
+
+    function UsersTableCtrl() {
+      var vm = this;
+      vm.name = 'usersTable';
+    }
+
+    function linkFunct(scope, element, attrs) {
+      /*jshint unused:false */
+      /*eslint "no-unused-vars": [2, {"args": "none"}]*/
+    }
   }
 }());
