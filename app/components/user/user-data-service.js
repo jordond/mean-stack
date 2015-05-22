@@ -16,11 +16,15 @@
 
   function UserData($q, User, logger) {
     var roles = []
+      , users
       , service = {
+          all           : queryAllUsers,
+          find          : findUser,
           create        : createUser,
-          roles         : getUserRoles,
           changePassword: changePassword,
-          update        : update
+          update        : update,
+          roles         : getUserRoles,
+          users         : getUsers
         };
 
     return service;
@@ -28,6 +32,44 @@
     /**
      * Public Methods
      */
+
+    function queryAllUsers() {
+      users = User.all()
+        .$promise
+        .then(getAllSuccess)
+        .catch(getAllFailed);
+
+      return users;
+
+      function getAllSuccess(response) {
+        users = response.data;
+        return response.data;
+      }
+
+      function getAllFailed(error) {
+        failed(error, 'Unable to fetch users');
+      }
+    }
+
+    /**
+     * Grab a single user from the database
+     * @param  {String} id primary key for user
+     * @return {Object}    Found user
+     */
+    function findUser(id) {
+      return User.get({id: id})
+        .$promise
+        .then(findSuccess)
+        .catch(findFailed);
+
+      function findSuccess(response) {
+        return response.data;
+      }
+
+      function findFailed(error) {
+        failed(error, 'Invalid user');
+      }
+    }
 
     /**
      * Create a new user
@@ -37,8 +79,13 @@
     function createUser(newUser) {
       return User.save(newUser)
         .$promise
-        .then(success)
+        .then(createSuccess)
         .catch(createFailed);
+
+      function createSuccess(response) {
+        users.push(response.data);
+        success(response);
+      }
 
       function createFailed(error) {
         failed(error, 'Failed to Create User');
@@ -111,6 +158,7 @@
         .catch(updateFailed);
 
       function updateSuccess(response) {
+        service.queryAllUsers();
         logger.success(response.message, '', 'Update Succesful');
         return response.data;
       }
@@ -135,6 +183,18 @@
     }
 
     /**
+     * Asynchronous Getters
+     */
+
+    /**
+     * Get all of the uses
+     * @return {Array} all users
+     */
+    function getUsers() {
+      return $q.when(users);
+    }
+
+    /**
      * Private Response functions
      */
 
@@ -155,7 +215,8 @@
      * @return {String}         Error message
      */
     function failed(error, message) {
-      logger.error(error.data.message, error, message);
+      var errMsg = error.hasOwnProperty('data') ? error.data.message : '';
+      logger.error(errMsg, error, message);
       return $q.reject(false);
     }
   }

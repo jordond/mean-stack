@@ -35,6 +35,9 @@
           id: 'roles'
         }
       },
+      all: {
+        method: 'GET'
+      },
       update: {
         method: 'PUT'
       }

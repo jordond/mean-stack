@@ -12,8 +12,11 @@
     .module('admin')
     .controller('AdminCtrl', AdminCtrl);
 
-  function AdminCtrl() {
+  AdminCtrl.$inject = ['usersPrepService'];
+
+  function AdminCtrl(usersPrepService) {
     var vm = this;
     vm.ctrlName = 'AdminCtrl';
+    vm.test = usersPrepService;
   }
 }());

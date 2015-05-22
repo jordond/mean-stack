@@ -12,7 +12,10 @@
         templateUrl: 'admin/admin.tpl.html',
         controller: 'AdminCtrl',
         controllerAs: 'vm',
-        restricted: true
+        restricted: true,
+        resolve: {
+          usersPrepService: usersPrepService
+        }
       })
       .state('admin.new', {
         url: '/new',
@@ -21,5 +24,10 @@
         controllerAs: 'vm',
         restricted: true
       });
+  }
+
+  usersPrepService.$inject = ['UserData'];
+  function usersPrepService(UserData) {
+    return UserData.all();
   }
 }());
