@@ -47,7 +47,7 @@
       }
 
       function getAllFailed(error) {
-        failed(error, 'Unable to fetch users');
+        return failed(error, 'Unable to fetch users');
       }
     }
 

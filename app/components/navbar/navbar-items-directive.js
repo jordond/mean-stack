@@ -9,35 +9,23 @@
    *
    * @description
    *
-   * @example
-     <example module="components">
-       <file name="index.html">
-        <navbar-items></navbar-items>
-       </file>
-     </example>
-   *
    */
   angular
     .module('components')
     .directive('navbarItems', navbarItems);
 
-  function navbarItems(JsonService) {
+  navbarItems.$injector = ['Auth'];
+
+  function navbarItems(Auth) {
     return {
       restrict: 'EA',
       scope: {},
       templateUrl: 'components/navbar/navbar-items-directive.tpl.html',
-      replace: true,
-      controllerAs: 'navbarItems',
+      replace: false,
+      controllerAs: 'vm',
       controller: function () {
         var vm = this;
-        if (angular.equals({}, JsonService.json)) {
-          JsonService.get()
-            .then(function () {
-              vm.sections = JsonService.find('sections');
-            });
-        } else {
-          vm.sections = JsonService.find('sections');
-        }
+        vm.isAdmin = Auth.isAdmin();
       }
     };
   }

@@ -14,7 +14,7 @@
     .module('components')
     .directive('navbar', navbar);
 
-  function navbar(JsonService) {
+  function navbar() {
     return {
       restrict: 'EA',
       scope: {},
@@ -23,14 +23,7 @@
       controllerAs: 'vm',
       controller: function () {
         var vm = this;
-        if (angular.equals({}, JsonService.json)) {
-          JsonService.get()
-            .then(function () {
-              vm.title = JsonService.retrieve('title');
-            });
-        } else {
-          vm.title = JsonService.retrieve('title');
-        }
+        vm.name = 'Navbar';
       }
     };
   }

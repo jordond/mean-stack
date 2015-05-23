@@ -1,7 +1,30 @@
+<li ui-sref-active="active">
+  <a data-ui-sref="dashboard" ng-click="$hide();">
+    <i class="fa fa-fw fa-tachometer"></i>
+    Dashboard
+  </a>
+</li>
+<li ui-sref-active="active">
+  <a data-ui-sref="profile" ng-click="$hide();">
+    <i class="fa fa-fw fa-user"></i>
+    Profile
+  </a>
+</li>
+<li ui-sref-active="active">
+  <a data-ui-sref="settings" ng-click="$hide();">
+    <i class="fa fa-fw fa-cog"></i>
+    Settings
+  </a>
+</li>
 <li ui-sref-active="active"
-    ng-repeat="section in navbarItems.sections">
-    <a data-ui-sref="{{ ::section.title }}" ng-click="$hide();">
-      <i class="fa fa-fw {{ ::section.icon }}"></i>
-      {{ ::section.title | capitalize }}
-    </a>
+    ng-if="vm.isAdmin">
+  <a data-ui-sref="admin" ng-click="$hide();">
+    <i class="fa fa-fw fa-lock"></i>
+    Admin
+  </a>
+</li>
+<li class="pull-right">
+  <a data-ui-sref="logout">
+    Logout <i class="fa fa-power-off"></i>
+  </a>
 </li>
