@@ -152,12 +152,20 @@
      * @private register
      * Registers the model with the socket object.  It registers the events
      * that the socket might emit, like save, and remove.
-     * @param     {Object} model Contains the name, and array
+     * @param  {Object} model Contains the name, and array
      */
     function register(model) {
       self.socket.on(model.name + ':save', save);
       self.socket.on(model.name + ':remove', remove);
 
+      /**
+       * @private save
+       * Method is fired when the model is saved. First check to see
+       * if an object was created or updated.  Update the item in the array
+       * or add the item to the array.  Then return a promise of its status.
+       * @param  {Object} item Model item that was saved
+       * @return {Promise}     Status of event
+       */
       function save(item) {
         var oldItem = _.find(model.array, {_id: item._id})
           , index = model.array.indexOf(oldItem)
@@ -172,6 +180,13 @@
         return $q.when(createResponse(action, item, model.array));
       }
 
+      /**
+       * @private remove
+       * Remove the item from the array when it is deleted on the server.
+       * Three way binding is great.
+       * @param  {Object} item Deleted item
+       * @return {Promise}     Status of event
+       */
       function remove(item) {
         var action = 'deleted';
         _.remove(model.array, {_id: item._id});
