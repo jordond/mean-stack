@@ -2,63 +2,138 @@
   'use strict';
 
   /**
-   * @ngdoc service
-   * @name components.underscore-factory:
+   * @ngdoc factory
+   * @name components.service:Socket
    *
    * @description
    *
    */
   angular
     .module('components')
-    .service('socket', socketConfig);
+    .service('Socket', Socket);
 
-  function socketConfig(_, socketFactory, Auth, logger, io) {
-    var ioSocket = io('', {
-      query: 'token=' + Auth.getToken(),
-      path: '/socket.io-client'
-    })
-    , socket = socketFactory({
-      ioSocket: ioSocket
-    });
+  Socket.$injector = ['$q', 'io', '_', 'socketFactory', 'Auth', 'logger'];
 
-    return {
-      socket: socket,
-      syncUpdates: function (modelName, array, cb) {
-        cb = cb || angular.noop;
+  function Socket($q, io, _, socketFactory, Auth, logger) {
+    var self = this
+      , ioSocket
+      , registeredModels = [];
 
-        socket.on(modelName + ':save', function (item) {
-          var oldItem = _.find(array, {_id: item._id})
-            , index = array.indexOf(oldItem)
-            , event = 'created';
+    ioSocket = createIoSocket();
 
-          if (oldItem) {
-            array.splice(index, 1, item);
-            event = 'updated';
-          } else {
-            array.push(item);
-          }
+    /**
+     * Public Members
+     */
 
-          cb(event, item, array);
+    self.socket = createSocket(ioSocket);
+    self.syncUpdates = syncUpdates;
+    self.unsyncUpdates = unsyncUpdates;
+    self.unsyncAll = unsyncAll;
+    self.resetSocket = resetSocket;
+
+    /**
+     * Public Methods
+     */
+
+    function syncUpdates(modelName, array) {
+      registeredModels.push({
+        name: modelName,
+        array: array
+      });
+      register(modelName, array)
+        .then(function (response) {
+          return $q.when(response);
         });
+    }
 
-        socket.on(modelName + ':remove', function (item) {
-          var event = 'deleted';
-          _.remove(array, {_id: item._id});
-          console.log('deleted');
-          cb(event, item, array);
-        });
-
-        socket.on('error', function (error) {
-          if (error.type === 'UnauthorizedError' || error.code === 'invalid_token') {
-            logger.error('socketio token error', error);
-          }
-        });
-      },
-
-      unsyncUpdates: function (modelName) {
-        socket.removeAllListeners(modelName + ':save');
-        socket.removeAllListeners(modelName + ':remove');
+    function unsyncUpdates(modelName) {
+      var index = _.findIndex(registeredModels, {name: modelName});
+      if (index > -1) {
+        registeredModels.splice(index, 1);
+        unRegister(modelName);
       }
-    };
+    }
+
+    function syncAll() {
+      _.each(registeredModels, function (model) {
+        register(model.name, model.array);
+      });
+      return $q.when(registeredModels);
+    }
+
+    function unsyncAll() {
+      _.each(registeredModels, function (model) {
+        unRegister(model.name);
+      });
+      return $q.when(registeredModels);
+    }
+
+    function resetSocket() {
+      unsyncAll()
+        .then(function () {
+          var newIoSocket = createIoSocket();
+          self.socket = createSocket(newIoSocket);
+          syncAll();
+        });
+    }
+
+    /**
+     * Private functions
+     */
+
+    function createIoSocket() {
+      var socket = io('', {
+        query: 'token=' + Auth.getToken(),
+        path: '/socket.io-client'
+      });
+      return socket;
+    }
+
+    function createSocket(sock) {
+      var socket = socketFactory({
+        ioSocket: sock
+      });
+      return socket;
+    }
+
+    function register(modelName, array) {
+      self.socket.on(modelName + ':save', function (item) {
+        var oldItem = _.find(array, {_id: item._id})
+          , index = array.indexOf(oldItem)
+          , action = 'created';
+
+        if (oldItem) {
+          array.splice(index, 1, item);
+          action = 'updated';
+        } else {
+          array.push(item);
+        }
+
+        return $q.when(createResponse(action, item, array));
+      });
+
+      self.socket.on(modelName + ':remove', function (item) {
+        var action = 'deleted';
+
+        _.remove(array, {_id: item._id});
+        logger.log('Deleted item: ' + item._id);
+
+        return $q.when(createResponse(action, item, array));
+      });
+    }
+
+    function unRegister(modelName) {
+      self.socket.removeAllListeners(modelName + ':save');
+      self.socket.removeAllListeners(modelName + ':remove');
+    }
+
+    function createResponse(action, item, array) {
+      var response = {
+        action: action,
+        item: item,
+        array: array
+      };
+      return response;
+    }
   }
 }());
