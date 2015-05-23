@@ -28,7 +28,9 @@
     $http.get('/api/things').success(function (awesomeThings) {
       vm.awesomeThings = awesomeThings;
       Socket.syncUpdates('thing', vm.awesomeThings)
-        .then(null, null, function () {
+        .then(function () {
+          console.log('resolved');
+        }, null, function () {
           console.log('notify');
         });
     });

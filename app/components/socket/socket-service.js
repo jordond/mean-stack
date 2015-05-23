@@ -33,8 +33,6 @@
     self.syncUpdates = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
     self.resetSocket = resetSocket;
-    self.unsyncAll = unsyncAll;
-    self.syncAll = syncAll;
 
     /**
      * Public Methods
@@ -49,19 +47,19 @@
      * @return {Promise} For keeping track of notify
      */
     function syncUpdates(modelName, array) {
-      var deferred = $q.defer()
-        , model = {
-            name: modelName,
-            array: array
-          };
+      var model = {
+        name: modelName,
+        array: array,
+        deferred: $q.defer()
+      };
 
       registeredModels.push(model);
       register(model)
         .then(null, null, function (response) {
-          return deferred.notify(response);
+          return model.deferred.notify(response);
         });
 
-      return deferred.promise;
+      return model.deferred.promise;
     }
 
     /**
@@ -75,7 +73,7 @@
       var index = _.findIndex(registeredModels, {name: modelName})
         , removed = {};
       if (index > -1) {
-        removed = registeredModels.splice(index, 1);
+        removed = registeredModels.splice(index, 1)[0];
         unRegister(removed);
       }
     }
@@ -94,33 +92,6 @@
           self.socket = createSocket(newIoSocket);
           syncAll();
         });
-    }
-
-    /**
-     * @public unsyncAll
-     * Using the list of all active sync'd models, unregister them all
-     * from the socket. DOES NOT remove the models from the list, just
-     * the socket.
-     * @return {Promise} Array of all the registered models
-     */
-    function unsyncAll() {
-      _.each(registeredModels, function (model) {
-        unRegister(model);
-      });
-      return $q.when(registeredModels);
-    }
-
-    /**
-     * @public SyncAll
-     * Using the list of all active sync'd models, register them all
-     * from the socket.
-     * @return {Promise} Array of all the registered models
-     */
-    function syncAll() {
-      _.each(registeredModels, function (model) {
-        register(model);
-      });
-      return $q.when(registeredModels);
     }
 
     /**
@@ -206,12 +177,41 @@
 
     /**
      * @private unRegister
-     * Removes all the listeners for the model.
-     * @param  {String} modelName Name of model to unregister
+     * Removes all the listeners for the model, as well as resolve the
+     * models promise.
+     * @param  {Object} model Contains name, promise, and array
      */
-    function unRegister(modelName) {
-      self.socket.removeAllListeners(modelName + ':save');
-      self.socket.removeAllListeners(modelName + ':remove');
+    function unRegister(model) {
+      model.deferred.resolve();
+      self.socket.removeAllListeners(model.name + ':save');
+      self.socket.removeAllListeners(model.name + ':remove');
+    }
+
+    /**
+     * @private unsyncAll
+     * Using the list of all active sync'd models, unregister them all
+     * from the socket. DOES NOT remove the models from the list, just
+     * the socket.
+     * @return {Promise} Array of all the registered models
+     */
+    function unsyncAll() {
+      _.each(registeredModels, function (model) {
+        unRegister(model);
+      });
+      return $q.when(registeredModels);
+    }
+
+    /**
+     * @private SyncAll
+     * Using the list of all active sync'd models, register them all
+     * from the socket.
+     * @return {Promise} Array of all the registered models
+     */
+    function syncAll() {
+      _.each(registeredModels, function (model) {
+        register(model);
+      });
+      return $q.when(registeredModels);
     }
 
     /**
