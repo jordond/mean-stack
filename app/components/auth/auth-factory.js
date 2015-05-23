@@ -16,17 +16,19 @@
 
   function Auth($http, $location, $q, $state, User, Socket, Token, logger) {
     var currentUser = {}
-      , service = {
-          login          : login,
-          logout         : logout,
-          getSelf        : getSelf,
-          getCurrentUser : getCurrentUser,
-          getToken       : getToken,
-          setUser        : setCurrentUser,
-          isAdmin        : isAdmin,
-          isLoggedIn     : isLoggedIn,
-          isLoggedInAsync: isLoggedInAsync
-        };
+      , service;
+
+    service = {
+      login          : login,
+      logout         : logout,
+      getSelf        : getSelf,
+      getCurrentUser : getCurrentUser,
+      getToken       : getToken,
+      setUser        : setCurrentUser,
+      isAdmin        : isAdmin,
+      isLoggedIn     : isLoggedIn,
+      isLoggedInAsync: isLoggedInAsync
+    };
 
     return service;
 

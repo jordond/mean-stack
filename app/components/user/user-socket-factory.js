@@ -18,10 +18,12 @@
     var TAG = 'UserSocket'
       , users
       , isActivated
-      , service = {
-          activate: activate,
-          deactivate: deactivate
-        };
+      , service;
+
+    service = {
+      activate: activate,
+      deactivate: deactivate
+    };
 
     return service;
 

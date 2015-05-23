@@ -38,6 +38,11 @@
      * Public Methods
      */
 
+    /**
+     * @public
+     * Initialize the socket object
+     * @return {Promise} socket object
+     */
     function init() {
       var ioSocket = createIoSocket();
       self.socket = createSocket(ioSocket);
@@ -106,6 +111,11 @@
         });
     }
 
+    /**
+     * @public
+     * Unsync all of the models in the array, clear the array,
+     * and then destroy the socket object.
+     */
     function destroy() {
       unsyncAll()
         .then(function () {
@@ -157,7 +167,7 @@
       var deferred = $q.defer();
       self.socket.on(model.name + ':save', save);
       self.socket.on(model.name + ':remove', remove);
-      log('registered ' + model.name);
+      log('registered ' + '[' + model.name + ']');
 
       return deferred.promise;
 
@@ -179,7 +189,7 @@
         } else {
           model.array.push(item);
         }
-        log(model.name + ': ' + item._id + ' was ' + action);
+        log('[' + model.name + '] ' + item._id + ' was ' + action);
         deferred.notify(createResponse(action, item, model.array));
       }
 
@@ -192,7 +202,7 @@
       function remove(item) {
         var action = 'deleted';
         _.remove(model.array, {_id: item._id});
-        log(model.name + ': ' + item._id + ' was deleted');
+        log('[' + model.name + '] ' + item._id + ' was deleted');
         deferred.notify(createResponse(action, item, model.array));
       }
     }
@@ -207,7 +217,7 @@
       model.deferred.resolve();
       self.socket.removeAllListeners(model.name + ':save');
       self.socket.removeAllListeners(model.name + ':remove');
-      log('unregistered ' + model.name);
+      log('unregistered [' + model.name + ']');
     }
 
     /**
@@ -254,6 +264,11 @@
       return response;
     }
 
+    /**
+     * @private
+     * Handle the interaction with the logger service
+     * @param  {String} message Description of event
+     */
     function log(message) {
       logger.log(TAG, message);
     }

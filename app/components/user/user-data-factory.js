@@ -3,7 +3,7 @@
 
   /**
    * @ngdoc factory
-   * @name home.service:UserData
+   * @name home.factory:UserData
    *
    * @description
    *
@@ -17,15 +17,17 @@
   function UserData($q, User, logger) {
     var roles = []
       , users
-      , service = {
-          all           : queryAllUsers,
-          find          : findUser,
-          create        : createUser,
-          changePassword: changePassword,
-          update        : update,
-          roles         : getUserRoles,
-          users         : getUsers
-        };
+      , service;
+
+    service = {
+      all           : queryAllUsers,
+      find          : findUser,
+      create        : createUser,
+      changePassword: changePassword,
+      update        : update,
+      roles         : getUserRoles,
+      users         : getUsers
+    };
 
     return service;
 

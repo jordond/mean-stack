@@ -51,7 +51,6 @@
             $state.go('login');
           }
         });
-      $rootScope.$broadcast('stateChanged', next.name);
     });
   }
 }());
