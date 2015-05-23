@@ -12,9 +12,9 @@
     .module('components')
     .factory('UserData', UserData);
 
-  UserData.$inject = ['$q', 'User', 'logger', '_'];
+  UserData.$inject = ['$q', 'User', 'logger'];
 
-  function UserData($q, User, logger, _) {
+  function UserData($q, User, logger) {
     var roles = []
       , users
       , service = {
@@ -88,7 +88,6 @@
         .catch(createFailed);
 
       function createSuccess(response) {
-        users.push(response.data);
         logger.success(response.message, '', 'User Created');
         return response.data;
       }
@@ -164,7 +163,6 @@
         .catch(updateFailed);
 
       function updateSuccess(response) {
-        updateUsersArray(response.data);
         logger.success(response.message, '', 'Update Succesful');
         return response.data;
       }
@@ -220,15 +218,6 @@
       var errMsg = error.hasOwnProperty('data') ? error.data.message : '';
       logger.error(errMsg, error, message);
       return $q.reject(false);
-    }
-
-    function updateUsersArray(user) {
-      var oldUser = _.find(users, {_id: user._id})
-        , index = users.indexOf(oldUser);
-
-      if (oldUser) {
-        users.splice(index, 1, user);
-      }
     }
   }
 }());

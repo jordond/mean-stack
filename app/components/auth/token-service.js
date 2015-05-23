@@ -15,7 +15,8 @@
   Token.$inject = ['$cookieStore', '$q', '$interval', '$http', 'logger'];
 
   function Token($cookieStore, $q, $interval, $http, logger) {
-    var self = this
+    var TAG = 'Token'
+      , self = this
       , activeToken
       , refresher;
 
@@ -88,12 +89,12 @@
         return;
       }
 
-      logger.log('Starting token refresher');
+      logger.log(TAG, 'Starting token refresher');
       refresher = $interval(runner, delay);
       refreshToken();
 
       function runner() {
-        logger.log('Refreshing token');
+        logger.log(TAG, 'Refreshing token');
         refreshToken();
       }
     };
@@ -103,7 +104,7 @@
      */
     self.deactivate = function () {
       if (angular.isDefined(refresher)) {
-        logger.log('Stoping token refresher');
+        logger.log(TAG, 'Stoping token refresher');
         $interval.cancel(refresher);
         refresher = undefined;
       }

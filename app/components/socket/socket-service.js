@@ -19,7 +19,8 @@
   Socket.$injector = ['$q', 'io', '_', 'socketFactory', 'Auth', 'logger'];
 
   function Socket($q, io, _, socketFactory, Auth, logger) {
-    var self = this
+    var TAG = 'Socket'
+      , self = this
       , ioSocket
       , registeredModels = [];
 
@@ -136,6 +137,7 @@
       var deferred = $q.defer();
       self.socket.on(model.name + ':save', save);
       self.socket.on(model.name + ':remove', remove);
+      log('registered ' + model.name);
 
       return deferred.promise;
 
@@ -157,7 +159,7 @@
         } else {
           model.array.push(item);
         }
-        logger.log(model.name + ': ' + item._id + ' was ' + action);
+        log(model.name + ': ' + item._id + ' was ' + action);
         deferred.notify(createResponse(action, item, model.array));
       }
 
@@ -170,7 +172,7 @@
       function remove(item) {
         var action = 'deleted';
         _.remove(model.array, {_id: item._id});
-        logger.log(model.name + ': ' + item._id + ' was deleted');
+        log(model.name + ': ' + item._id + ' was deleted');
         deferred.notify(createResponse(action, item, model.array));
       }
     }
@@ -185,6 +187,7 @@
       model.deferred.resolve();
       self.socket.removeAllListeners(model.name + ':save');
       self.socket.removeAllListeners(model.name + ':remove');
+      log('unregistered ' + model.name);
     }
 
     /**
@@ -229,6 +232,10 @@
         array: array
       };
       return response;
+    }
+
+    function log(message) {
+      logger.log(TAG, message);
     }
   }
 }());

@@ -12,9 +12,9 @@
     .module('components')
     .factory('logger', logger);
 
-  logger.$inject = ['$log', 'toastr'];
+  logger.$inject = ['$log', '$filter', 'toastr'];
 
-  function logger($log, toastr) {
+  function logger($log, $filter, toastr) {
     var service = {
       showToasts: true,
 
@@ -23,7 +23,7 @@
       success : success,
       warning : warning,
 
-      log     : $log.log
+      log     : log
     };
 
     return service;
@@ -46,6 +46,11 @@
     function warning(message, data, title) {
       toastr.warning(message, title);
       $log.warn('Warning: ' + message, data);
+    }
+
+    function log(tag, message) {
+      var timestamp = '[' + $filter('date')(new Date(), 'yyyy/dd/MM|HH:mm:ss') + ']';
+      $log.log(timestamp + '[' + tag + '] ' + message);
     }
   }
 }());
