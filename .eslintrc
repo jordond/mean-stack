@@ -105,7 +105,7 @@
     "no-loop-func": [2, true],
     "no-mixed-requires": false,
     "no-mixed-spaces-and-tabs": [2, true],
-    "no-multi-spaces": [2, true],
+    "no-multi-spaces": [0, true],
     "no-multi-str": [2, true],
     "no-multiple-empty-lines": [2, {"max": 1}],
     "no-native-reassign": [2, true],

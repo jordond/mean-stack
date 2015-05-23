@@ -110,6 +110,11 @@
       }
     };
 
+    self.destroy = function () {
+      self.remove();
+      self.deactivate();
+    };
+
     /**
      * Private Methods
      */

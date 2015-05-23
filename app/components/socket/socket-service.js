@@ -16,28 +16,34 @@
     .module('components')
     .service('Socket', Socket);
 
-  Socket.$injector = ['$q', 'io', '_', 'socketFactory', 'Auth', 'logger'];
+  Socket.$injector = ['$q', 'io', '_', 'socketFactory', 'Token', 'logger'];
 
-  function Socket($q, io, _, socketFactory, Auth, logger) {
+  function Socket($q, io, _, socketFactory, Token, logger) {
     var TAG = 'Socket'
       , self = this
-      , ioSocket
       , registeredModels = [];
-
-    ioSocket = createIoSocket();
 
     /**
      * Public Members
      */
 
-    self.socket = createSocket(ioSocket);
-    self.syncUpdates = syncUpdates;
+    self.socket        = undefined;
+    self.init          = init;
+    self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
-    self.resetSocket = resetSocket;
+    self.resetSocket   = resetSocket;
+    self.destroy       = destroy;
 
     /**
      * Public Methods
      */
+
+    function init() {
+      var ioSocket = createIoSocket();
+      self.socket = createSocket(ioSocket);
+      log('Connected');
+      return $q.when(self.socket);
+    }
 
     /**
      * @public syncUpdates
@@ -53,6 +59,11 @@
         array: array,
         deferred: $q.defer()
       };
+
+      if (angular.isUndefined(self.socket)) {
+        logger.error('Something went wrong with socket connection');
+        throw self.socket;
+      }
 
       registeredModels.push(model);
       register(model)
@@ -95,6 +106,15 @@
         });
     }
 
+    function destroy() {
+      unsyncAll()
+        .then(function () {
+          registeredModels = [];
+          self.socket = undefined;
+          log('Disconnected');
+        });
+    }
+
     /**
      * Private functions
      */
@@ -106,22 +126,22 @@
      * @return {Object} Socket object
      */
     function createIoSocket() {
-      var socket = io('', {
-        query: 'token=' + Auth.getToken(),
+      var ioSocket = io('', {
+        query: 'token=' + Token.get(),
         path: '/socket.io-client'
       });
-      return socket;
+      return ioSocket;
     }
 
     /**
      * @private createSocket
      * Using the SocketFactory, create the actual socket connection object.
-     * @param  {Object} sock The io() socket object
+     * @param  {Object} ioSocket The io() socket object
      * @return {Object}      SocketFactory socket object
      */
-    function createSocket(sock) {
+    function createSocket(ioSocket) {
       var socket = socketFactory({
-        ioSocket: sock
+        ioSocket: ioSocket
       });
       return socket;
     }
