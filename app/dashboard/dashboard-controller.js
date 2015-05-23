@@ -7,12 +7,15 @@
    *
    * @description
    *
+   * Very basic demo of the socket io abilities
+   * including a notify callback.
+   *
    */
   angular
     .module('dashboard')
     .controller('DashboardCtrl', DashboardCtrl);
 
-  function DashboardCtrl($scope, $http, socket, Auth) {
+  function DashboardCtrl($scope, $http, Socket, Auth) {
     var vm = this;
 
     vm.awesomeThings = [];
@@ -24,7 +27,12 @@
 
     $http.get('/api/things').success(function (awesomeThings) {
       vm.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', vm.awesomeThings);
+      Socket.syncUpdates('thing', vm.awesomeThings)
+        .then(function () {
+          console.log('resolved');
+        }, null, function () {
+          console.log('notify');
+        });
     });
 
     vm.addThing = function () {
@@ -40,7 +48,7 @@
     };
 
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
+      Socket.unsyncUpdates('thing');
     });
   }
 }());

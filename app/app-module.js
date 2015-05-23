@@ -31,12 +31,13 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, Auth, Token, JsonService) {
+  function run($rootScope, $state, Auth, Socket, Token, JsonService) {
     Token.init()
       .then(function () {
         if (Token.has()) {
           Auth.getSelf();
           Token.activate();
+          Socket.init();
         }
       });
 

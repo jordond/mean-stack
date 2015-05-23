@@ -36,9 +36,9 @@
       });
   }
 
-  usersPrepService.$inject = ['UserData'];
-  function usersPrepService(UserData) {
-    return UserData.all();
+  usersPrepService.$inject = ['UserSocket'];
+  function usersPrepService(UserSocket) {
+    return UserSocket.activate();
   }
 
   editUserPrepService.$inject = ['$stateParams', 'UserData'];
