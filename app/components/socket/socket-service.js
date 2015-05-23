@@ -32,8 +32,9 @@
     self.socket = createSocket(ioSocket);
     self.syncUpdates = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
-    self.unsyncAll = unsyncAll;
     self.resetSocket = resetSocket;
+    self.unsyncAll = unsyncAll;
+    self.syncAll = syncAll;
 
     /**
      * Public Methods
@@ -45,17 +46,22 @@
      * the global array, then call the register function.
      * @param  {String} modelName Descriptive name of model
      * @param  {Array} array      List of all the items in the model
+     * @return {Promise} For keeping track of notify
      */
     function syncUpdates(modelName, array) {
-      var model = {
-        name: modelName,
-        array: array
-      };
+      var deferred = $q.defer()
+        , model = {
+            name: modelName,
+            array: array
+          };
+
       registeredModels.push(model);
       register(model)
-        .then(function (response) {
-          return $q.when(response);
+        .then(null, null, function (response) {
+          return deferred.notify(response);
         });
+
+      return deferred.promise;
     }
 
     /**
@@ -75,16 +81,19 @@
     }
 
     /**
-     * @public SyncAll
-     * Using the list of all active sync'd models, register them all
-     * from the socket.
-     * @return {Promise} Array of all the registered models
+     * @public resetSocket
+     * Reset the socket connection to the server, helpful if the
+     * authorization token is expired, and the socket needs a new
+     * connection. First unsync all the models, then create the socket, then
+     * resync all the models to the socket.
      */
-    function syncAll() {
-      _.each(registeredModels, function (model) {
-        register(model);
-      });
-      return $q.when(registeredModels);
+    function resetSocket() {
+      unsyncAll()
+        .then(function () {
+          var newIoSocket = createIoSocket();
+          self.socket = createSocket(newIoSocket);
+          syncAll();
+        });
     }
 
     /**
@@ -102,19 +111,16 @@
     }
 
     /**
-     * @public resetSocket
-     * Reset the socket connection to the server, helpful if the
-     * authorization token is expired, and the socket needs a new
-     * connection. First unsync all the models, then create the socket, then
-     * resync all the models to the socket.
+     * @public SyncAll
+     * Using the list of all active sync'd models, register them all
+     * from the socket.
+     * @return {Promise} Array of all the registered models
      */
-    function resetSocket() {
-      unsyncAll()
-        .then(function () {
-          var newIoSocket = createIoSocket();
-          self.socket = createSocket(newIoSocket);
-          syncAll();
-        });
+    function syncAll() {
+      _.each(registeredModels, function (model) {
+        register(model);
+      });
+      return $q.when(registeredModels);
     }
 
     /**
@@ -153,10 +159,14 @@
      * Registers the model with the socket object.  It registers the events
      * that the socket might emit, like save, and remove.
      * @param  {Object} model Contains the name, and array
+     * @return {Promise}      Keeping track of actions
      */
     function register(model) {
+      var deferred = $q.defer();
       self.socket.on(model.name + ':save', save);
       self.socket.on(model.name + ':remove', remove);
+
+      return deferred.promise;
 
       /**
        * @private save
@@ -164,7 +174,6 @@
        * if an object was created or updated.  Update the item in the array
        * or add the item to the array.  Then return a promise of its status.
        * @param  {Object} item Model item that was saved
-       * @return {Promise}     Status of event
        */
       function save(item) {
         var oldItem = _.find(model.array, {_id: item._id})
@@ -177,7 +186,8 @@
         } else {
           model.array.push(item);
         }
-        return $q.when(createResponse(action, item, model.array));
+        logger.log(model.name + ': ' + item._id + ' was ' + action);
+        deferred.notify(createResponse(action, item, model.array));
       }
 
       /**
@@ -185,13 +195,12 @@
        * Remove the item from the array when it is deleted on the server.
        * Three way binding is great.
        * @param  {Object} item Deleted item
-       * @return {Promise}     Status of event
        */
       function remove(item) {
         var action = 'deleted';
         _.remove(model.array, {_id: item._id});
-        logger.log('Deleted item: ' + item._id);
-        return $q.when(createResponse(action, item, model.array));
+        logger.log(model.name + ': ' + item._id + ' was deleted');
+        deferred.notify(createResponse(action, item, model.array));
       }
     }
 
