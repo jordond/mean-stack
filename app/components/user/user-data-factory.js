@@ -15,18 +15,14 @@
   UserData.$inject = ['$q', 'User', 'logger'];
 
   function UserData($q, User, logger) {
-    var roles = []
-      , users
-      , service;
+    var service;
 
     service = {
       all           : queryAllUsers,
       find          : findUser,
       create        : createUser,
       changePassword: changePassword,
-      update        : update,
-      roles         : getUserRoles,
-      users         : getUsers
+      update        : update
     };
 
     return service;
@@ -36,15 +32,14 @@
      */
 
     function queryAllUsers() {
-      users = User.all()
+      var promise = User.all()
         .$promise
         .then(getAllSuccess)
         .catch(getAllFailed);
 
-      return users;
+      return promise;
 
       function getAllSuccess(response) {
-        users = response.data;
         return response.data;
       }
 
@@ -96,29 +91,6 @@
 
       function createFailed(error) {
         failed(error, 'Failed to Create User');
-      }
-    }
-
-    /**
-     * Get the supported user roles
-     * @return {Array} List of all the accepted roles
-     */
-    function getUserRoles() {
-      if (roles.length > 0) {
-        return $q.when(roles);
-      }
-      return User.getRoles()
-        .$promise
-        .then(userRolesSuccess)
-        .catch(userRolesFailed);
-
-      function userRolesSuccess(response) {
-        roles = response.data;
-        return roles;
-      }
-
-      function userRolesFailed(error) {
-        failed(error, 'Couldn\'t get roles');
       }
     }
 
@@ -192,18 +164,6 @@
         }
         return $q.reject(error);
       }
-    }
-
-    /**
-     * Asynchronous Getters
-     */
-
-    /**
-     * Get all of the uses
-     * @return {Array} all users
-     */
-    function getUsers() {
-      return $q.when(users);
     }
 
     /**

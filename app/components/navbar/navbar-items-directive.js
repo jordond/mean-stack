@@ -19,13 +19,18 @@
   function navbarItems(Auth) {
     return {
       restrict: 'EA',
-      scope: {},
+      scope: {
+        aside: '@'
+      },
       templateUrl: 'components/navbar/navbar-items-directive.tpl.html',
       replace: false,
       controllerAs: 'vm',
       controller: function () {
         var vm = this;
-        vm.isAdmin = Auth.isAdmin();
+        Auth.getCurrentUser()
+          .then(function () {
+            vm.isAdmin = Auth.isAdmin();
+          });
       }
     };
   }

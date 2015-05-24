@@ -13,6 +13,7 @@
         controller: 'AdminCtrl',
         controllerAs: 'vm',
         restricted: true,
+        role: 'admin',
         resolve: {
           usersPrepService: usersPrepService
         }

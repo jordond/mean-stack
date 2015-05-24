@@ -16,14 +16,17 @@
 
   function Auth($http, $location, $q, $state, User, Socket, Token, logger) {
     var currentUser = {}
+      , roles = []
       , service;
 
     service = {
       login          : login,
       logout         : logout,
+      roles          : getRoles,
       getSelf        : getSelf,
       getCurrentUser : getCurrentUser,
       getToken       : getToken,
+      getCurrentRole : getCurrentRole,
       setUser        : setCurrentUser,
       isAdmin        : isAdmin,
       isLoggedIn     : isLoggedIn,
@@ -100,11 +103,39 @@
     }
 
     /**
+     * Get the supported user roles
+     * @return {Array} List of all the accepted roles
+     */
+    function getRoles() {
+      if (roles.length > 0) {
+        return $q.when(roles);
+      }
+      return User.getRoles()
+        .$promise
+        .then(userRolesSuccess)
+        .catch(userRolesFailed);
+
+      function userRolesSuccess(response) {
+        roles = response.data;
+        return roles;
+      }
+
+      function userRolesFailed(error) {
+        logger.error(error.data, error);
+        return $q.reject(error.data);
+      }
+    }
+
+    /**
      * Synchronous Getters
      */
 
     function getToken() {
       return Token.get();
+    }
+
+    function getCurrentRole() {
+      return currentUser.role;
     }
 
     function isAdmin() {

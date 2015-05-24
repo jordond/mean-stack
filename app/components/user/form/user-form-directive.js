@@ -25,7 +25,7 @@
       templateUrl: 'components/user/form/user-form-directive.tpl.html',
       replace: false,
       controllerAs: 'vm',
-      controller: function ($scope, Auth, UserData, toastr) {
+      controller: function ($scope, Auth, toastr) {
         var vm = this
           , role;
         vm.token = '';
@@ -43,7 +43,7 @@
             $scope.user.role = '';
           }
 
-          UserData.roles()
+          Auth.roles()
             .then(function (roles) {
               vm.roles = roles;
               if ($scope.user.hasOwnProperty('role')) {
