@@ -14,11 +14,12 @@
     .module('admin')
     .directive('usersTable', usersTable);
 
-  function usersTable($state, $stateParams) {
+  function usersTable($state, $stateParams, Auth) {
     var directive = {
       restrict: 'EA',
       scope: {
-        users: '='
+        users: '=',
+        state: '@'
       },
       templateUrl: 'admin/usersTable/users-table-directive.tpl.html',
       replace: false,
@@ -29,14 +30,19 @@
 
     return directive;
 
-    function UsersTableCtrl() {
+    function UsersTableCtrl($scope) {
       var vm = this;
       vm.activeUser = $stateParams.userId;
       vm.edit = edit;
 
+      Auth.getCurrentUser()
+        .then(function (user) {
+          vm.currentUser = user._id;
+        });
+
       function edit(id) {
         vm.activeUser = id;
-        $state.go('admin.edit', {userId: id});
+        $state.go($scope.state + '.edit', {userId: id});
       }
     }
 

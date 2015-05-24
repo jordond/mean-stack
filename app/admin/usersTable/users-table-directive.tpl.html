@@ -2,6 +2,7 @@
   <table class="table table-hover table-condensed table-striped">
     <thead>
       <tr>
+        <th></th>
         <th>#</th>
         <th>Username</th>
         <th>Email</th>
@@ -14,6 +15,12 @@
       <tr ng-repeat="user in users"
           ng-click="vm.edit(user._id)"
           ng-class="{ 'success': vm.activeUser === user._id }">
+        <td>
+          <span ng-class="{'text-success': vm.activeUser !== user._id}"
+                ng-show="{{vm.currentUser === user._id}}">
+            <i class="fa fa-circle"></i>
+          </span>
+        </td>
         <th>{{ $index + 1 }}</th>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
