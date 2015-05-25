@@ -31,40 +31,38 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, Auth, Socket, Token, logger) {
-    var roles = [];
+  function run($rootScope, $state, roles, Auth, Socket, Token, logger) {
     Token.init();
 
     Token.valid()
       .then(function (valid) {
         if (valid) {
           Auth.getSelf();
-          Auth.roles()
-            .then(function (response) {
-              roles = response;
-            });
           Token.activate();
           Socket.init();
         }
       });
 
-    $rootScope.$on('$stateChangeStart', function (event, next, nextParams, from, fromParams) {
-      Auth.isLoggedInAsync()
-        .then(function (loggedIn) {
-          var index;
-          if (next.restricted && !loggedIn) {
+    $rootScope.$on('$stateChangeStart', function (event, next) {
+      var userRole
+        , requiredRole;
+
+      if (next.role !== 'guest') {
+        Auth.getCurrentUser().then(function (user) {
+          if (Auth.isLoggedIn()) {
+            userRole = roles().indexOf(user.role);
+            requiredRole = roles().indexOf(next.role);
+            if (userRole < requiredRole) {
+              event.preventDefault();
+              $state.go('dashboard');
+              logger.warning('You\'re not allowed to access that page', '', 'Forbidden');
+            }
+          } else {
             event.preventDefault();
             $state.go('login');
           }
-          if (next.role) {
-            index = roles.indexOf(Auth.getCurrentRole());
-            if (index < roles.indexOf(next.role)) {
-              event.preventDefault();
-              $state.go(from, fromParams);
-              logger.warning('You\'re not allowed to access that page', '', 'Forbidden');
-            }
-          }
         });
+      }
     });
   }
 }());

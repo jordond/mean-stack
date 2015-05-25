@@ -12,7 +12,6 @@
         templateUrl: 'admin/admin.tpl.html',
         controller: 'AdminCtrl',
         controllerAs: 'vm',
-        restricted: true,
         role: 'admin',
         resolve: {
           usersPrepService: usersPrepService
@@ -22,15 +21,13 @@
         url: '/new',
         templateUrl: 'admin/user/user.tpl.html',
         controller: 'NewUserCtrl',
-        controllerAs: 'vm',
-        restricted: true
+        controllerAs: 'vm'
       })
       .state('admin.edit', {
         url: '/edit/:userId',
         templateUrl: 'admin/user/user.tpl.html',
         controller: 'EditUserCtrl',
         controllerAs: 'vm',
-        restricted: true,
         resolve: {
           editUserPrepService: editUserPrepService
         }
