@@ -31,14 +31,13 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, Auth, Socket, Token, logger) {
+  function run($rootScope, $state, $location, Auth, Socket, Token, logger) {
     var roles = [];
     Token.init();
 
     Token.valid()
       .then(function (valid) {
         if (valid) {
-          Auth.getSelf();
           Auth.roles()
             .then(function (response) {
               roles = response;
@@ -48,6 +47,10 @@
         }
       });
 
+    if (Token.has()) {
+      Auth.getSelf();
+    }
+
     $rootScope.$on('$stateChangeStart', function (event, next, nextParams, from, fromParams) {
       Auth.isLoggedInAsync()
         .then(function (loggedIn) {
@@ -55,8 +58,7 @@
           if (next.restricted && !loggedIn) {
             event.preventDefault();
             $state.go('login');
-          }
-          if (next.role) {
+          } else if (next.role) {
             index = roles.indexOf(Auth.getCurrentRole());
             if (index < roles.indexOf(next.role)) {
               event.preventDefault();

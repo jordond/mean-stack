@@ -73,6 +73,7 @@
               return true;
             })
             .catch(function () {
+              remove();
               logger.warning('User session was invalid, login again', '', 'Try again');
             });
       } else {

@@ -46,7 +46,7 @@
     function init() {
       var ioSocket = createIoSocket();
       self.socket = createSocket(ioSocket);
-      log('Connected');
+      registerSocketEvents();
       return $q.when(self.socket);
     }
 
@@ -125,13 +125,33 @@
           registeredModels = [];
           self.socket.disconnect();
           self.socket = undefined;
-          log('Disconnected');
         });
     }
 
     /**
      * Private functions
      */
+
+    /**
+     * Register all the events for the socket connection
+     */
+    function registerSocketEvents() {
+      self.socket.on('connect', function () {
+        log('Connected');
+      });
+      self.socket.on('error', function (error) {
+        logger.error('Failed to connect to Socket server', error, 'SocketIO');
+      });
+      self.socket.on('disconnect', function () {
+        log('Disonnected');
+      });
+      self.socket.on('reconnect', function () {
+        logger.info('Reconnected to Socket server', '', 'SocketIO');
+      });
+      self.socket.on('reconnect_failed', function (error) {
+        logger.error('Failed to reconnect to server, try logging in', error, 'SocketIO');
+      });
+    }
 
     /**
      * @private createIoSocket

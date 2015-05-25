@@ -97,7 +97,7 @@
       }
 
       function failed(error) {
-        logger.error(error.data, error);
+        logger.error(error.data.message, error);
         return $q.reject(error.data.message);
       }
     }
@@ -121,7 +121,7 @@
       }
 
       function userRolesFailed(error) {
-        logger.error(error.data, error);
+        logger.error('Failed to grab roles', error);
         return $q.reject(error.data);
       }
     }
