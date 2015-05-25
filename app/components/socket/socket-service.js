@@ -117,9 +117,13 @@
      * and then destroy the socket object.
      */
     function destroy() {
+      if (angular.isUndefined(self.socket)) {
+        return;
+      }
       unsyncAll()
         .then(function () {
           registeredModels = [];
+          self.socket.disconnect();
           self.socket = undefined;
           log('Disconnected');
         });

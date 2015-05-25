@@ -45,6 +45,26 @@ function isAuthenticated() {
 }
 
 /**
+ * First validate the token, then validate the user
+ * @return {Code} 200 - all good, 406 - nope
+ */
+function isValidToken() {
+  return compose()
+  .use(function (req, res, next) {
+    validateJwt(req, res, next);
+  })
+  .use(function (req, res, next) {
+    User.findById(req.user._id, function (err, user) {
+      if (err) return next(err);
+      if (!user) {
+        return res.sendStatus(406);
+      }
+      res.sendStatus(200);
+    });
+  });
+}
+
+/**
  * Check to see if the token needs to be refreshed.
  * The token expires in 7 days, so if it less than a day
  * before it expires, then issue a new one.
@@ -54,7 +74,6 @@ function isAuthenticated() {
  */
 function refreshToken() {
   return compose()
-    .use(isAuthenticated())
     .use(function (req, res, next) {
       var token = getToken(req.headers.authorization),
         decoded,
@@ -78,7 +97,6 @@ function hasRole(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
 
   return compose()
-    .use(isAuthenticated())
     .use(function meetsRequirements(req, res, next) {
       if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
         next();
@@ -134,8 +152,10 @@ function compareRole(roleRequired, roleToCheck) {
 
 function getToken(header) {
   var token = '';
-  if (header.indexOf('Bearer ') !== -1) {
-    token = header.split(' ')[1];
+  if (header) {
+    if (header.indexOf('Bearer ') !== -1) {
+      token = header.split(' ')[1];
+    }
   }
   return token;
 }
@@ -158,6 +178,7 @@ function setTokenCookie(req, res) {
 }
 
 exports.isAuthenticated = isAuthenticated;
+exports.isValidToken = isValidToken;
 exports.refreshToken = refreshToken;
 exports.hasRole = hasRole;
 exports.isMeOrHasRole = isMeOrHasRole;

@@ -26,6 +26,7 @@
 
     self.init       = init;
     self.get        = get;
+    self.valid      = valid;
     self.has        = has;
     self.refresh    = refresh;
     self.store      = store;
@@ -56,6 +57,29 @@
      */
     function get() {
       return activeToken;
+    }
+
+    /**
+     * Check with the server to see if token is valid
+     * @return {Promise} status of call
+     */
+    function valid() {
+      var promise = $q.defer();
+
+      if (has()) {
+        promise =
+          $http.get('/auth/valid')
+            .then(function () {
+              return true;
+            })
+            .catch(function () {
+              logger.warning('User session was invalid, login again', '', 'Try again');
+            });
+      } else {
+        promise = $q.reject();
+      }
+
+      return promise;
     }
 
     /**
@@ -126,7 +150,7 @@
      */
     function deactivate() {
       if (angular.isDefined(refresher)) {
-        logger.log(TAG, 'Stoping token refresher');
+        logger.log(TAG, 'Stopping token refresher');
         $interval.cancel(refresher);
         refresher = undefined;
       }

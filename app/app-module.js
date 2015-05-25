@@ -33,9 +33,11 @@
 
   function run($rootScope, $state, Auth, Socket, Token, logger) {
     var roles = [];
-    Token.init()
-      .then(function () {
-        if (Token.has()) {
+    Token.init();
+
+    Token.valid()
+      .then(function (valid) {
+        if (valid) {
           Auth.getSelf();
           Auth.roles()
             .then(function (response) {
