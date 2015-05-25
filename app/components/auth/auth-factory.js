@@ -97,8 +97,8 @@
       }
 
       function failed(error) {
-        logger.error(error.data.message, error);
-        return $q.reject(error.data.message);
+        logger.warning('User session was invalid, login again', '', 'Try again');
+        return $q.reject(error.message);
       }
     }
 

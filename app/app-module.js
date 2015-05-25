@@ -31,27 +31,18 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, $location, Auth, Socket, Token, logger) {
-    var roles = [];
+  function run($rootScope, $state, $location, Auth, Socket, Token, roles, logger) {
     Token.init();
 
-    Token.valid()
-      .then(function (valid) {
-        if (valid) {
-          Auth.roles()
-            .then(function (response) {
-              roles = response;
-            });
+    if (Token.has()) {
+      Auth.getSelf()
+        .then(function () {
           Token.activate();
           Socket.init();
-        }
-      });
-
-    if (Token.has()) {
-      Auth.getSelf();
+        });
     }
 
-    $rootScope.$on('$stateChangeStart', function (event, next, nextParams, from, fromParams) {
+    $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync()
         .then(function (loggedIn) {
           var index;
@@ -59,10 +50,10 @@
             event.preventDefault();
             $state.go('login');
           } else if (next.role) {
-            index = roles.indexOf(Auth.getCurrentRole());
-            if (index < roles.indexOf(next.role)) {
+            index = roles().indexOf(Auth.getCurrentRole());
+            if (index < roles().indexOf(next.role)) {
               event.preventDefault();
-              $state.go(from, fromParams);
+              $state.go('dashboard');
               logger.warning('You\'re not allowed to access that page', '', 'Forbidden');
             }
           }
