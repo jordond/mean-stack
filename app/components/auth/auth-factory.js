@@ -97,8 +97,8 @@
       }
 
       function failed(error) {
-        logger.error(error.data, error);
-        return $q.reject(error.data.message);
+        logger.warning('User session was invalid, login again', '', 'Try again');
+        return $q.reject(error.message);
       }
     }
 
@@ -121,7 +121,7 @@
       }
 
       function userRolesFailed(error) {
-        logger.error(error.data, error);
+        logger.error('Failed to grab roles', error);
         return $q.reject(error.data);
       }
     }

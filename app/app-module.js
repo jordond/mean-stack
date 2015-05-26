@@ -15,6 +15,7 @@
       'ngSanitize',
       'ngAnimate',
       'mgcrea.ngStrap',
+      'angularMoment',
       'toastr',
       'components',
       'dashboard',
@@ -34,14 +35,13 @@
   function run($rootScope, $state, roles, Auth, Socket, Token, logger) {
     Token.init();
 
-    Token.valid()
-      .then(function (valid) {
-        if (valid) {
-          Auth.getSelf();
+    if (Token.has()) {
+      Auth.getSelf()
+        .then(function () {
           Token.activate();
           Socket.init();
-        }
-      });
+        });
+    }
 
     $rootScope.$on('$stateChangeStart', function (event, next) {
       var userRole
@@ -62,6 +62,8 @@
             $state.go('login');
           }
         });
+      } else if (next.name === 'login' && Auth.isLoggedIn()) {
+        event.preventDefault();
       }
     });
   }
