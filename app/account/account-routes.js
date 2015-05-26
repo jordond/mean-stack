@@ -32,7 +32,15 @@
         templateUrl: 'account/profile/profile.tpl.html',
         controller: 'ProfileCtrl',
         controllerAs: 'vm',
-        role: 'user'
+        role: 'user',
+        resolve: {
+          profilePrepService: profilePrepService
+        }
       });
+  }
+
+  profilePrepService.$inject = ['Auth'];
+  function profilePrepService(Auth) {
+    return Auth.getCurrentUser();
   }
 }());

@@ -12,7 +12,10 @@
         templateUrl: 'admin/admin.tpl.html',
         controller: 'AdminCtrl',
         controllerAs: 'vm',
-        role: 'admin'
+        role: 'admin',
+        resolve: {
+          usersPrepService: usersPrepService
+        }
       })
       .state('admin.new', {
         url: '/new',
@@ -31,6 +34,11 @@
           editUserPrepService: editUserPrepService
         }
       });
+  }
+
+  usersPrepService.$inject = ['UserSocket'];
+  function usersPrepService(UserSocket) {
+    return UserSocket.activate();
   }
 
   editUserPrepService.$inject = ['$stateParams', 'UserData'];

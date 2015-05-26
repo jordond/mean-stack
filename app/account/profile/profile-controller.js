@@ -12,25 +12,11 @@
     .module('account')
     .controller('ProfileCtrl', ProfileCtrl);
 
-  function ProfileCtrl($state, Auth, UserData) {
+  function ProfileCtrl($state, profilePrepService, UserData) {
     var vm = this;
-    vm.user = {};
-    vm.copy = {};
 
-    activate();
-
-    /**
-     * Initialize the controller, grab the current user and
-     * make a copy of it
-     * @return {Promise} Contains status of activation (optional)
-     */
-    function activate() {
-      return Auth.getCurrentUser()
-        .then(function (user) {
-          vm.user = angular.copy(user);
-          vm.copy = angular.copy(user);
-        });
-    }
+    vm.user = profilePrepService;
+    vm.copy = angular.copy(vm.user);
 
     /**
      * Submit the form in an attempt to update the user
@@ -43,12 +29,7 @@
       return updateUser(vm.user)
         .then(function (updated) {
           if (updated) {
-            Auth.getSelf()
-              .then(function (success) {
-                if (success) {
-                  $state.reload();
-                }
-              });
+            $state.reload();
           } else {
             form.$invalid = true;
           }

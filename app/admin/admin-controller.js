@@ -12,16 +12,10 @@
     .module('admin')
     .controller('AdminCtrl', AdminCtrl);
 
-  AdminCtrl.$inject = ['UserSocket'];
+  AdminCtrl.$inject = ['usersPrepService'];
 
-  function AdminCtrl(UserSocket) {
+  function AdminCtrl(usersPrepService) {
     var vm = this;
-
-    vm.users = [];
-
-    UserSocket.activate()
-      .then(function (users) {
-        vm.users = users;
-      });
+    vm.users = usersPrepService;
   }
 }());
