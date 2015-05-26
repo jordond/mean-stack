@@ -38,7 +38,7 @@
         .then(function (success) {
           if (success) {
             form.$setPristine();
-            $state.go('admin', null, {reload: true});
+            $state.go('^');
           } else {
             form.$invalid = true;
           }
@@ -66,7 +66,7 @@
     function reset(form) {
       vm.user = {};
       form.$setPristine();
-      $state.go('admin', null, {reload: true});
+      $state.go('^');
     }
 
     vm.submit = submit;

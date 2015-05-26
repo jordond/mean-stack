@@ -29,7 +29,7 @@
           if (created) {
             vm.user = {};
             form.$setPristine();
-            $state.go('admin');
+            $state.go('^');
           } else {
             form.$invalid = true;
           }
@@ -57,7 +57,7 @@
     function reset(form) {
       vm.user = {};
       form.$setPristine();
-      $state.go('admin');
+      $state.go('^');
     }
 
     vm.submit = submit;

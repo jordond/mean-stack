@@ -15,21 +15,67 @@
     .directive('userFormButtons', userFormButtons);
 
   function userFormButtons() {
-    return {
+    var directive = {
       restrict: 'EA',
       scope: {
+        user: '=',
         form: '=',
         action: '@',
-        submit: '=',
-        cancel: '='
+        callback: '='
       },
       templateUrl: 'components/user/form/user-form-buttons-directive.tpl.html',
       replace: false,
-      compile: function (element, attrs) {
-        if (!attrs.action) {
-          attrs.action = 'save';
-        }
-      }
+      link: linkFunct,
+      controller: UserFormButtonsCtrl,
+      controllerAs: 'vm',
+      bindToController: true
     };
+
+    return directive;
+
+    function linkFunct(scope, element, attrs) {
+      /*jshint unused:false */
+      /*eslint "no-unused-vars": [2, {"args": "none"}]*/
+    }
+  }
+
+  UserFormButtonsCtrl.$injector = ['$log', 'UserData'];
+
+  function UserFormButtonsCtrl($log, UserData) {
+    var vm = this;
+
+    vm.submit = submit;
+
+    function submit(action) {
+      if (action === 'create') {
+        create(vm.user);
+      } else if (action === 'update') {
+        update(vm.user);
+      } else {
+        $log.warn('[userFormButtons] Invalid action supplied: ' + action);
+      }
+    }
+
+    function create(user) {
+      UserData.create(user)
+        .then(callSuccess)
+        .catch(callFailed);
+    }
+
+    function update(user) {
+      UserData.update(user)
+        .then(callSuccess)
+        .catch(callFailed);
+    }
+
+    function callSuccess(response) {
+      vm.form.$setPristine();
+      vm.callback(true, response);
+    }
+
+    function callFailed(response) {
+      vm.form.$invalid = true;
+      vm.callback(false, response);
+    }
   }
 }());

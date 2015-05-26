@@ -1,16 +1,16 @@
 <div class="user-form-buttons">
-  <div class="btn btn-action btn-sm"
-       ng-class="{'btn-warning': form.$invalid,
-                  'btn-success': form.$valid}"
-       ng-disabled="form.$submitted || form.$invalid || form.$pristine"
-       ng-click="submit(form)">
+  <div class="btn btn-action"
+       ng-class="{'btn-warning': vm.form.$invalid,
+                  'btn-success': vm.form.$valid}"
+       ng-disabled="vm.form.$submitted || vm.form.$invalid || vm.form.$pristine"
+       ng-click="vm.submit(vm.action)">
     <i class="fa"
        ng-class="{'fa-check': form.$valid && form.$dirty,
                   'fa-times': form.$invalid}"></i>
-    {{ form.$invalid ? 'invalid' : action | capitalize }}
+    {{ vm.form.$invalid ? 'invalid' : vm.action | capitalize }}
   </div>
-  <div class="btn btn-default btn-cancel btn-sm"
-       ng-click="cancel(form)">
-    {{ action === 'update' ? 'reset' : 'cancel' | capitalize }}
+  <div class="btn btn-default"
+       ng-click="vm.callback()">
+    {{ vm.action === 'update' ? 'reset' : 'cancel' | capitalize }}
   </div>
 </div>
