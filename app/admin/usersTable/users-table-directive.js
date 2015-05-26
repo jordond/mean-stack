@@ -35,7 +35,7 @@
       vm.activeUser = $stateParams.userId;
       vm.edit = edit;
 
-      Auth.getCurrentUser()
+      Auth.getUserAsync()
         .then(function (user) {
           vm.currentUser = user._id;
         });

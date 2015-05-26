@@ -41,12 +41,14 @@
   UserFormCtrl.$injector = ['Auth', 'roles', 'toastr'];
 
   function UserFormCtrl(Auth, roles, toastr) {
-    var vm = this;
+    var vm = this
+      , currentUserID = Auth.getUser()._id;
 
     vm.existingUser = vm.action === 'update';
-    vm.token = Auth.getToken();
     vm.roles = roles();
+    vm.token = Auth.getToken();
     vm.isAdmin = Auth.isAdmin();
+    vm.isSelf = currentUserID === vm.user._id;
     vm.showToken = showToken;
 
     function showToken() {

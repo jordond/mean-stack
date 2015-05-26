@@ -24,7 +24,8 @@
       logout         : logout,
       roles          : getRoles,
       getSelf        : getSelf,
-      getCurrentUser : getCurrentUser,
+      getUser        : getUser,
+      getUserAsync   : getUserAsync,
       getToken       : getToken,
       getCurrentRole : getCurrentRole,
       setUser        : setCurrentUser,
@@ -130,6 +131,10 @@
      * Synchronous Getters
      */
 
+    function getUser() {
+      return currentUser;
+    }
+
     function getToken() {
       return Token.get();
     }
@@ -166,7 +171,7 @@
      * Get the currently logged in user
      * @return {object} Logged in user
      */
-    function getCurrentUser() {
+    function getUserAsync() {
       return $q.when(currentUser);
     }
 

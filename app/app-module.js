@@ -48,7 +48,7 @@
         , requiredRole;
 
       if (next.role !== 'guest') {
-        Auth.getCurrentUser().then(function (user) {
+        Auth.getUserAsync().then(function (user) {
           if (Auth.isLoggedIn()) {
             userRole = roles().indexOf(user.role);
             requiredRole = roles().indexOf(next.role);
