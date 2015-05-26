@@ -12,31 +12,25 @@
         templateUrl: 'admin/admin.tpl.html',
         controller: 'AdminCtrl',
         controllerAs: 'vm',
-        role: 'admin',
-        resolve: {
-          usersPrepService: usersPrepService
-        }
+        role: 'admin'
       })
       .state('admin.new', {
         url: '/new',
         templateUrl: 'admin/user/user.tpl.html',
         controller: 'NewUserCtrl',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        role: 'admin'
       })
       .state('admin.edit', {
         url: '/edit/:userId',
         templateUrl: 'admin/user/user.tpl.html',
         controller: 'EditUserCtrl',
         controllerAs: 'vm',
+        role: 'admin',
         resolve: {
           editUserPrepService: editUserPrepService
         }
       });
-  }
-
-  usersPrepService.$inject = ['UserSocket'];
-  function usersPrepService(UserSocket) {
-    return UserSocket.activate();
   }
 
   editUserPrepService.$inject = ['$stateParams', 'UserData'];
