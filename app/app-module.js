@@ -15,6 +15,7 @@
       'ngSanitize',
       'ngAnimate',
       'mgcrea.ngStrap',
+      'angularMoment',
       'toastr',
       'components',
       'dashboard',
