@@ -51,6 +51,8 @@
         create(vm.user);
       } else if (action === 'update') {
         update(vm.user);
+      } else if (action === 'change') {
+        changePassword(vm.user);
       } else {
         $log.warn('[userFormButtons] Invalid action supplied: ' + action);
       }
@@ -64,6 +66,12 @@
 
     function update(user) {
       UserData.update(user)
+        .then(callSuccess)
+        .catch(callFailed);
+    }
+
+    function changePassword(user) {
+      UserData.changePassword(user.id, user.old, user.new)
         .then(callSuccess)
         .catch(callFailed);
     }

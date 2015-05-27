@@ -5,8 +5,8 @@
        ng-disabled="vm.form.$submitted || vm.form.$invalid || vm.form.$pristine"
        ng-click="vm.submit(vm.action)">
     <i class="fa"
-       ng-class="{'fa-check': form.$valid && form.$dirty,
-                  'fa-times': form.$invalid}"></i>
+       ng-class="{'fa-check': vm.form.$valid && vm.form.$dirty,
+                  'fa-times': vm.form.$invalid}"></i>
     {{ vm.form.$invalid ? 'invalid' : vm.action | capitalize }}
   </div>
   <div class="btn btn-default"
