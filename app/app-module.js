@@ -38,7 +38,7 @@
     if (Token.has()) {
       Auth.getSelf()
         .then(function () {
-          Token.activate();
+          Token.activate(true);
           Socket.init();
         });
     }

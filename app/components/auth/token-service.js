@@ -67,15 +67,14 @@
       var promise = $q.defer();
 
       if (has()) {
-        promise =
-          $http.get('/auth/valid')
-            .then(function () {
-              return true;
-            })
-            .catch(function () {
-              remove();
-              logger.warning('User session was invalid, login again', '', 'Try again');
-            });
+        promise = $http.get('/auth/valid')
+          .then(function () {
+            return true;
+          })
+          .catch(function () {
+            remove();
+            logger.warning('User session was invalid, login again', '', 'Try again');
+          });
       } else {
         promise = $q.reject();
       }
@@ -127,20 +126,19 @@
      * @public activate
      * Activate the $interval timer to periodically check if the
      * token needs to be refreshed.
+     * @param {Boolean} refreshNow whether or not to refresh right away
      * @param {int} delay Interval delay default 1 hour
      */
-    function activate(delay) {
+    function activate(refreshNow, delay) {
       delay = angular.isDefined(delay) ? delay : (1 * 60 * 60 * 1000);
       if (angular.isDefined(refresher)) {
         return;
       }
 
       logger.log(TAG, 'Starting token refresher');
-      refresher = $interval(runner, delay);
-      refreshToken();
+      refresher = $interval(refreshToken, delay);
 
-      function runner() {
-        logger.log(TAG, 'Refreshing token');
+      if (refreshNow) {
         refreshToken();
       }
     }
@@ -185,6 +183,7 @@
 
       function refreshSuccess(response) {
         store(response.data.token);
+        logger.log(TAG, 'Token was refreshed.');
         return response.data.token;
       }
 

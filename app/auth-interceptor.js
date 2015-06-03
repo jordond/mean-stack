@@ -12,15 +12,18 @@
     .module('app')
     .factory('authInterceptor', authInterceptor);
 
-  authInterceptor.$injector = ['$rootScope', '$q', '$injector', 'logger'];
+  authInterceptor.$injector = ['$rootScope', '$q', '$injector'];
 
-  function authInterceptor($rootScope, $q, $injector, logger) {
+  function authInterceptor($rootScope, $q, $injector) {
     var Token = {}
       , Auth = {}
-      , service = {
-          request: request,
-          responseError: responseError
-        };
+      , logger = {}
+      , service = {};
+
+    service = {
+      request: request,
+      responseError: responseError
+    };
 
     return service;
 
@@ -35,6 +38,7 @@
 
     function responseError(response) {
       Auth = $injector.get('Auth');
+      logger = $injector.get('logger');
       if (response.status === 401) {
         Auth.logout();
       } else if (response.status === 0) {

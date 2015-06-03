@@ -15,7 +15,7 @@
     .module('dashboard')
     .controller('DashboardCtrl', DashboardCtrl);
 
-  function DashboardCtrl($scope, $http, Socket, Auth) {
+  function DashboardCtrl($scope, $http, Socket, Auth, Token) {
     var vm = this;
 
     vm.awesomeThings = [];
@@ -34,6 +34,10 @@
           console.log('notify');
         });
     });
+
+    vm.refreshtoken = function () {
+      Token.refresh();
+    };
 
     vm.addThing = function () {
       if (vm.newThing === '') {
