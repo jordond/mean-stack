@@ -12,21 +12,27 @@
     .module('components')
     .factory('Auth', Auth);
 
-  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'Token', 'logger'];
+  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'Socket', 'Token', 'logger'];
 
-  function Auth($http, $location, $q, $state, User, Token, logger) {
+  function Auth($http, $location, $q, $state, User, Socket, Token, logger) {
     var currentUser = {}
-      , service = {
-          login          : login,
-          logout         : logout,
-          getSelf        : getSelf,
-          getCurrentUser : getCurrentUser,
-          getToken       : getToken,
-          setUser        : setCurrentUser,
-          isAdmin        : isAdmin,
-          isLoggedIn     : isLoggedIn,
-          isLoggedInAsync: isLoggedInAsync
-        };
+      , roles = []
+      , service;
+
+    service = {
+      login          : login,
+      logout         : logout,
+      roles          : getRoles,
+      getSelf        : getSelf,
+      getUser        : getUser,
+      getUserAsync   : getUserAsync,
+      getToken       : getToken,
+      getCurrentRole : getCurrentRole,
+      setUser        : setCurrentUser,
+      isAdmin        : isAdmin,
+      isLoggedIn     : isLoggedIn,
+      isLoggedInAsync: isLoggedInAsync
+    };
 
     return service;
 
@@ -50,6 +56,7 @@
       function loginSuccess(response) {
         Token.store(response.data.token);
         Token.activate();
+        Socket.init();
         currentUser = service.getSelf();
         $location.path('/');
         return response.data.token;
@@ -66,8 +73,8 @@
      * Log the user out by removing the token
      */
     function logout() {
-      Token.remove();
-      Token.deactivate();
+      Token.destroy();
+      Socket.destroy();
       currentUser = {};
       $state.go('login');
     }
@@ -91,8 +98,32 @@
       }
 
       function failed(error) {
-        logger.error(error.data, error);
-        return $q.reject(error.data.message);
+        logger.warning('User session was invalid, login again', '', 'Try again');
+        return $q.reject(error.message);
+      }
+    }
+
+    /**
+     * Get the supported user roles
+     * @return {Array} List of all the accepted roles
+     */
+    function getRoles() {
+      if (roles.length > 0) {
+        return $q.when(roles);
+      }
+      return User.getRoles()
+        .$promise
+        .then(userRolesSuccess)
+        .catch(userRolesFailed);
+
+      function userRolesSuccess(response) {
+        roles = response.data;
+        return roles;
+      }
+
+      function userRolesFailed(error) {
+        logger.error('Failed to grab roles', error);
+        return $q.reject(error.data);
       }
     }
 
@@ -100,8 +131,16 @@
      * Synchronous Getters
      */
 
+    function getUser() {
+      return currentUser;
+    }
+
     function getToken() {
       return Token.get();
+    }
+
+    function getCurrentRole() {
+      return currentUser.role;
     }
 
     function isAdmin() {
@@ -132,7 +171,7 @@
      * Get the currently logged in user
      * @return {object} Logged in user
      */
-    function getCurrentUser() {
+    function getUserAsync() {
       return $q.when(currentUser);
     }
 

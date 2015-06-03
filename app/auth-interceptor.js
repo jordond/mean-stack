@@ -12,7 +12,9 @@
     .module('app')
     .factory('authInterceptor', authInterceptor);
 
-  function authInterceptor($rootScope, $q, $injector) {
+  authInterceptor.$injector = ['$rootScope', '$q', '$injector', 'logger'];
+
+  function authInterceptor($rootScope, $q, $injector, logger) {
     var Token = {}
       , Auth = {}
       , service = {
@@ -36,9 +38,7 @@
       if (response.status === 401) {
         Auth.logout();
       } else if (response.status === 0) {
-        // implement error state if server dies
-        // $state.go('error');
-        console.log('server died');
+        logger.error('Can\'t reach the server, try refreshing...', '', 'Server Error');
       }
       return $q.reject(response);
     }

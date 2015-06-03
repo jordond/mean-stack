@@ -6,14 +6,9 @@
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
       <div class="aside-body bs-sidebar" ng-click="$hide()">
-        <ul class="nav bs-sidenav">
-          <li navbar-items></li>
-          <li>
-          <a data-ui-sref="logout">
-            <i class="fa fa-fw fa-power-off"></i>
-            Logout
-          </a>
-        </li>
+        <ul class="nav bs-sidenav"
+            navbar-items
+            aside="true">
         </ul>
       </div>
     </div>

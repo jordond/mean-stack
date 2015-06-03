@@ -28,15 +28,20 @@
       ].join(''),
       replace: false,
       controllerAs: 'vm',
-      controller: function ($scope, $modal, Auth, UserData) {
+      controller: function ($scope, $modal, Auth) {
         var vm = this
+          , copy
           , modal;
+
+        copy = {
+          id: $scope.id
+        };
 
         /**
          * Initialize the modal, and asign scope values
          */
         function init() {
-          vm.password = {};
+          vm.password = angular.copy(copy);
           vm.isAdmin = Auth.isAdmin();
 
           modal = $modal({
@@ -46,38 +51,19 @@
             animation: 'am-fade-and-slide-top'
           });
 
-          modal.$scope.submit = submit;
-          modal.$scope.destroy = destroy;
+          modal.$scope.callback = callback;
           modal.$scope.password = vm.password;
           modal.$scope.isAdmin = vm.isAdmin;
 
           show();
         }
 
-        /**
-         * Handle the submitting and the response,
-         * if successful close the modal, and wipe the fields
-         * @return {Promise} Success or failure
-         */
-        function submit() {
-          return changePassword($scope.id, modal.$scope.password)
-            .then(function (success) {
-              if (success) {
-                destroy();
-              }
-              modal.$scope.password = {};
-            });
-        }
-
-        /**
-         * Call the UserData service to change the password
-         * @param  {String} id        ID of the user
-         * @param  {Object} passwords Contains password.old and password.new
-         * @return {Promise}          Success or failure of change
-         */
-        function changePassword(id, passwords) {
-          return UserData
-            .changePassword($scope.id, passwords.old, passwords.new);
+        function callback(success, response) {
+          if (!success && angular.isDefined(response)) {
+            modal.$scope.password = angular.copy(copy);
+          } else {
+            destroy();
+          }
         }
 
         /**
@@ -98,6 +84,13 @@
               modal.destroy();
             });
         }
+
+        $scope.$on('destroy', function () {
+          if (modal) {
+            modal.destroy();
+            modal = undefined;
+          }
+        });
 
         vm.init = init;
       }

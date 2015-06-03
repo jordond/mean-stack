@@ -1,0 +1,172 @@
+<div class="user-form">
+
+  <div class="form-group"
+       form-validator-class
+       control="form.username">
+    <label for="username" class="control-label col-sm-2">Username </label>
+    <div class="col-sm-6">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input type="text"
+               id="username"
+               name="username"
+               placeholder="Enter username"
+               class="form-control"
+               minlength="5"
+               ng-model="vm.user.username"
+               required>
+      </div>
+    </div>
+    <div form-validator
+         control="form.username"></div>
+  </div>
+
+  <div class="form-group"
+       form-validator-class
+       control="form.name">
+    <label for="name" class="control-label col-sm-2">Name </label>
+    <div class="col-sm-6">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-comment"></i></span>
+        <input type="text"
+               id="name"
+               name="name"
+               placeholder="Enter name or comment"
+               class="form-control"
+               minlength="3"
+               ng-model="vm.user.name"
+               required>
+      </div>
+    </div>
+    <div form-validator
+         control="form.name"></div>
+  </div>
+
+  <div class="form-group"
+       form-validator-class
+       control="form.email">
+    <label for="email" class="control-label col-sm-2">Email </label>
+    <div class="col-sm-8">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+        <input type="email"
+               id="email"
+               name="email"
+               placeholder="Enter your email"
+               class="form-control"
+               ng-model="vm.user.email"
+               ng-disabled="!vm.emailUnlocked && vm.existingUser"
+               required>
+      </div>
+    </div>
+    <div class="col-sm-2"
+         ng-show="vm.existingUser"
+         user-form-edit
+         value="vm.user.email"
+         original="{{ vm.user.email }}"
+         unlocked="vm.emailUnlocked"></div>
+    <div form-validator
+         control="form.email"></div>
+  </div>
+
+  <div class="form-group"
+       form-validator-class
+       control="form.role">
+    <label for="role" class="control-label col-sm-2">Role </label>
+    <div class="col-sm-8">
+      <div class="input-group col-sm-6">
+        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <select name="role"
+                id="role"
+                class="form-control"
+                ng-model="vm.user.role"
+                ng-options="role as role for role in vm.roles"
+                ng-disabled="!vm.roleUnlocked && vm.existingUser || !vm.isAdmin"
+                required>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-2"
+         ng-show="vm.existingUser && vm.isAdmin"
+         user-form-edit
+         value="vm.user.role"
+         original="admin"
+         unlocked="vm.roleUnlocked"></div>
+    <div form-validator
+         control="form.role"></div>
+  </div>
+
+  <div class="form-group" ng-if="vm.isAdmin && vm.isSelf">
+    <label for="token" class="control-label col-sm-2">Token </label>
+    <div class="col-sm-8">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
+        <input type="text"
+               id="token"
+               class="form-control"
+               ng-model="vm.token"
+               disabled>
+      </div>
+    </div>
+    <div class="col-sm-2 extra-button">
+      <div class="btn btn-info"
+           ng-click="vm.showToken()">
+        <i class="fa fa-clipboard"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group"
+       ng-if="vm.existingUser">
+    <label class="control-label col-sm-2">Password </label>
+    <div class="col-sm-8">
+      <div password-change
+           id="{{ vm.user._id }}"></div>
+    </div>
+  </div>
+
+  <div class="form-group"
+       ng-if="!vm.existingUser"
+       form-validator-class
+       control="form.password">
+    <label for="new" class="control-label col-sm-2">Password </label>
+    <div class="col-sm-8">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+        <input type="password"
+               id="password"
+               name="password"
+               class="form-control"
+               minlength="5"
+               ng-model="vm.user.password"
+               required>
+      </div>
+    </div>
+    <div form-validator
+         control="form.password"></div>
+  </div>
+
+  <div class="form-group"
+       ng-if="!vm.existingUser"
+       form-validator-class
+       control="form.passwordConfirm"
+       ng-show="vm.user.password">
+    <label for="confirm" class="control-label col-sm-2">Confirm</label>
+    <div class="col-sm-8">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+        <input type="password"
+               id="passwordConfirm"
+               name="passwordConfirm"
+               class="form-control"
+               minlength="5"
+               ng-model="vm.user.passwordConfirm"
+               password-compare compare="vm.user.password"
+               required>
+      </div>
+    </div>
+    <div form-validator
+         control="form.passwordConfirm"></div>
+  </div>
+
+</div>

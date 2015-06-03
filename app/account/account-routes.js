@@ -12,28 +12,35 @@
         templateUrl: 'account/login/login.tpl.html',
         controller: 'LoginCtrl',
         controllerAs: 'vm',
-        restricted: false
+        role: 'guest'
       })
       .state('logout', {
         url: '/logout',
         template: '<div ng-init="vm.logout()"></div>',
         controller: 'LogoutCtrl',
         controllerAs: 'vm',
-        restricted: false
+        role: 'guest'
       })
       .state('settings', {
         url: '/settings',
         templateUrl: 'account/settings/settings.tpl.html',
         controller: 'SettingsCtrl',
-        controllerAs: 'vm',
-        restricted: true
+        controllerAs: 'vm'
       })
       .state('profile', {
         url: '/profile',
         templateUrl: 'account/profile/profile.tpl.html',
         controller: 'ProfileCtrl',
         controllerAs: 'vm',
-        restricted: true
+        role: 'user',
+        resolve: {
+          profilePrepService: profilePrepService
+        }
       });
+  }
+
+  profilePrepService.$inject = ['Auth'];
+  function profilePrepService(Auth) {
+    return Auth.getUserAsync();
   }
 }());

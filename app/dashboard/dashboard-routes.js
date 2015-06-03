@@ -11,8 +11,7 @@
         url: '/',
         templateUrl: 'dashboard/dashboard.tpl.html',
         controller: 'DashboardCtrl',
-        controllerAs: 'vm',
-        restricted: true
+        controllerAs: 'vm'
       });
   }
 }());

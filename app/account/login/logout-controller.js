@@ -17,7 +17,6 @@
 
     function logout() {
       Auth.logout();
-      $state.go('login');
     }
 
     vm.logout = logout;

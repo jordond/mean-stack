@@ -13,6 +13,8 @@ var router = express.Router();
 
 router.use('/local', require('./local'));
 
+router.get('/valid', auth.isValidToken());
+
 router.get('/refresh', auth.refreshToken());
 
 module.exports = router;

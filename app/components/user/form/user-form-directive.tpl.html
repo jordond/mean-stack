@@ -1,127 +1,15 @@
-<div class="user-form">
+<form class="form-horizontal"
+      name="form"
+      novalidate>
 
-  <div class="form-group"
-       form-validator-class
-       control="form.username">
-    <label for="username" class="control-label col-sm-2">Username </label>
-    <div class="col-sm-6">
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-        <input type="text"
-               id="username"
-               name="username"
-               placeholder="Enter username"
-               class="form-control"
-               minlength="5"
-               ng-model="user.username"
-               required>
-      </div>
-    </div>
-    <div form-validator
-         control="form.username"></div>
+  <div ng-include="'components/user/form/user-form-fields.tpl.html'"></div>
+
+  <div class="pull-right">
+    <div user-form-buttons
+         user="vm.user"
+         form="form"
+         action="{{ vm.action }}"
+         callback="vm.callback"></div>
   </div>
 
-  <div class="form-group"
-       form-validator-class
-       control="form.name">
-    <label for="name" class="control-label col-sm-2">Name </label>
-    <div class="col-sm-6">
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-comment"></i></span>
-        <input type="text"
-               id="name"
-               name="name"
-               placeholder="Enter name or comment"
-               class="form-control"
-               minlength="3"
-               ng-model="user.name"
-               required>
-      </div>
-    </div>
-    <div form-validator
-         control="form.name"></div>
-  </div>
-
-  <div class="form-group"
-       form-validator-class
-       control="form.email">
-    <label for="email" class="control-label col-sm-2">Email </label>
-    <div class="col-sm-8">
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
-        <input type="email"
-               id="email"
-               name="email"
-               placeholder="Enter your email"
-               class="form-control"
-               ng-model="user.email"
-               ng-disabled="!emailUnlocked && existingUser"
-               required>
-      </div>
-    </div>
-    <div class="col-sm-2"
-         ng-show="existingUser"
-         user-form-edit
-         value="user.email"
-         original="{{ user.email }}"
-         unlocked="emailUnlocked"></div>
-    <div form-validator
-         control="form.email"></div>
-  </div>
-
-  <div class="form-group"
-       form-validator-class
-       control="form.role">
-    <label for="role" class="control-label col-sm-2">Role </label>
-    <div class="col-sm-8">
-      <div class="input-group col-sm-6">
-        <span class="input-group-addon"><i class="fa fa-key"></i></span>
-        <select name="role"
-                id="role"
-                class="form-control"
-                ng-model="user.role"
-                ng-options="role as role for role in vm.roles"
-                ng-disabled="!roleUnlocked && existingUser || !vm.isAdmin"
-                required>
-        </select>
-      </div>
-    </div>
-    <div class="col-sm-2"
-         ng-show="existingUser && vm.isAdmin"
-         user-form-edit
-         value="user.role"
-         original="admin"
-         unlocked="roleUnlocked"></div>
-    <div form-validator
-         control="form.role"></div>
-  </div>
-
-  <div class="form-group" ng-if="vm.isAdmin && existingUser">
-    <label for="token" class="control-label col-sm-2">Token </label>
-    <div class="col-sm-8">
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
-        <input type="text"
-               id="token"
-               class="form-control"
-               ng-model="vm.token"
-               disabled>
-      </div>
-    </div>
-    <div class="col-sm-2 extra-button">
-      <div class="btn btn-info"
-           ng-click="vm.showToken()">
-        <i class="fa fa-clipboard"></i>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label class="control-label col-sm-2">Password </label>
-    <div class="col-sm-8">
-      <div password-change
-           id="{{ user._id }}"></div>
-    </div>
-  </div>
-
-</div>
+</form>
