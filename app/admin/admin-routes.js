@@ -17,21 +17,24 @@
           usersPrepService: usersPrepService
         }
       })
-      .state('admin.new', {
-        url: '/new',
+      .state('admin.create', {
+        url: '/create',
         templateUrl: 'admin/user/user.tpl.html',
-        controller: 'NewUserCtrl',
+        controller: 'UserCtrl',
         controllerAs: 'vm',
-        role: 'admin'
+        role: 'admin',
+        resolve: {
+          userPrepService: userPrepService
+        }
       })
       .state('admin.edit', {
         url: '/edit/:userId',
         templateUrl: 'admin/user/user.tpl.html',
-        controller: 'EditUserCtrl',
+        controller: 'UserCtrl',
         controllerAs: 'vm',
         role: 'admin',
         resolve: {
-          editUserPrepService: editUserPrepService
+          userPrepService: userPrepService
         }
       });
   }
@@ -41,9 +44,12 @@
     return UserSocket.activate();
   }
 
-  editUserPrepService.$inject = ['$stateParams', 'UserData'];
-  function editUserPrepService($stateParams, UserData) {
+  userPrepService.$inject = ['$stateParams', 'UserData'];
+  function userPrepService($stateParams, UserData) {
     var id = $stateParams.userId;
+    if (!id) {
+      return undefined;
+    }
     return UserData.find(id);
   }
 }());

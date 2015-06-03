@@ -3,7 +3,7 @@
 
   /**
    * @ngdoc directive
-   * @name components.directive:userForm
+   * @name components.directive:UserForm
    * @restrict EA
    * @element
    *
@@ -15,54 +15,49 @@
     .directive('userForm', userForm);
 
   function userForm() {
-    return {
+    var directive = {
       restrict: 'EA',
       scope: {
         user: '=',
-        form: '=',
-        existingUser: '@'
+        action: '@',
+        callback: '='
       },
       templateUrl: 'components/user/form/user-form-directive.tpl.html',
       replace: false,
+      link: linkFunct,
+      controller: UserFormCtrl,
       controllerAs: 'vm',
-      controller: function ($scope, Auth, toastr) {
-        var vm = this
-          , role;
-        vm.token = '';
-        vm.roles = [];
-        vm.isAdmin = false;
-
-        activate();
-
-        function activate() {
-          vm.token = Auth.getToken();
-          vm.isAdmin = Auth.isAdmin();
-
-          if ($scope.user.hasOwnProperty('role')) {
-            role = $scope.user.role;
-            $scope.user.role = '';
-          }
-
-          Auth.roles()
-            .then(function (roles) {
-              vm.roles = roles;
-              if ($scope.user.hasOwnProperty('role')) {
-                $scope.user.role = role;
-              }
-            });
-        }
-
-        function showToken() {
-          toastr.info(vm.token, 'Your Full Token', {
-            closeButton: true,
-            maxOpened: 1,
-            tapToDismiss: false,
-            timeout: 7000
-          });
-        }
-
-        vm.showToken = showToken;
-      }
+      bindToController: true
     };
+
+    return directive;
+
+    function linkFunct(scope, element, attrs) {
+      /*jshint unused:false */
+      /*eslint "no-unused-vars": [2, {"args": "none"}]*/
+    }
+  }
+
+  UserFormCtrl.$injector = ['Auth', 'roles', 'toastr'];
+
+  function UserFormCtrl(Auth, roles, toastr) {
+    var vm = this
+      , currentUserID = Auth.getUser()._id;
+
+    vm.existingUser = vm.action === 'update';
+    vm.roles = roles();
+    vm.token = Auth.getToken();
+    vm.isAdmin = Auth.isAdmin();
+    vm.isSelf = currentUserID === vm.user._id;
+    vm.showToken = showToken;
+
+    function showToken() {
+      toastr.info(vm.token, 'Auth Token', {
+        closeButton: true,
+        maxOpened: 1,
+        tapToDismiss: false,
+        timeout: 7000
+      });
+    }
   }
 }());

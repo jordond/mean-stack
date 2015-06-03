@@ -14,6 +14,8 @@
     .module('admin')
     .directive('usersTable', usersTable);
 
+  usersTable.$injector = ['$state', '$stateParams', 'Auth'];
+
   function usersTable($state, $stateParams, Auth) {
     var directive = {
       restrict: 'EA',
@@ -25,24 +27,27 @@
       replace: false,
       link: linkFunct,
       controller: UsersTableCtrl,
-      controllerAs: 'vm'
+      controllerAs: 'vm',
+      bindToController: true
     };
 
     return directive;
 
-    function UsersTableCtrl($scope) {
+    function UsersTableCtrl() {
       var vm = this;
+
       vm.activeUser = $stateParams.userId;
+      vm.currentUser = {};
       vm.edit = edit;
 
-      Auth.getCurrentUser()
+      Auth.getUserAsync()
         .then(function (user) {
           vm.currentUser = user._id;
         });
 
       function edit(id) {
         vm.activeUser = id;
-        $state.go($scope.state + '.edit', {userId: id});
+        $state.go(vm.state + '.edit', {userId: id});
       }
     }
 

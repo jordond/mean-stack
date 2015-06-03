@@ -12,54 +12,21 @@
     .module('account')
     .controller('ProfileCtrl', ProfileCtrl);
 
-  function ProfileCtrl($state, profilePrepService, UserData) {
+  ProfileCtrl.$injector = ['profilePrepService'];
+
+  function ProfileCtrl(profilePrepService) {
     var vm = this;
 
     vm.user = profilePrepService;
     vm.copy = angular.copy(vm.user);
+    vm.updateCallback = updateCallback;
 
-    /**
-     * Submit the form in an attempt to update the user
-     * Call updateUser and wait for response, if update was
-     * successful then get/set the updated user and reload the state
-     * @param  {Object} form User profile information
-     * @return {Promise}     Status (optional)
-     */
-    function submit(form) {
-      return updateUser(vm.user)
-        .then(function (updated) {
-          if (updated) {
-            $state.reload();
-          } else {
-            form.$invalid = true;
-          }
-        });
+    function updateCallback(success, response) {
+      if (success) {
+        vm.copy = angular.copy(response);
+      } else {
+        vm.user = angular.copy(vm.copy);
+      }
     }
-
-    /**
-     * Call the User Data service, and attempt to update the
-     * user with the new values.
-     * @param  {Object} user Updated user information
-     * @return {Promise}     handle success or failure
-     * @return {Boolean}     If update fails return false
-     */
-    function updateUser(user) {
-      return UserData.update(user)
-        .catch(function () {
-          return false;
-        });
-    }
-
-    /**
-     * Reset the form to its initial state
-     * @param  {Object} form Form Controller
-     */
-    function reset(form) {
-      vm.user = angular.copy(vm.copy);
-      form.$setPristine();
-    }
-
-    vm.submit = submit;
-    vm.reset = reset;
   }
 }());

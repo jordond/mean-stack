@@ -69,7 +69,7 @@
       }
 
       function findFailed(error) {
-        failed(error, 'Invalid user');
+        return failed(error, 'Invalid user');
       }
     }
 
@@ -90,7 +90,7 @@
       }
 
       function createFailed(error) {
-        failed(error, 'Failed to Create User');
+        return failed(error, 'Failed to Create User');
       }
     }
 
@@ -104,7 +104,7 @@
     function changePassword(id, oldPassword, newPassword) {
       if (angular.equals(oldPassword, newPassword)) {
         logger.info('Passwords were the same!', '', 'Update Failed');
-        return $q.when(false);
+        return $q.reject(false);
       }
 
       return User.changePassword({id: id}, {
@@ -121,7 +121,7 @@
       }
 
       function changePasswordFailed(error) {
-        failed(error, 'Couldn\' change password');
+        return failed(error, 'Couldn\' change password');
       }
     }
 

@@ -41,6 +41,6 @@
 
   profilePrepService.$inject = ['Auth'];
   function profilePrepService(Auth) {
-    return Auth.getCurrentUser();
+    return Auth.getUserAsync();
   }
 }());

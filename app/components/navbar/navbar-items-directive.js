@@ -27,7 +27,7 @@
       controllerAs: 'vm',
       controller: function () {
         var vm = this;
-        Auth.getCurrentUser()
+        Auth.getUserAsync()
           .then(function () {
             vm.isAdmin = Auth.isAdmin();
           });
