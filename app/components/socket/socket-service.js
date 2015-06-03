@@ -140,7 +140,7 @@
         log('Connected');
       });
       self.socket.on('error', function (error) {
-        logger.error('Failed to connect to Socket server', error, 'SocketIO');
+        logger.warning('Failed to connect to Socket server', error, 'SocketIO');
       });
       self.socket.on('disconnect', function () {
         log('Disonnected');
