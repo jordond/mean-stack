@@ -74,16 +74,12 @@ function isValidToken() {
  */
 function refreshToken() {
   return compose()
+    .use(isAuthenticated())
     .use(function (req, res, next) {
-      var token = getToken(req.headers.authorization),
-        decoded,
-        now = moment().unix().valueOf();
+      var token = getToken(req.headers.authorization);
 
       if (token) {
-        decoded = jwt.decode(token);
-        if ((decoded.exp - now) < (24 * 60 * 60)) {
-          token = signToken(req.user.id);
-        }
+        token = signToken(req.user.id);
         return res.status(200).json({token: token});
       }
       return res.status(401).json({message: 'Token error'});
