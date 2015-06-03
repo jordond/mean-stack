@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="user in users"
+      <tr ng-repeat="user in vm.users"
           ng-click="vm.edit(user._id)"
           ng-class="{ 'success': vm.activeUser === user._id }">
         <td>
