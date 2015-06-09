@@ -17,6 +17,7 @@
       'mgcrea.ngStrap',
       'angularMoment',
       'toastr',
+      'jutaz.ngSweetAlertAsPromised',
       'components',
       'dashboard',
       'account',

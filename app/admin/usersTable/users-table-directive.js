@@ -16,7 +16,7 @@
 
   usersTable.$injector = ['$state', '$stateParams', 'Auth'];
 
-  function usersTable($state, $stateParams, Auth) {
+  function usersTable($state, $stateParams, Auth, SweetAlert) {
     var directive = {
       restrict: 'EA',
       scope: {
@@ -34,11 +34,23 @@
     return directive;
 
     function UsersTableCtrl() {
-      var vm = this;
+      var vm = this
+        , confirmOptions;
 
+      // Public members
       vm.activeUser = $stateParams.userId;
       vm.currentUser = {};
       vm.edit = edit;
+      vm.revoke = revoke;
+      vm.deleteUser = deleteUser;
+
+      confirmOptions = {
+        title: 'Are you sure?',
+        text: 'This cannot be undone',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Yes, do it!'
+      };
 
       Auth.getUserAsync()
         .then(function (user) {
@@ -48,6 +60,29 @@
       function edit(id) {
         vm.activeUser = id;
         $state.go(vm.state + '.edit', {userId: id});
+      }
+
+      function revoke(user) {
+        confirmOptions.text = 'Revoke ' + user.username + '\'s auth token?';
+
+        SweetAlert.warning(confirmOptions)
+          .then(confirm)
+          .catch(cancel);
+
+        function confirm() {
+          console.log('confirmed');
+        }
+
+        function cancel() {
+          console.log('canceled');
+        }
+      }
+
+      function deleteUser(user) {
+        SweetAlert.warning(confirmOptions)
+          .then(function () {
+            console.log('success delete', user);
+          });
       }
     }
 
