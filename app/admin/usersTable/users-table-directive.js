@@ -49,7 +49,8 @@
         text: 'This cannot be undone',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Yes, do it!'
+        confirmButtonText: 'Yes, do it!',
+        closeOnConfirm: false
       };
 
       Auth.getUserAsync()
@@ -66,16 +67,12 @@
         confirmOptions.text = 'Revoke ' + user.username + '\'s auth token?';
 
         SweetAlert.warning(confirmOptions)
-          .then(confirm)
-          .catch(cancel);
-
-        function confirm() {
-          console.log('confirmed');
-        }
-
-        function cancel() {
-          console.log('canceled');
-        }
+          .then(function () {
+            SweetAlert.success({
+              title: 'Success',
+              text: user.username + '\'s login token was revoked'
+            });
+          });
       }
 
       function deleteUser(user) {
