@@ -14,9 +14,9 @@
     .module('admin')
     .directive('usersTable', usersTable);
 
-  usersTable.$injector = ['$state', '$stateParams', 'Auth'];
+  usersTable.$injector = ['$state', '$stateParams', 'Auth', 'UserData', 'SweetAlert'];
 
-  function usersTable($state, $stateParams, Auth, SweetAlert) {
+  function usersTable($state, $stateParams, Auth, UserData, SweetAlert) {
     var directive = {
       restrict: 'EA',
       scope: {
@@ -64,8 +64,8 @@
       }
 
       function revoke(user) {
-        confirmOptions.text = 'Revoke ' + user.username + '\'s auth token?';
-
+        confirmOptions.title = 'Revoke ' + user.username + '\'s token?';
+        confirmOptions.text = 'This will force them to login again';
         SweetAlert.warning(confirmOptions)
           .then(function () {
             SweetAlert.success({
@@ -76,10 +76,32 @@
       }
 
       function deleteUser(user) {
+        confirmOptions.title = 'Delete ' + user.username + '?';
+        confirmOptions.text = 'Are you sure? This cannot be undone!';
         SweetAlert.warning(confirmOptions)
           .then(function () {
-            console.log('success delete', user);
+            callDelete(user);
           });
+      }
+
+      function callDelete(user) {
+        return UserData.remove(user._id)
+          .then(success)
+          .catch(failed);
+
+        function success(response) {
+          SweetAlert.success({
+            title: 'Success',
+            text: response
+          });
+        }
+
+        function failed() {
+          SweetAlert.error({
+            title: 'Error',
+            text: 'Something went wrong, user not deleted'
+          });
+        }
       }
     }
 

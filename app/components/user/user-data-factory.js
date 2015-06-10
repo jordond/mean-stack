@@ -159,7 +159,7 @@
         .catch(removeFailed);
 
       function removeSuccess(response) {
-        return response.data;
+        return response.message;
       }
 
       function removeFailed(error) {

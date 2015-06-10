@@ -31,6 +31,7 @@
             <i class="fa fa-sign-out fa-fw"></i>
           </a>
           <a class="btn btn-danger btn-xs"
+             ng-disabled="vm.currentUser === user._id"
              ng-click="vm.deleteUser(user)">
             <i class="fa fa-trash fa-fw"></i>
           </a>
