@@ -44,12 +44,15 @@
     return UserSocket.activate();
   }
 
-  userPrepService.$inject = ['$stateParams', 'UserData'];
-  function userPrepService($stateParams, UserData) {
+  userPrepService.$inject = ['$state', '$stateParams', 'UserData'];
+  function userPrepService($state, $stateParams, UserData) {
     var id = $stateParams.userId;
     if (!id) {
       return undefined;
     }
-    return UserData.find(id);
+    return UserData.find(id)
+      .catch(function () {
+        $state.go('admin');
+      });
   }
 }());
