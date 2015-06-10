@@ -23,6 +23,7 @@
       login          : login,
       logout         : logout,
       roles          : getRoles,
+      revoke         : revoke,
       getSelf        : getSelf,
       getUser        : getUser,
       getUserAsync   : getUserAsync,
@@ -124,6 +125,24 @@
       function userRolesFailed(error) {
         logger.error('Failed to grab roles', error);
         return $q.reject(error.data);
+      }
+    }
+
+    function revoke(id) {
+      return $http.get('/auth/revoke', {
+          id: id
+        })
+        .then(revokeSuccess)
+        .catch(revokeFailed);
+
+      function revokeSuccess(response) {
+        logger.info(response.message, response, 'Auth');
+        return response;
+      }
+
+      function revokeFailed(error) {
+        logger.error('Failed to revoke auth token', error);
+        return $q.reject(error);
       }
     }
 

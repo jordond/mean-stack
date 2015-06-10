@@ -25,7 +25,6 @@
       },
       templateUrl: 'admin/usersTable/users-table-directive.tpl.html',
       replace: false,
-      link: linkFunct,
       controller: UsersTableCtrl,
       controllerAs: 'vm',
       bindToController: true
@@ -49,8 +48,7 @@
         text: 'This cannot be undone',
         showCancelButton: true,
         confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'Yes, do it!',
-        closeOnConfirm: false
+        confirmButtonText: 'Yes, do it!'
       };
 
       Auth.getUserAsync()
@@ -68,16 +66,14 @@
         confirmOptions.text = 'This will force them to login again';
         SweetAlert.warning(confirmOptions)
           .then(function () {
-            SweetAlert.success({
-              title: 'Success',
-              text: user.username + '\'s login token was revoked'
-            });
+            Auth.revoke(user._id);
           });
       }
 
       function deleteUser(user) {
         confirmOptions.title = 'Delete ' + user.username + '?';
         confirmOptions.text = 'Are you sure? This cannot be undone!';
+        confirmOptions.closeOnConfirm = false;
         SweetAlert.warning(confirmOptions)
           .then(function () {
             callDelete(user);
@@ -86,28 +82,16 @@
 
       function callDelete(user) {
         return UserData.remove(user._id)
-          .then(success)
-          .catch(failed);
-
-        function success(response) {
-          SweetAlert.success({
-            title: 'Success',
-            text: response
+          .then(function (response) {
+            SweetAlert.success({title: 'Success', text: response});
+          })
+          .catch(function () {
+            SweetAlert.error({
+              title: 'Error',
+              text: 'Something went wrong, user not deleted'
+            });
           });
-        }
-
-        function failed() {
-          SweetAlert.error({
-            title: 'Error',
-            text: 'Something went wrong, user not deleted'
-          });
-        }
       }
-    }
-
-    function linkFunct(scope, element, attrs) {
-      /*jshint unused:false */
-      /*eslint "no-unused-vars": [2, {"args": "none"}]*/
     }
   }
 }());
