@@ -82,6 +82,14 @@
     }
 
     function callFailed(response) {
+      if (angular.isArray(response)) {
+        response.forEach(function (field) {
+          if (vm.form.hasOwnProperty(field)) {
+            vm.form[field].$invalid = true;
+          }
+        });
+      }
+
       vm.form.$invalid = true;
       vm.callback(false, response);
     }
