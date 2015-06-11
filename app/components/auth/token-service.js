@@ -12,9 +12,9 @@
     .module('components')
     .service('Token', Token);
 
-  Token.$inject = ['$cookieStore', '$q', '$interval', '$http', 'logger', 'Socket'];
+  Token.$inject = ['$cookieStore', '$q', '$interval', '$timeout', '$http', 'logger', 'Socket'];
 
-  function Token($cookieStore, $q, $interval, $http, logger, Socket) {
+  function Token($cookieStore, $q, $interval, $timeout, $http, logger, Socket) {
     var TAG = 'Token'
       , self = this
       , activeToken
@@ -142,7 +142,7 @@
       refresher = $interval(refreshToken, delay);
 
       if (refreshNow) {
-        refreshToken();
+        $timeout(refreshToken, 5000);
       }
     }
 
