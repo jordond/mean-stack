@@ -47,6 +47,9 @@
      */
     function init() {
       activeToken = $cookieStore.get('token');
+      if (!angular.isString(activeToken)) {
+        activeToken = undefined;
+      }
       return $q.when(activeToken);
     }
 

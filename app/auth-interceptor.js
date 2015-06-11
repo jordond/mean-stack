@@ -40,6 +40,7 @@
       Auth = $injector.get('Auth');
       logger = $injector.get('logger');
       if (response.status === 401) {
+        logger.error('You have been logged out', '', 'Forbidden');
         Auth.logout();
       } else if (response.status === 0) {
         logger.error('Can\'t reach the server, try refreshing...', '', 'Server Error');

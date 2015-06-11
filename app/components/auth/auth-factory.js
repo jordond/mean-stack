@@ -129,14 +129,12 @@
     }
 
     function revoke(id) {
-      return $http.get('/auth/revoke', {
-          id: id
-        })
+      return $http.put('/auth/revoke', {id: id})
         .then(revokeSuccess)
         .catch(revokeFailed);
 
       function revokeSuccess(response) {
-        logger.info(response.message, response, 'Auth');
+        logger.info(response.data.message, response.data, 'Auth');
         return response;
       }
 

@@ -20,6 +20,9 @@ var UserSchema = new Schema({
   lastLogin: {
     type: Date,
     default: null
+  },
+  tokens: {
+    type: []
   }
 });
 
@@ -48,16 +51,6 @@ UserSchema
       'username': this.username,
       'role': this.role,
       'lastLogin': this.lastLogin
-    };
-  });
-
-// Non-sensitive info we'll be putting in the token
-UserSchema
-  .virtual('token')
-  .get(function () {
-    return {
-      '_id': this._id,
-      'role': this.role
     };
   });
 

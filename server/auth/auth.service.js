@@ -35,11 +35,17 @@ function isAuthenticated() {
     // Attach user to request
     .use(function (req, res, next) {
       User.findById(req.user._id, function (err, user) {
+        var userToken;
         if (err) return next(err);
         if (!user) return res.sendStatus(401);
 
-        req.user = user;
-        next();
+        userToken = getToken(req.headers.authorization);
+        if (user.tokens.indexOf(userToken) > -1) {
+          req.user = user;
+          next();
+        } else {
+          return res.status(401).json({message: 'Access token is invalid or has been revoked.'})
+        }
       });
     });
 }
@@ -65,25 +71,54 @@ function isValidToken() {
 }
 
 /**
- * Check to see if the token needs to be refreshed.
- * The token expires in 7 days, so if it less than a day
- * before it expires, then issue a new one.
- * If a user doesn't use the app or login for 7 days, their
- * token will expire
- * @return {String} Either their current token or a new one
+ * Grab the token from the user object, if it exists then
+ * create a new token, save it to the user object, then return
+ * the new token to the client
+ * @return {String} Newly generated token
  */
 function refreshToken() {
   return compose()
     .use(isAuthenticated())
     .use(function (req, res, next) {
-      var token = getToken(req.headers.authorization);
-
-      if (token) {
-        token = signToken(req.user.id);
-        return res.status(200).json({token: token});
+      var newToken;
+      if (req.user.tokens.length > 0) {
+        req.user.tokens = removeStaleTokens(req.user.tokens);
+        newToken = signToken(req.user.id);
+        req.user.tokens.push(newToken);
+        req.user.save(function (err) {
+          if (err) { return res.status(500).json(err); }
+          return res.status(200).json({token: newToken});
+        });
+      } else {
+        return res.status(401).json({message: 'Token error'});
       }
-      return res.status(401).json({message: 'Token error'});
     });
+}
+
+/**
+ * Delete the users token, effectively logging them out.
+ * @return {status} code and message
+ */
+function revokeToken() {
+  return compose()
+    .use(isAuthenticated())
+    .use(isMeOrHasRole('admin'))
+    .use(revoke);
+
+  function revoke(req, res, next) {
+    var userId = req.body.id;
+
+    User.findById(userId, function (err, user) {
+      if (err) return res.status(500).json(err);
+      if (!user) return res.sendStatus(404);
+
+      user.tokens = [];
+      user.save(function (err) {
+        if (err) { return res.status(500).json(err); }
+        return res.status(200).json({message: user.username + '\'s token was revoked.'});
+      })
+    });
+  }
 }
 
 /**
@@ -156,6 +191,17 @@ function getToken(header) {
   return token;
 }
 
+function removeStaleTokens(tokens) {
+  var validTokens = [];
+  for (var i = 0; i < tokens.length; i++) {
+    var decoded = jwt.verify(tokens[i], config.secrets.session);
+    if (decoded) {
+      validTokens.push(tokens[i]);
+    }
+  }
+  return validTokens;
+}
+
 /**
  * Returns a jwt token signed by the app secret
  */
@@ -176,6 +222,7 @@ function setTokenCookie(req, res) {
 exports.isAuthenticated = isAuthenticated;
 exports.isValidToken = isValidToken;
 exports.refreshToken = refreshToken;
+exports.revokeToken = revokeToken;
 exports.hasRole = hasRole;
 exports.isMeOrHasRole = isMeOrHasRole;
 
