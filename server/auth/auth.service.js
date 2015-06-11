@@ -80,9 +80,15 @@ function refreshToken() {
   return compose()
     .use(isAuthenticated())
     .use(function (req, res, next) {
-      var newToken;
-      if (req.user.tokens.length > 0) {
+      var newToken, oldToken, index;
+      oldToken = getToken(req.headers.authorization);
+
+      if (oldToken) {
         req.user.tokens = removeStaleTokens(req.user.tokens);
+        index = req.user.tokens.indexOf(oldToken);
+        if (index > -1) {
+          req.user.tokens.splice(index, 1);
+        }
         newToken = signToken(req.user.id);
         req.user.tokens.push(newToken);
         req.user.save(function (err) {
