@@ -15,9 +15,13 @@ var validationError = function (res, err) {
  * restriction: 'admin'
  */
 exports.index = function (req, res) {
+  var userList = [];
   User.find({}, '-salt -hashedPassword', function (err, users) {
     if(err) return res.status(500).json(err);
-    res.status(200).json({data: users});
+    for (var i = 0; i < users.length; i++) {
+      userList.push(users[i].profile);
+    }
+    res.status(200).json({data: userList});
   });
 };
 

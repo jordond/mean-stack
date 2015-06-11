@@ -118,6 +118,7 @@
       } else if (!isInit) {
         init();
       }
+      isARefresh = false;
     }
 
     /**

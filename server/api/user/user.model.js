@@ -50,7 +50,8 @@ UserSchema
       'email': this.email,
       'username': this.username,
       'role': this.role,
-      'lastLogin': this.lastLogin
+      'lastLogin': this.lastLogin,
+      'sessions': this.tokens.length
     };
   });
 
