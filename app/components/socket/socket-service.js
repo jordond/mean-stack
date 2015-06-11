@@ -16,11 +16,13 @@
     .module('components')
     .service('Socket', Socket);
 
-  Socket.$injector = ['$q', 'io', '_', 'socketFactory', 'Token', 'logger'];
+  Socket.$injector = ['$q', '$cookieStore', 'io', '_', 'socketFactory', 'logger'];
 
-  function Socket($q, io, _, socketFactory, Token, logger) {
+  function Socket($q, $cookieStore, io, _, socketFactory, logger) {
     var TAG = 'Socket'
       , self = this
+      , isInit
+      , isARefresh
       , registeredModels = [];
 
     /**
@@ -31,7 +33,7 @@
     self.init          = init;
     self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
-    self.resetSocket   = resetSocket;
+    self.reset         = resetSocket;
     self.destroy       = destroy;
 
     /**
@@ -41,12 +43,15 @@
     /**
      * @public
      * Initialize the socket object
+     * @param {Boolean} refresh Is the user refreshing or logging in
      * @return {Promise} socket object
      */
-    function init() {
+    function init(refresh) {
       var ioSocket = createIoSocket();
       self.socket = createSocket(ioSocket);
       registerSocketEvents();
+      isInit = true;
+      isARefresh = refresh;
       return $q.when(self.socket);
     }
 
@@ -66,8 +71,8 @@
       };
 
       if (angular.isUndefined(self.socket)) {
-        logger.error('Something went wrong with socket connection');
-        throw self.socket;
+        logger.swalError(TAG, 'Something went wrong with socket connection, live updating will not work.');
+        return $q.reject();
       }
 
       registeredModels.push(model);
@@ -103,12 +108,16 @@
      * resync all the models to the socket.
      */
     function resetSocket() {
-      unsyncAll()
-        .then(function () {
-          var newIoSocket = createIoSocket();
-          self.socket = createSocket(newIoSocket);
-          syncAll();
-        });
+      if (isInit && !isARefresh) {
+        unsyncAll()
+          .then(function () {
+            var newIoSocket = createIoSocket();
+            self.socket = createSocket(newIoSocket);
+            syncAll();
+          });
+      } else if (!isInit) {
+        init();
+      }
     }
 
     /**
@@ -125,6 +134,7 @@
           registeredModels = [];
           self.socket.disconnect();
           self.socket = undefined;
+          isInit = false;
         });
     }
 
@@ -161,7 +171,7 @@
      */
     function createIoSocket() {
       var ioSocket = io('', {
-        query: 'token=' + Token.get(),
+        query: 'token=' + $cookieStore.get('token'),
         path: '/socket.io-client'
       });
       return ioSocket;

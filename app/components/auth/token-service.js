@@ -12,9 +12,9 @@
     .module('components')
     .service('Token', Token);
 
-  Token.$inject = ['$cookieStore', '$q', '$interval', '$http', 'logger'];
+  Token.$inject = ['$cookieStore', '$q', '$interval', '$http', 'logger', 'Socket'];
 
-  function Token($cookieStore, $q, $interval, $http, logger) {
+  function Token($cookieStore, $q, $interval, $http, logger, Socket) {
     var TAG = 'Token'
       , self = this
       , activeToken
@@ -186,6 +186,7 @@
 
       function refreshSuccess(response) {
         store(response.data.token);
+        Socket.reset();
         logger.log(TAG, 'Token was refreshed.');
         return response.data.token;
       }

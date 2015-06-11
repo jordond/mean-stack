@@ -133,7 +133,7 @@
         .catch(revokeFailed);
 
       function revokeSuccess(response) {
-        logger.info(response.data.message, response.data, 'Auth');
+        logger.info(response.data.message);
         return response;
       }
 

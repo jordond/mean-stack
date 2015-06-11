@@ -12,18 +12,20 @@
     .module('components')
     .factory('logger', logger);
 
-  logger.$inject = ['$log', '$filter', 'toastr'];
+  logger.$inject = ['$log', '$filter', 'toastr', 'SweetAlert'];
 
-  function logger($log, $filter, toastr) {
+  function logger($log, $filter, toastr, SweetAlert) {
     var service = {
       showToasts: true,
 
-      error   : error,
-      info    : info,
-      success : success,
-      warning : warning,
+      error    : error,
+      info     : info,
+      success  : success,
+      warning  : warning,
 
-      log     : log
+      swalError: alertError,
+
+      log      : log
     };
 
     return service;
@@ -54,6 +56,20 @@
 
     function log(tag, message) {
       $log.log(getTimestamp() + '[' + tag + '] ' + message);
+    }
+
+    /**
+     * Eventurally remove, and replace with factory, that way
+     * only one dialog can be open at one time.
+     * @param  {String} tag     caller
+     * @param  {String} message desctiption of error
+     */
+    function alertError(tag, message) {
+      SweetAlert.error({
+        title: '[' + tag + ']' + ' - Error',
+        text: message
+      });
+      log(tag, message);
     }
 
     /**

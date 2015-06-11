@@ -44,8 +44,8 @@
         return response.data;
       }
 
-      function getAllFailed(error) {
-        return failed(error, 'Unable to fetch users');
+      function getAllFailed() {
+        return $q.reject(false);
       }
     }
 
