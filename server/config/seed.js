@@ -44,6 +44,20 @@ User.find({}).remove(function() {
     username: 'Admin',
     email: 'admin@admin.com',
     password: 'admin'
+  }, {
+    provider: 'local',
+    role: 'admin',
+    name: 'asdasd',
+    username: 'asdasdasd',
+    email: 'sdsdsd@admin.com',
+    password: 'admin'
+  }, {
+    provider: 'local',
+    role: 'admin',
+    name: 'asdasdasdasd',
+    username: 'aaaaaaaaaa',
+    email: 'aaaaaaaaaa@admin.com',
+    password: 'admin'
   }, function() {
       console.log('finished populating users');
     }

@@ -14,9 +14,9 @@
     .module('admin')
     .directive('usersTable', usersTable);
 
-  usersTable.$injector = ['$state', '$stateParams', 'Auth'];
+  usersTable.$injector = ['$state', '$stateParams', 'Auth', 'UserData', 'SweetAlert'];
 
-  function usersTable($state, $stateParams, Auth) {
+  function usersTable($state, $stateParams, Auth, UserData, SweetAlert) {
     var directive = {
       restrict: 'EA',
       scope: {
@@ -25,7 +25,6 @@
       },
       templateUrl: 'admin/usersTable/users-table-directive.tpl.html',
       replace: false,
-      link: linkFunct,
       controller: UsersTableCtrl,
       controllerAs: 'vm',
       bindToController: true
@@ -34,11 +33,23 @@
     return directive;
 
     function UsersTableCtrl() {
-      var vm = this;
+      var vm = this
+        , confirmOptions;
 
+      // Public members
       vm.activeUser = $stateParams.userId;
       vm.currentUser = {};
       vm.edit = edit;
+      vm.revoke = revoke;
+      vm.deleteUser = deleteUser;
+
+      confirmOptions = {
+        title: 'Are you sure?',
+        text: 'This cannot be undone',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Yes, do it!'
+      };
 
       Auth.getUserAsync()
         .then(function (user) {
@@ -49,11 +60,38 @@
         vm.activeUser = id;
         $state.go(vm.state + '.edit', {userId: id});
       }
-    }
 
-    function linkFunct(scope, element, attrs) {
-      /*jshint unused:false */
-      /*eslint "no-unused-vars": [2, {"args": "none"}]*/
+      function revoke(user) {
+        confirmOptions.title = 'Revoke ' + user.username + '\'s token?';
+        confirmOptions.text = 'This will force them to login again';
+        SweetAlert.warning(confirmOptions)
+          .then(function () {
+            Auth.revoke(user._id);
+          });
+      }
+
+      function deleteUser(user) {
+        confirmOptions.title = 'Delete ' + user.username + '?';
+        confirmOptions.text = 'Are you sure? This cannot be undone!';
+        confirmOptions.closeOnConfirm = false;
+        SweetAlert.warning(confirmOptions)
+          .then(function () {
+            callDelete(user);
+          });
+      }
+
+      function callDelete(user) {
+        return UserData.remove(user._id)
+          .then(function (response) {
+            SweetAlert.success({title: 'Success', text: response});
+          })
+          .catch(function () {
+            SweetAlert.error({
+              title: 'Error',
+              text: 'Something went wrong, user not deleted'
+            });
+          });
+      }
     }
   }
 }());

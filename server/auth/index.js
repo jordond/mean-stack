@@ -17,4 +17,6 @@ router.get('/valid', auth.isValidToken());
 
 router.get('/refresh', auth.refreshToken());
 
+router.put('/revoke', auth.revokeToken());
+
 module.exports = router;

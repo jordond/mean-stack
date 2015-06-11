@@ -22,7 +22,8 @@
       find          : findUser,
       create        : createUser,
       changePassword: changePassword,
-      update        : update
+      update        : update,
+      remove        : remove
     };
 
     return service;
@@ -69,7 +70,8 @@
       }
 
       function findFailed(error) {
-        return failed(error, 'Invalid user');
+        logger.error('The requested user could not be found.', error, 'Invalid User');
+        return $q.reject(error);
       }
     }
 
@@ -90,7 +92,7 @@
       }
 
       function createFailed(error) {
-        return failed(error, 'Failed to Create User');
+        return userActionFailed(error);
       }
     }
 
@@ -141,34 +143,60 @@
         return response.data;
       }
 
-      /**
-       * Iterate through all of the error properties and
-       * create a warning toast about it
-       * @param  {Object} error Error object returned from server
-       * @return {Object}       Rejected promise containing error data
-       */
       function updateFailed(error) {
-        var errors = []
-          , err;
+        return userActionFailed(error);
+      }
+    }
 
-        if (error.hasOwnProperty('data')) {
-          errors = error.data.errors;
-          for (err in errors) {
-            if ({}.hasOwnProperty.call(errors, err)) {
-              err = errors[err];
-              logger.warning(err.message, err, error.message);
-            }
-          }
-        } else {
-          failed(error, 'Uncaught Exception on update');
-        }
-        return $q.reject(error);
+    /**
+     * Delete a user from the database
+     * @param  {Int} id     user id
+     * @return {Promise}    status of call
+     */
+    function remove(id) {
+      return User.remove({id: id})
+        .$promise
+        .then(removeSuccess)
+        .catch(removeFailed);
+
+      function removeSuccess(response) {
+        return response.message;
+      }
+
+      function removeFailed(error) {
+        return failed(error, 'User was not deleted');
       }
     }
 
     /**
      * Private functions
      */
+
+    /**
+     * Iterate through all of the error properties and
+     * create a warning toast about it
+     * @param  {Object} error Error object returned from server
+     * @return {Object}       Rejected promise containing error data
+     */
+    function userActionFailed(error) {
+      var errors = []
+        , fields = []
+        , err;
+
+      if (error.hasOwnProperty('data')) {
+        errors = error.data.errors;
+        for (err in errors) {
+          if ({}.hasOwnProperty.call(errors, err)) {
+            err = errors[err];
+            fields.push(err.path);
+            logger.warning(err.message, err, error.message);
+          }
+        }
+      } else {
+        failed(error, 'Uncaught Exception on update or create');
+      }
+      return $q.reject(fields);
+    }
 
     /**
      * Reusable rejection function for a failed promise

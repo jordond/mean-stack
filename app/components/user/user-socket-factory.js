@@ -72,6 +72,10 @@
       Socket.syncUpdates('user', response)
         .then(destroy);
       return response;
+
+      // function notify(message) {
+      //   console.log(message);
+      // }
     }
 
     function failed() {

@@ -54,9 +54,13 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function (req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.status(500).json(err);
-    return res.status(204).json({message: 'User was successfully deleted!'});
+  User.findById(req.params.id, function (err, user) {
+    if (err) { return res.status(500).json(err); }
+    if (!user) { return res.sendStatus(404); }
+    user.remove(function (err) {
+      if (err) { return res.status(500).json(err); }
+      return res.status(204).json({message: user.username + ' was successfully deleted!'});
+    });
   });
 };
 

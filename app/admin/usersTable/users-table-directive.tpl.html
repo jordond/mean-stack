@@ -8,25 +8,35 @@
         <th>Email</th>
         <th>Role</th>
         <th>Last Login</th>
-        <th></th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="user in vm.users"
-          ng-click="vm.edit(user._id)"
           ng-class="{ 'success': vm.activeUser === user._id }">
-        <td>
+        <td ng-click="vm.edit(user._id)">
           <span ng-class="{'text-success': vm.activeUser !== user._id}"
                 ng-show="{{vm.currentUser === user._id}}">
             <i class="fa fa-circle"></i>
           </span>
         </td>
-        <th>{{ $index + 1 }}</th>
-        <td>{{ user.username }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ user.lastLogin | amCalendar | nullDate: 'Never' }}</td>
-        <td></td>
+        <th ng-click="vm.edit(user._id)">{{ $index + 1 }}</th>
+        <td ng-click="vm.edit(user._id)">{{ user.username }}</td>
+        <td ng-click="vm.edit(user._id)">{{ user.email }}</td>
+        <td ng-click="vm.edit(user._id)">{{ user.role }}</td>
+        <td ng-click="vm.edit(user._id)">{{ user.lastLogin | amCalendar | nullDate: 'Never' }}</td>
+        <td>
+          <a class="btn btn-info btn-xs"
+             ng-click="vm.revoke(user)"
+             ng-disabled="!user.lastLogin">
+            <i class="fa fa-sign-out fa-fw"></i>
+          </a>
+          <a class="btn btn-danger btn-xs"
+             ng-disabled="vm.currentUser === user._id"
+             ng-click="vm.deleteUser(user)">
+            <i class="fa fa-trash fa-fw"></i>
+          </a>
+        </td>
       </tr>
     </tbody>
   </table>
