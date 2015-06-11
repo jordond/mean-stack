@@ -99,7 +99,6 @@
       }
 
       function failed(error) {
-        logger.warning('User session was invalid, login again', '', 'Try again');
         return $q.reject(error.message);
       }
     }

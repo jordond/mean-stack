@@ -113,6 +113,7 @@ function revokeToken() {
       if (!user) return res.sendStatus(404);
 
       user.tokens = [];
+      user.lastLogin = null;
       user.save(function (err) {
         if (err) { return res.status(500).json(err); }
         return res.status(200).json({message: user.username + '\'s token was revoked.'});
