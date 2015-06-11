@@ -40,7 +40,7 @@
       Auth.getSelf()
         .then(function () {
           Token.activate(true);
-          Socket.init(true);
+          Socket.init();
         });
     }
 

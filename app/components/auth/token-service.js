@@ -142,7 +142,7 @@
       refresher = $interval(refreshToken, delay);
 
       if (refreshNow) {
-        $timeout(refreshToken, 5000);
+        $timeout(refreshToken, 1000 * 60);
       }
     }
 

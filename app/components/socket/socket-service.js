@@ -22,7 +22,6 @@
     var TAG = 'Socket'
       , self = this
       , isInit
-      , isARefresh
       , registeredModels = [];
 
     /**
@@ -46,12 +45,11 @@
      * @param {Boolean} refresh Is the user refreshing or logging in
      * @return {Promise} socket object
      */
-    function init(refresh) {
+    function init() {
       var ioSocket = createIoSocket();
       self.socket = createSocket(ioSocket);
       registerSocketEvents();
       isInit = true;
-      isARefresh = refresh;
       return $q.when(self.socket);
     }
 
@@ -108,17 +106,16 @@
      * resync all the models to the socket.
      */
     function resetSocket() {
-      if (isInit && !isARefresh) {
+      if (isInit) {
         unsyncAll()
           .then(function () {
             var newIoSocket = createIoSocket();
             self.socket = createSocket(newIoSocket);
             syncAll();
           });
-      } else if (!isInit) {
+      } else {
         init();
       }
-      isARefresh = false;
     }
 
     /**
