@@ -12,20 +12,20 @@ module.exports = {
   appName: 'app',
 
   // app directories
-  appDir: 'app',
+  appDir: 'client',
   serverDir: 'server',
 
   // build directories
-  buildDir: outDir + 'app/',
-  buildCss: outDir + 'app/css/',
-  buildFonts: outDir + 'app/fonts/',
-  buildImages: outDir + 'app/images/',
-  buildJs: outDir + 'app/js/',
-  buildJson: outDir + 'app/json/',
-  extDir: outDir + 'app/vendor/',
-  extCss: outDir + 'app/vendor/css/',
-  extFonts: outDir + 'app/vendor/fonts/',
-  extJs: outDir + 'app/vendor/js/',
+  buildDir: outDir + 'client/',
+  buildCss: outDir + 'client/css/',
+  buildFonts: outDir + 'client/fonts/',
+  buildImages: outDir + 'client/images/',
+  buildJs: outDir + 'client/js/',
+  buildJson: outDir + 'client/json/',
+  extDir: outDir + 'client/vendor/',
+  extCss: outDir + 'client/vendor/css/',
+  extFonts: outDir + 'client/vendor/fonts/',
+  extJs: outDir + 'client/vendor/js/',
 
   // server build directories
   serverBuildDir: outDir + 'server/'

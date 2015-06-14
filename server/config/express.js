@@ -29,17 +29,17 @@ module.exports = function(app) {
   app.use(cookieParser());
   app.use(passport.initialize());
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'app', 'favicon.ico')));
-    app.use(express.static(path.join(config.root, 'app')));
+    app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
+    app.use(express.static(path.join(config.root, 'client')));
     app.use('/', express.static(path.join(config.client, 'client')));
-    app.set('appPath', config.root + '/app');
+    app.set('appPath', config.root + '/client');
     app.use(morgan('tiny'));
   }
 
   if ('development' === env || 'test' === env) {
-    app.use(express.static(path.join(config.root, 'app')));
+    app.use(express.static(path.join(config.root, 'client')));
     app.use('/', express.static(path.join(config.client, 'client')));
-    app.set('appPath', config.root + '/app');
+    app.set('appPath', config.root + '/client');
     app.use(morgan('dev'));
     app.use(errorHandler()); // Error handler - has to be last
   }
