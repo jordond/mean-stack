@@ -12,21 +12,19 @@
     .module('components')
     .service('Token', Token);
 
-  Token.$inject = ['$cookieStore', '$q', '$interval', '$timeout', '$http', 'logger', 'Socket'];
+  Token.$inject = ['$cookieStore', '$q', '$interval', '$timeout', '$http', 'logger', 'AuthEvent'];
 
-  function Token($cookieStore, $q, $interval, $timeout, $http, logger, Socket) {
+  function Token($cookieStore, $q, $interval, $timeout, $http, logger, AuthEvent) {
     var TAG = 'Token'
       , self = this
-      , activeToken
+      , activeToken = $cookieStore.get('token')
       , refresher;
 
     /**
      * Public Members
      */
 
-    self.init       = init;
     self.get        = get;
-    self.valid      = valid;
     self.has        = has;
     self.refresh    = refresh;
     self.store      = store;
@@ -36,22 +34,17 @@
     self.destroy    = destroy;
 
     /**
-     * Public Methods
+     * Listeners
      */
 
+    AuthEvent.onAuth(function (event, refreshNow) {
+      activate(refreshNow);
+    });
+    AuthEvent.onDeauth(destroy);
+
     /**
-     * @public init
-     * Initialize this token service, grab the current token
-     * and then activate $interval timer
-     * @return {Promise} Containing the active token
+     * Public Methods
      */
-    function init() {
-      activeToken = $cookieStore.get('token');
-      if (!angular.isString(activeToken)) {
-        activeToken = undefined;
-      }
-      return $q.when(activeToken);
-    }
 
     /**
      * @public get
@@ -60,29 +53,6 @@
      */
     function get() {
       return activeToken;
-    }
-
-    /**
-     * Check with the server to see if token is valid
-     * @return {Promise} status of call
-     */
-    function valid() {
-      var promise = $q.defer();
-
-      if (has()) {
-        promise = $http.get('/auth/valid')
-          .then(function () {
-            return true;
-          })
-          .catch(function () {
-            remove();
-            logger.warning('User session was invalid, login again', '', 'Try again');
-          });
-      } else {
-        promise = $q.reject();
-      }
-
-      return promise;
     }
 
     /**
@@ -164,8 +134,8 @@
      * logging the user out
      */
     function destroy() {
-      remove();
       deactivate();
+      remove();
     }
 
     /**
@@ -186,7 +156,7 @@
 
       function refreshSuccess(response) {
         store(response.data.token);
-        Socket.reset();
+        AuthEvent.refresh();
         logger.log(TAG, 'Token was refreshed.');
         return response.data.token;
       }
