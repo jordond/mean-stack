@@ -33,14 +33,11 @@
     $httpProvider.interceptors.push('authInterceptor');
   }
 
-  function run($rootScope, $state, roles, Auth, Socket, Token, logger) {
-    Token.init();
-
+  function run($rootScope, $state, roles, Auth, AuthEvent, Socket, Token, logger) {
     if (Token.has()) {
       Auth.getSelf()
         .then(function () {
-          Token.activate(true);
-          Socket.init();
+          AuthEvent.authenticated(true);
         });
     }
 

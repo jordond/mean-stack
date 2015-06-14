@@ -12,9 +12,9 @@
     .module('components')
     .factory('Auth', Auth);
 
-  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'Socket', 'Token', 'logger'];
+  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'AuthEvent', 'Token', 'logger'];
 
-  function Auth($http, $location, $q, $state, User, Socket, Token, logger) {
+  function Auth($http, $location, $q, $state, User, AuthEvent, Token, logger) {
     var currentUser = {}
       , roles = []
       , service;
@@ -56,8 +56,7 @@
 
       function loginSuccess(response) {
         Token.store(response.data.token);
-        Token.activate();
-        Socket.init();
+        AuthEvent.authenticated();
         currentUser = service.getSelf();
         $location.path('/');
         return response.data.token;
@@ -77,8 +76,7 @@
       if (Token.has()) {
         $http.get('/auth/logout')
           .then(function () {
-            Token.destroy();
-            Socket.destroy();
+            AuthEvent.deauthenticated();
             currentUser = {};
             $state.go('login');
           });

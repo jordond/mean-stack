@@ -16,24 +16,32 @@
     .module('components')
     .service('Socket', Socket);
 
-  Socket.$injector = ['$q', '$cookieStore', 'io', '_', 'socketFactory', 'logger'];
+  Socket.$injector = ['$q', '$cookieStore', 'io', '_', 'socketFactory', 'AuthEvent', 'logger'];
 
-  function Socket($q, $cookieStore, io, _, socketFactory, logger) {
+  function Socket($q, $cookieStore, io, _, socketFactory, AuthEvent, logger) {
     var TAG = 'Socket'
       , self = this
       , isInit
+      , ready
       , registeredModels = [];
 
     /**
      * Public Members
      */
 
-    self.wrapper        = undefined;
+    self.wrapper       = undefined;
     self.init          = init;
     self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
     self.reset         = resetSocket;
     self.destroy       = destroy;
+
+    /**
+     * Listeners
+     */
+    AuthEvent.onAuth(init);
+    AuthEvent.onRefresh(resetSocket);
+    AuthEvent.onDeauth(destroy);
 
     /**
      * Public Methods
@@ -42,11 +50,10 @@
     /**
      * @public
      * Initialize the socket object
-     * @param {Boolean} refresh Is the user refreshing or logging in
      * @return {Promise} socket object
      */
     function init() {
-      connect();
+      ready = connect();
       isInit = true;
       return $q.when(self.wrapper);
     }
@@ -71,11 +78,13 @@
         return $q.reject();
       }
 
-      registeredModels.push(model);
-      register(model)
-        .then(null, null, function (response) {
-          return model.deferred.notify(response);
-        });
+      ready.then(function () {
+        registeredModels.push(model);
+        register(model)
+          .then(null, null, function (response) {
+            return model.deferred.notify(response);
+          });
+      });
 
       return model.deferred.promise;
     }
@@ -108,8 +117,7 @@
         unsyncAll()
           .then(function () {
             self.wrapper.disconnect();
-            connect();
-            syncAll();
+            connect().then(syncAll);
           });
       } else {
         init();
@@ -141,11 +149,13 @@
     /**
      * @private connect
      * Create the socket wrapper object, and then connect to the socket.
+     * @return {Promise} resolve when connected
      */
     function connect() {
       var token = $cookieStore.get('token')
         , path = '/socket.io-client'
-        , socket;
+        , socket
+        , deferred = $q.defer();
 
       socket = io.connect('', {
         query: 'token=' + token,
@@ -159,7 +169,9 @@
         self.wrapper.socket(socket);
         registerSocketEvents(socket);
         log('Connected');
+        deferred.resolve();
       });
+      return deferred.promise;
     }
 
     /**
