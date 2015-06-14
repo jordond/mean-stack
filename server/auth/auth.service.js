@@ -130,7 +130,9 @@ function revokeToken() {
 
 function logout() {
   return compose()
-    .use(isValidToken())
+    .use(function (req, res, next) {
+      validateJwt(req, res, next);
+    })
     .use(function (req, res, next) {
       User.findById(req.user._id, function (err, user) {
         var userToken, index;
