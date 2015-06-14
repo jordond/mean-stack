@@ -65,7 +65,7 @@
 
       function loginFailed(error) {
         logger.error(error.data.message, error, 'Login failed');
-        service.logout();
+        $state.go('login');
         return $q.reject(error.data.message);
       }
     }
@@ -74,10 +74,15 @@
      * Log the user out by removing the token
      */
     function logout() {
-      Token.destroy();
-      Socket.destroy();
-      currentUser = {};
-      $state.go('login');
+      if (Token.has()) {
+        $http.get('/auth/logout')
+          .then(function () {
+            Token.destroy();
+            Socket.destroy();
+            currentUser = {};
+            $state.go('login');
+          });
+      }
     }
 
     /**

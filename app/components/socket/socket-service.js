@@ -28,7 +28,7 @@
      * Public Members
      */
 
-    self.socket        = undefined;
+    self.wrapper        = undefined;
     self.init          = init;
     self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
@@ -46,11 +46,9 @@
      * @return {Promise} socket object
      */
     function init() {
-      var ioSocket = createIoSocket();
-      self.socket = createSocket(ioSocket);
-      registerSocketEvents();
+      connect();
       isInit = true;
-      return $q.when(self.socket);
+      return $q.when(self.wrapper);
     }
 
     /**
@@ -68,7 +66,7 @@
         deferred: $q.defer()
       };
 
-      if (angular.isUndefined(self.socket)) {
+      if (angular.isUndefined(self.wrapper)) {
         logger.swalError(TAG, 'Something went wrong with socket connection, live updating will not work.');
         return $q.reject();
       }
@@ -109,8 +107,8 @@
       if (isInit) {
         unsyncAll()
           .then(function () {
-            var newIoSocket = createIoSocket();
-            self.socket = createSocket(newIoSocket);
+            self.wrapper.disconnect();
+            connect();
             syncAll();
           });
       } else {
@@ -124,14 +122,14 @@
      * and then destroy the socket object.
      */
     function destroy() {
-      if (angular.isUndefined(self.socket)) {
+      if (angular.isUndefined(self.wrapper)) {
         return;
       }
       unsyncAll()
         .then(function () {
           registeredModels = [];
-          self.socket.disconnect();
-          self.socket = undefined;
+          self.wrapper.disconnect();
+          self.wrapper = undefined;
           isInit = false;
         });
     }
@@ -141,51 +139,46 @@
      */
 
     /**
-     * Register all the events for the socket connection
+     * @private connect
+     * Create the socket wrapper object, and then connect to the socket.
      */
-    function registerSocketEvents() {
-      self.socket.on('connect', function () {
+    function connect() {
+      var token = $cookieStore.get('token')
+        , path = '/socket.io-client'
+        , socket;
+
+      socket = io.connect('', {
+        query: 'token=' + token,
+        forceNew: true,
+        path: path
+      });
+
+      self.wrapper = socketFactory({ioSocket: socket});
+
+      socket.on('connect', function () {
+        self.wrapper.socket(socket);
+        registerSocketEvents(socket);
         log('Connected');
       });
-      self.socket.on('error', function (error) {
+    }
+
+    /**
+     * Register all the events for the socket connection
+     * @param {Object} socket main socket object
+     */
+    function registerSocketEvents(socket) {
+      socket.on('error', function (error) {
         logger.warning('Failed to connect to Socket server', error, 'SocketIO');
       });
-      self.socket.on('disconnect', function () {
+      socket.on('disconnect', function () {
         log('Disonnected');
       });
-      self.socket.on('reconnect', function () {
+      socket.on('reconnect', function () {
         logger.info('Reconnected to Socket server', '', 'SocketIO');
       });
-      self.socket.on('reconnect_failed', function (error) {
+      socket.on('reconnect_failed', function (error) {
         logger.error('Failed to reconnect to server, try logging in', error, 'SocketIO');
       });
-    }
-
-    /**
-     * @private createIoSocket
-     * Create the socket object for use with the SocketFactory module.
-     * Gets the auth token from the currently logged in use.
-     * @return {Object} Socket object
-     */
-    function createIoSocket() {
-      var ioSocket = io('', {
-        query: 'token=' + $cookieStore.get('token'),
-        path: '/socket.io-client'
-      });
-      return ioSocket;
-    }
-
-    /**
-     * @private createSocket
-     * Using the SocketFactory, create the actual socket connection object.
-     * @param  {Object} ioSocket The io() socket object
-     * @return {Object}      SocketFactory socket object
-     */
-    function createSocket(ioSocket) {
-      var socket = socketFactory({
-        ioSocket: ioSocket
-      });
-      return socket;
     }
 
     /**
@@ -197,8 +190,8 @@
      */
     function register(model) {
       var deferred = $q.defer();
-      self.socket.on(model.name + ':save', save);
-      self.socket.on(model.name + ':remove', remove);
+      self.wrapper.on(model.name + ':save', save);
+      self.wrapper.on(model.name + ':remove', remove);
       log('registered ' + '[' + model.name + ']');
 
       return deferred.promise;
@@ -247,8 +240,8 @@
      */
     function unRegister(model) {
       model.deferred.resolve();
-      self.socket.removeAllListeners(model.name + ':save');
-      self.socket.removeAllListeners(model.name + ':remove');
+      self.wrapper.removeAllListeners(model.name + ':save');
+      self.wrapper.removeAllListeners(model.name + ':remove');
       log('unregistered [' + model.name + ']');
     }
 

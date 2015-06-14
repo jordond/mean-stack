@@ -128,6 +128,23 @@ function revokeToken() {
   }
 }
 
+function logout() {
+  return compose()
+    .use(isValidToken())
+    .use(function (req, res, next) {
+      User.findById(req.user._id, function (err, user) {
+        var userToken, index;
+        userToken = getToken(req.headers.authorization)
+        index = user.tokens.indexOf(userToken);
+        user.tokens.splice(index, 1);
+        user.save(function (err) {
+          if (err) { return res.status(500).json(err); }
+            return res.sendStatus(200);
+        });
+      });
+    });
+}
+
 /**
  * Checks if the user role meets the minimum requirements of the route
  */
@@ -232,6 +249,7 @@ exports.refreshToken = refreshToken;
 exports.revokeToken = revokeToken;
 exports.hasRole = hasRole;
 exports.isMeOrHasRole = isMeOrHasRole;
+exports.logout = logout;
 
 exports.checkIsAdmin = checkIsAdmin;
 exports.compareRole = compareRole;
