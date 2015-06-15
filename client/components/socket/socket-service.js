@@ -33,6 +33,7 @@
     self.init          = init;
     self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
+    self.emit          = emit;
     self.reset         = resetSocket;
     self.destroy       = destroy;
 
@@ -73,7 +74,7 @@
         deferred: $q.defer()
       };
 
-      if (angular.isUndefined(self.wrapper)) {
+      if (isConnected()) {
         logger.swalError(TAG, 'Something went wrong with socket connection, live updating will not work.');
         return $q.reject();
       }
@@ -103,6 +104,23 @@
         removed = registeredModels.splice(index, 1)[0];
         unRegister(removed);
       }
+    }
+
+    /**
+     * Emit data to the socket
+     * @param  {String} event Name of the event
+     * @param  {Object} data  info in call
+     * @return {promise}      Status of emit
+     */
+    function emit(event, data) {
+      var deferred = $q.defer();
+      if (isConnected) {
+        self.wrapper.emit(event, data, function (response) {
+          deferred.resolve(response);
+        });
+        return deferred.promise;
+      }
+      return deferred.promise.reject();
     }
 
     /**
@@ -145,6 +163,17 @@
     /**
      * Private functions
      */
+
+    /**
+     * Check whether or not the socket is connected
+     * @return {Boolean} connection status
+     */
+    function isConnected() {
+      if (angular.isDefined(self.wrapper)) {
+        return self.wrapper.connected();
+      }
+      return false;
+    }
 
     /**
      * @private connect

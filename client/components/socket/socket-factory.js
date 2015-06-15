@@ -144,6 +144,15 @@ angular.module('btford.socket-io', []).
             return socket.disconnect(close);
         };
 
+        var connected = function () {
+          if (socket) {
+            if (socket.connected) {
+              return true;
+            }
+          }
+          return false;
+        };
+
         return {
           emit: emit,
           forward: forward,
@@ -153,6 +162,7 @@ angular.module('btford.socket-io', []).
           removeListener: removeListener,
           removeAllListeners: removeAllListeners,
           disconnect: disconnect,
+          connected: connected,
           socket: function (s) {
             socket = s;
             for (var key in queue) {

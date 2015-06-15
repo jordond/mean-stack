@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path');
+var fs = require('fs');
 var _ = require('lodash');
 
 function requiredProcessEnv(name) {
@@ -16,9 +17,9 @@ var all = {
   env: process.env.NODE_ENV,
 
   // Root path of server
-  root: path.normalize(__dirname + '/../../..'),
+  root: path.normalize(__dirname + '/../..'),
 
-  client: path.normalize(__dirname +'/../../../..'),
+  client: path.normalize(__dirname +'/../../..'),
 
   // Server port
   port: process.env.PORT || 9000,
@@ -28,7 +29,7 @@ var all = {
 
   // Secret for session, you will want to change this and make it an environment variable
   secrets: {
-    session: 'mean-stack-secret'
+    session: 'replace-me'
   },
 
   // List of user roles
@@ -45,8 +46,10 @@ var all = {
 
 };
 
+// Export the config object
+
 // Export the config object based on the NODE_ENV
 // ==============================================
 module.exports = _.merge(
   all,
-  require('./' + process.env.NODE_ENV + '.js') || {});
+  require('./environment/' + process.env.NODE_ENV + '.js') || {});

@@ -5,6 +5,7 @@
 
 'use strict';
 
+var log = require('../components/logger/console');
 var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
 
@@ -59,7 +60,7 @@ User.find({}).remove(function() {
     email: 'aaaaaaaaaa@admin.com',
     password: 'admin'
   }, function() {
-      console.log('finished populating users');
+      log.info('Seeder', 'Finished populating users');
     }
   );
 });

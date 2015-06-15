@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var validator = require('validator');
-var config = require('../../config/environment');
+var config = require('../../config');
 
 var UserSchema = new Schema({
   name: String,

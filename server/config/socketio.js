@@ -4,7 +4,9 @@
 
 'use strict';
 
-var config = require('./environment');
+var config = require('./index');
+var log = require('../components/logger/console');
+var TAG = 'Socket';
 
 // When the user disconnects.. perform this
 function onDisconnect(socket) {
@@ -14,7 +16,8 @@ function onDisconnect(socket) {
 function onConnect(socket) {
   // When the client emits 'info', this listens and executes
   socket.on('info', function (data) {
-    console.info('[%s] %s', socket.address, JSON.stringify(data, null, 2));
+    var message = '[' + socket.address + '] ' + JSON.stringify(data, null, 2);
+    log.info(TAG, message);
   });
 
   // Insert sockets below
@@ -27,12 +30,6 @@ module.exports = function (socketio) {
   // In order to see all the debug output, set DEBUG (in server/config/local.env.js) to including the desired scope.
   // dfdf
   // ex: DEBUG: "http*,socket.io:socket"
-
-  // We can authenticate socket.io users and access their token through socket.handshake.decoded_token
-  //
-  // 1. You will need to send the token in `client/components/socket/socket.service.js`
-  //
-  // 2. Require authentication here:
   socketio.use(require('socketio-jwt').authorize({
     secret: config.secrets.session,
     handshake: true
@@ -47,11 +44,11 @@ module.exports = function (socketio) {
     // Call onDisconnect.
     socket.on('disconnect', function () {
       onDisconnect(socket);
-      console.info('[%s] DISCONNECTED', socket.address);
+      log.info(TAG, '[' + socket.address + '] DISCONNECTED');
     });
 
     // Call onConnect.
     onConnect(socket);
-    console.info('[%s] CONNECTED', socket.address);
+    log.info(TAG, '[' + socket.address + '] CONNECTED');
   });
 };

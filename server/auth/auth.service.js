@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 var passport = require('passport');
-var config = require('../config/environment');
+var config = require('../config');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
@@ -136,7 +136,7 @@ function logout() {
       User.findById(req.user._id, function (err, user) {
         var userToken, index;
         if (err) return res.status(500).json(err);
-        if (!user) return res.sendStatus(404);
+        if (!user) return res.sendStatus(200);
 
         userToken = getToken(req.headers.authorization)
         index = user.tokens.indexOf(userToken);
@@ -248,14 +248,13 @@ function setTokenCookie(req, res) {
 }
 
 exports.isAuthenticated = isAuthenticated;
-exports.isValidToken = isValidToken;
-exports.refreshToken = refreshToken;
-exports.revokeToken = revokeToken;
-exports.hasRole = hasRole;
-exports.isMeOrHasRole = isMeOrHasRole;
-exports.logout = logout;
-
-exports.checkIsAdmin = checkIsAdmin;
-exports.compareRole = compareRole;
-exports.signToken = signToken;
-exports.setTokenCookie = setTokenCookie;
+exports.isValidToken    = isValidToken;
+exports.refreshToken    = refreshToken;
+exports.revokeToken     = revokeToken;
+exports.hasRole         = hasRole;
+exports.isMeOrHasRole   = isMeOrHasRole;
+exports.logout          = logout;
+exports.checkIsAdmin    = checkIsAdmin;
+exports.compareRole     = compareRole;
+exports.signToken       = signToken;
+exports.setTokenCookie  = setTokenCookie;

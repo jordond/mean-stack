@@ -38,6 +38,7 @@
       Auth.getSelf()
         .then(function () {
           AuthEvent.authenticated(true);
+          Socket.emit('info', Auth.getUser().username + ' has connected.');
         });
     }
 

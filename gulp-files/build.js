@@ -37,7 +37,7 @@ module.exports = function (gulp, $, config) {
     var lessFilter = $.filter('**/*.less');
 
     return gulp.src([
-      config.appStyleFiles
+      config.appStyleFiles, config.appDir + '*.less'
     ])
       .pipe($.plumber({errorHandler: function (err) {
         $.notify.onError({
