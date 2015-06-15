@@ -21,6 +21,7 @@ All of the client side Angular code is found in the `app` folder, while the serv
 ## Development
 1. Run `npm install -g bower gulp yo generator-ng-poly`.
 1. Run `bower install && npm install` to install this project's dependencies.
+1. Rename the `env.sample.js` to `env.js` and edit the settings, mainly the `SESSION_SECRET`.
 
 ### Gulp tasks
 - Run `gulp` to compile for dev and launch server
