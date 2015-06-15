@@ -2,6 +2,7 @@
 
 var path = require('path');
 var fs = require('fs');
+var log = require('../components/logger/console');
 var _ = require('lodash');
 
 function requiredProcessEnv(name) {
@@ -46,10 +47,16 @@ var all = {
 
 };
 
-// Export the config object
-
 // Export the config object based on the NODE_ENV
+all = _.merge(all, require('./environment/' + process.env.NODE_ENV + '.js') || {});
+
+// Export the config object for local env
 // ==============================================
-module.exports = _.merge(
-  all,
-  require('./environment/' + process.env.NODE_ENV + '.js') || {});
+if (fs.existsSync(all.root + '/env.js')) {
+  all = _.merge(all, require(all.root + '/env.js'));
+} else {
+  log.error('Config', 'CONFIG FILE NOT FOUND, USING DEFAULTS (UNSAFE)');
+  log.error('Config', 'Seriously, its only okay for development!');
+}
+
+module.exports = all;
