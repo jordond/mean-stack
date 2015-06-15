@@ -6,7 +6,9 @@
 // You will need to set these on the server you deploy to.
 
 module.exports = {
-  SESSION_SECRET:   'replace',
+  secrets: {
+    session: 'replace-me'
+  },
 
   // Port to run the server on
   // port: 5679,

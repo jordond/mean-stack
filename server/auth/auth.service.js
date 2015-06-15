@@ -130,16 +130,16 @@ function revokeToken() {
 function logout() {
   return compose()
     .use(function (req, res, next) {
-      validateJwt(req, res, next);
-    })
-    .use(function (req, res, next) {
-      User.findById(req.user._id, function (err, user) {
-        var userToken, index;
+      var token, decoded, userId;
+      token = getToken(req.headers.authorization);
+      decoded = jwt.decode(token);
+      userId = decoded ? decoded._id : '';
+      User.findById(userId, function (err, user) {
+        var index;
         if (err) return res.status(500).json(err);
         if (!user) return res.sendStatus(200);
 
-        userToken = getToken(req.headers.authorization)
-        index = user.tokens.indexOf(userToken);
+        index = user.tokens.indexOf(token);
         user.tokens.splice(index, 1);
         user.save(function (err) {
           if (err) { return res.status(500).json(err); }

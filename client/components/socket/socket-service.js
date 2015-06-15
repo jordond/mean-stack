@@ -21,7 +21,6 @@
   function Socket($q, $cookieStore, io, _, socketFactory, AuthEvent, logger) {
     var TAG = 'Socket'
       , self = this
-      , isInit
       , ready
       , registeredModels = [];
 
@@ -55,7 +54,6 @@
      */
     function init() {
       ready = connect();
-      isInit = true;
       return $q.when(self.wrapper);
     }
 
@@ -74,7 +72,7 @@
         deferred: $q.defer()
       };
 
-      if (isConnected()) {
+      if (angular.isUndefined(self.wrapper)) {
         logger.swalError(TAG, 'Something went wrong with socket connection, live updating will not work.');
         return $q.reject();
       }
@@ -115,12 +113,14 @@
     function emit(event, data) {
       var deferred = $q.defer();
       if (isConnected) {
-        self.wrapper.emit(event, data, function (response) {
-          deferred.resolve(response);
+        ready.then(function () {
+          self.wrapper.emit(event, data, function (response) {
+            deferred.resolve(response);
+          });
         });
         return deferred.promise;
       }
-      return deferred.promise.reject();
+      return deferred.reject();
     }
 
     /**
@@ -131,7 +131,7 @@
      * resync all the models to the socket.
      */
     function resetSocket() {
-      if (isInit) {
+      if (isConnected()) {
         unsyncAll()
           .then(function () {
             self.wrapper.disconnect();
@@ -156,7 +156,6 @@
           registeredModels = [];
           self.wrapper.disconnect();
           self.wrapper = undefined;
-          isInit = false;
         });
     }
 

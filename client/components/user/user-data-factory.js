@@ -186,7 +186,7 @@
         , err;
 
       if (error.hasOwnProperty('data')) {
-        errors = error.data.errors;
+        errors = error.data.errors ? error.data.errors : {};
         for (err in errors) {
           if ({}.hasOwnProperty.call(errors, err)) {
             err = errors[err];
