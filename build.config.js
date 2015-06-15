@@ -11,6 +11,9 @@ module.exports = {
 
   appName: 'app',
 
+  localEnvFile: './env.js',
+  localEnvDest: outDir,
+
   // app directories
   appDir: 'client',
   serverDir: 'server',
