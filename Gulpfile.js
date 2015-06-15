@@ -3,6 +3,7 @@
 var _ = require('lodash')
   , buildConfig = require('./build.config')
   , config = {}
+  , fs = require('fs')
   , gulp = require('gulp')
   , gulpFiles = require('require-dir')('./gulp-files')
   , path = require('path')
@@ -40,6 +41,11 @@ config.buildJsFiles = path.join(config.buildJs, '**/*.js');
 
 config.serverMain = path.join(config.serverBuildDir, 'app.js');
 config.serverFiles = path.join(config.serverDir, '**/*.{js,html}');
+
+if (fs.existsSync(config.localEnvFile)) {
+  var env = require('./' + config.localEnvFile);
+  config.nodePort = env.port ? env.port : config.nodePort;
+}
 
 config.nodemonOptions = {
   script: config.serverMain,

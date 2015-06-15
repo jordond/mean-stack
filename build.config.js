@@ -11,7 +11,7 @@ module.exports = {
 
   appName: 'app',
 
-  localEnvFile: './env.js',
+  localEnvFile: 'env.js',
   localEnvDest: outDir,
 
   // app directories

@@ -24,16 +24,6 @@ module.exports = function (gulp, $, config) {
     return $.del(config.buildDir, cb);
   });
 
-  gulp.task('copy-config', ['clean-app'], function () {
-    if (fs.existsSync(config.localEnvFile)) {
-      return gulp.src(config.localEnvFile)
-        .pipe(gulp.dest(config.localEnvDest));
-    } else {
-      console.log('Local ENV.js file was not found, app will use unsafe defaults');
-      return;
-    }
-  });
-
   gulp.task('markup', ['clean-app'], function () {
     return gulp.src([
       config.appMarkupFiles,
@@ -247,5 +237,5 @@ module.exports = function (gulp, $, config) {
     .pipe(gulp.dest(config.buildJson));
   });
 
-  gulp.task('build', ['copy-config', 'bowerInject', 'bowerAssets', 'images', 'fonts', 'json']);
+  gulp.task('build', ['bowerInject', 'bowerAssets', 'images', 'fonts', 'json']);
 };

@@ -1,5 +1,7 @@
 'use strict'
 
+var fs = require('fs')
+
 module.exports = function(gulp, $, config) {
   var isProd = $.yargs.argv.env === 'prod';
 
@@ -9,7 +11,10 @@ module.exports = function(gulp, $, config) {
   });
 
   gulp.task('clean-server', function (cb) {
-    return $.del(config.serverBuildDir, cb);
+    return $.del([
+      config.serverBuildDir,
+      config.localEnvDest + '/' + config.localEnvFile
+      ], cb);
   });
 
   // lint server files
@@ -44,8 +49,18 @@ module.exports = function(gulp, $, config) {
     .pipe(gulp.dest(config.serverBuildDir));
   });
 
+  gulp.task('copy-config', ['clean-server', 'server-copy'], function () {
+    if (fs.existsSync(config.localEnvFile)) {
+      return gulp.src(config.localEnvFile)
+        .pipe(gulp.dest(config.localEnvDest));
+    } else {
+      console.log('Local ENV.js file was not found, app will use unsafe defaults');
+      return;
+    }
+  });
+
   // run the nodemon
-  gulp.task('nodemon', ['clean-server', 'server-copy'], function (cb) {
+  gulp.task('nodemon', ['clean-server', 'copy-config'], function (cb) {
     var called = false;
     if (!isProd) {
       config.nodemonOptions.nodeArgs = ['--debug'];
