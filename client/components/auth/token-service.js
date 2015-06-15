@@ -18,6 +18,7 @@
     var TAG = 'Token'
       , self = this
       , activeToken = $cookieStore.get('token')
+      , timeout
       , refresher;
 
     /**
@@ -112,7 +113,10 @@
       refresher = $interval(refreshToken, delay);
 
       if (refreshNow) {
-        $timeout(refreshToken, 1000 * 60);
+        timeout = $timeout(function () {
+          refreshToken();
+          timeout = undefined;
+        }, 60 * 1000);
       }
     }
 
@@ -134,6 +138,9 @@
      * logging the user out
      */
     function destroy() {
+      if (timeout) {
+        timeout.cancel();
+      }
       deactivate();
       remove();
     }

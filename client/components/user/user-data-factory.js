@@ -70,7 +70,9 @@
       }
 
       function findFailed(error) {
-        logger.error('The requested user could not be found.', error, 'Invalid User');
+        if (error.data.message) {
+          logger.error(error.data.message, error, 'Something went wrong');
+        }
         return $q.reject(error);
       }
     }
