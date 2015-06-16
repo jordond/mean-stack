@@ -58,7 +58,7 @@
         Token.store(response.data.token);
         currentUser = response.data.user;
         AuthEvent.authenticated();
-        Socket.registerEvent('revoked:' + currentUser._id, logout);
+        Socket.on('revoked:' + currentUser._id, logout);
         $location.path('/');
         return response.data.token;
       }

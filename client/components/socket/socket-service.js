@@ -33,7 +33,7 @@
     self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
     self.emit          = emit;
-    self.registerEvent = registerEvent;
+    self.on            = registerEvent;
     self.reset         = resetSocket;
     self.destroy       = destroy;
 
