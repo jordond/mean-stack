@@ -38,7 +38,6 @@
       Auth.getSelf()
         .then(function () {
           AuthEvent.authenticated(true);
-          Socket.emit('info', Auth.getUser().username + ' has connected.');
         });
     }
 
@@ -64,6 +63,12 @@
       } else if (next.name === 'login' && Auth.isLoggedIn()) {
         event.preventDefault();
       }
+    });
+
+    AuthEvent.onAuth(function () {
+      var user = Auth.getUser();
+      Socket.emit('info', user.username + ' has connected.');
+      AuthEvent.onRevoke(user._id, Auth.logout);
     });
   }
 }());

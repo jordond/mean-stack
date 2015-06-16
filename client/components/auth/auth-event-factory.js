@@ -18,9 +18,11 @@
     var service = {
       authenticated  : authenticated,
       refresh        : refresh,
+      revoke         : revoke,
       deauthenticated: deauthenticated,
       onAuth         : onAuth,
       onRefresh      : onRefresh,
+      onRevoke       : onRevoke,
       onDeauth       : onDeauth
     };
 
@@ -35,7 +37,11 @@
     }
 
     function refresh(args) {
-      $rootScope.$broadcast('auth:refresh', args);
+      $rootScope.$broadcast('auth:refreshed', args);
+    }
+
+    function revoke(id) {
+      $rootScope.$broadcast('revoked:' + id);
     }
 
     function deauthenticated(args) {
@@ -47,7 +53,11 @@
     }
 
     function onRefresh(callback) {
-      $rootScope.$on('auth:refresh', callback);
+      $rootScope.$on('auth:refreshed', callback);
+    }
+
+    function onRevoke(id, callback) {
+      $rootScope.$on('revoked:' + id, callback);
     }
 
     function onDeauth(callback) {

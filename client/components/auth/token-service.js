@@ -139,7 +139,7 @@
      */
     function destroy() {
       if (timeout) {
-        timeout.cancel();
+        $timeout.cancel(timeout);
       }
       deactivate();
       remove();
@@ -157,6 +157,9 @@
      * @return {String} New or old token
      */
     function refreshToken() {
+      if (timeout) {
+        $timeout.cancel(timeout);
+      }
       return $http.get('auth/refresh')
         .then(refreshSuccess)
         .catch(refreshFailed);

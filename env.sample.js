@@ -16,6 +16,15 @@ module.exports = {
   // Should I seed the database, [true, false, once]
   // seedDB: false,
 
+  // Initial admin user to seed database with
+  initialUser = {
+    name: 'Administrator',
+    username: 'admin',
+    email: 'admin@admin.com',
+    role: 'admin',
+    password: 'admin'
+  }
+
   // Token settings, default expiry of 3 hours in minutes
   // token: {
   //   expiry: 3 * 60
