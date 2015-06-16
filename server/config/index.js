@@ -36,6 +36,11 @@ var all = {
   // List of user roles
   userRoles: ['guest', 'user', 'admin'],
 
+  // Token settings, default expiry of 3 hours
+  token: {
+    expiry: 3 * 60
+  },
+
   // MongoDB connection options
   mongo: {
     options: {

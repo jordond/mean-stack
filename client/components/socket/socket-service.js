@@ -33,6 +33,7 @@
     self.syncUpdates   = syncUpdates;
     self.unsyncUpdates = unsyncUpdates;
     self.emit          = emit;
+    self.registerEvent = registerEvent;
     self.reset         = resetSocket;
     self.destroy       = destroy;
 
@@ -123,6 +124,19 @@
       return deferred.reject();
     }
 
+    function registerEvent(event) {
+      var deferred = $q.defer();
+      if (ready) {
+        ready.then(function () {
+          self.wrapper.on(event, function (data) {
+            deferred.resolve(data);
+          });
+        });
+        return deferred.promise;
+      }
+      return deferred.reject();
+    }
+
     /**
      * @public resetSocket
      * Reset the socket connection to the server, helpful if the
@@ -156,6 +170,7 @@
           registeredModels = [];
           self.wrapper.disconnect();
           self.wrapper = undefined;
+          ready = undefined;
         });
     }
 

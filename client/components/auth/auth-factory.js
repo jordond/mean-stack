@@ -12,9 +12,9 @@
     .module('components')
     .factory('Auth', Auth);
 
-  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'AuthEvent', 'Token', 'logger'];
+  Auth.$inject = ['$http', '$location', '$q', '$state', 'User', 'AuthEvent', 'Socket', 'Token', 'logger'];
 
-  function Auth($http, $location, $q, $state, User, AuthEvent, Token, logger) {
+  function Auth($http, $location, $q, $state, User, AuthEvent, Socket, Token, logger) {
     var currentUser = {}
       , roles = []
       , service;
@@ -56,8 +56,9 @@
 
       function loginSuccess(response) {
         Token.store(response.data.token);
+        currentUser = response.data.user;
         AuthEvent.authenticated();
-        currentUser = service.getSelf();
+        Socket.registerEvent('revoked:' + currentUser._id, logout);
         $location.path('/');
         return response.data.token;
       }

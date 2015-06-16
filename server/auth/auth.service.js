@@ -83,7 +83,7 @@ function refreshToken() {
       var newToken, oldToken, index;
       oldToken = getToken(req.headers.authorization);
 
-      if (oldToken) {
+      if (oldToken !== '') {
         req.user.tokens = removeStaleTokens(req.user.tokens);
         index = req.user.tokens.indexOf(oldToken);
         if (index > -1) {
@@ -234,7 +234,7 @@ function removeStaleTokens(tokens) {
  * Returns a jwt token signed by the app secret
  */
 function signToken(id) {
-  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*168 });
+  return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: config.token.expiry });
 }
 
 /**

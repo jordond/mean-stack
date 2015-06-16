@@ -16,6 +16,11 @@ module.exports = {
   // Should I seed the database, [true, false, once]
   // seedDB: false,
 
+  // Token settings, default expiry of 3 hours in minutes
+  // token: {
+  //   expiry: 3 * 60
+  // },
+
   // Database address, and name
   // mongo: {
   //   uri: 'mongodb://address/db-name'

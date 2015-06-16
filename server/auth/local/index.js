@@ -19,7 +19,7 @@ router.post('/', function(req, res, next) {
     user.lastLogin = new Date();
 
     user.save(function (err) {
-      res.json({token: token});
+      res.json({user: user.profile, token: token});
     });
   })(req, res, next)
 });
