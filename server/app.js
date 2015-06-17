@@ -25,7 +25,7 @@ mongoose.connection.on('connected', function (reference) {
   require('./routes')(app);
 
   if(config.seedDB) {
-    require('./config/seeder').seeder(config.seedDB);
+    require('./config/seeder').seeder();
   }
 
   // Start server

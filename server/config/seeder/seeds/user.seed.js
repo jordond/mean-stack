@@ -23,7 +23,7 @@ var SEED_OPTIONS = {
 /**
  * Extra things to do before the model is seeded
  */
-function preSeed() {
+function preLoad() {
   var config = require('../../../config');
   if (config.initialUser) {
     SEED_OPTIONS.data.push(config.initialUser);
@@ -35,11 +35,9 @@ function preSeed() {
 // Seeder logic, shouldn't need to edit
 // ============================================================
 
-function run(seedSetting, callback) {
-  SEED_OPTIONS.seedSetting = seedSetting;
-  SEED_OPTIONS.callback = callback;
-  preSeed();
-  require('../seeder').seed(SEED_OPTIONS);
+function load() {
+  preLoad();
+  return SEED_OPTIONS;
 }
 
-exports.run = run;
+exports.load = load;
