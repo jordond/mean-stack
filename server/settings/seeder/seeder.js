@@ -10,11 +10,11 @@
 //   callback: function ()
 // }
 
-var glob = require('glob');
-
 //================================================
 // Main Seeding Logic
 //================================================
+
+var glob = require('glob');
 
 /**
  * @public

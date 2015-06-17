@@ -12,7 +12,7 @@ var mongoose = require('mongoose');
 var config = require('./config');
 var log = require('./components/logger/console');
 
-mongoose.connection.on('connected', function (reference) {
+mongoose.connection.on('connected', function () {
   // Setup server
   var app = express();
   var server = require('http').createServer(app);
@@ -25,7 +25,7 @@ mongoose.connection.on('connected', function (reference) {
   require('./routes')(app);
 
   if(config.seedDB) {
-    require('./config/seeder').seeder();
+    require('./settings/seeder').seeder();
   }
 
   // Start server

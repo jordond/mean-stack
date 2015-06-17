@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 var validator = require('validator');
+var defaultUserSettings = require('../../settings/user');
 var config = require('../../config');
 
 var UserSchema = new Schema({
@@ -23,6 +24,10 @@ var UserSchema = new Schema({
   },
   tokens: {
     type: []
+  },
+  settings: {
+    type: [],
+    default: defaultUserSettings
   }
 });
 

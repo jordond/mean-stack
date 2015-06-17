@@ -15,6 +15,7 @@ module.exports = function(app) {
   app.use('/api', auth.isAuthenticated());
 
   // Insert routes below
+  app.use('/api/settings', require('./api/setting'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
 

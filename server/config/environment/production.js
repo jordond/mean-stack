@@ -17,5 +17,9 @@ module.exports = {
             'mongodb://localhost/mean-stack'
   },
 
+  token: {
+    expiry: 158 * 60
+  },
+
   seedDB: true
 };
