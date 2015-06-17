@@ -35,13 +35,10 @@ function preLoad() {
 }
 
 // ============================================================
-// Seeder logic, shouldn't need to edit
+// Seeder logic - Don't Edit
 // ============================================================
 
-function load() {
+exports.load = function () {
   preLoad();
   return SEED_OPTIONS;
 }
-
-exports.load = load;
-
