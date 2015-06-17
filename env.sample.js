@@ -13,17 +13,20 @@ module.exports = {
   // Port to run the server on
   // port: 5679,
 
-  // Should I seed the database, [true, false, once]
-  // seedDB: false,
+  // Should I seed the database, [true, false, initial]
+  // override = Always seed, ignore the replace flag on seed files. ALWAYS REPLACES
+  // true = Always seed, unless seed's `replace` is set to false
+  // false = Never seed, ever.
+  // seedDB: 'override',
 
   // Initial admin user to seed database with
-  initialUser = {
+  initialUser: {
     name: 'Administrator',
     username: 'admin',
     email: 'admin@admin.com',
     role: 'admin',
     password: 'admin'
-  }
+  },
 
   // Token settings, default expiry of 3 hours in minutes
   // token: {

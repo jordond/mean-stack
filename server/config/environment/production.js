@@ -17,5 +17,5 @@ module.exports = {
             'mongodb://localhost/mean-stack'
   },
 
-  seedDB: true
+  seedDB: 'initial'
 };

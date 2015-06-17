@@ -13,10 +13,6 @@ var config = require('./config');
 var log = require('./components/logger/console');
 
 mongoose.connection.on('connected', function (reference) {
-  if(config.seedDB) {
-    require('./config/seed');
-  }
-
   // Setup server
   var app = express();
   var server = require('http').createServer(app);
@@ -27,6 +23,10 @@ mongoose.connection.on('connected', function (reference) {
   require('./config/socketio')(socketio);
   require('./config/express')(app);
   require('./routes')(app);
+
+  if(config.seedDB) {
+    require('./config/seeder').seeder(config.seedDB);
+  }
 
   // Start server
   server.listen(config.port, config.ip, function () {
