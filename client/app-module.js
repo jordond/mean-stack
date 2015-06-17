@@ -21,7 +21,7 @@
       'components',
       'dashboard',
       'account',
-      'admin'
+      'system'
     ]);
 
   angular

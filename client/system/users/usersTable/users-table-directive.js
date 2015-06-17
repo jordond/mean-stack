@@ -3,7 +3,7 @@
 
   /**
    * @ngdoc directive
-   * @name admin.directive:usersTable
+   * @name system.directive:usersTable
    * @restrict EA
    * @element
    *
@@ -11,7 +11,7 @@
    *
    */
   angular
-    .module('admin')
+    .module('system')
     .directive('usersTable', usersTable);
 
   usersTable.$injector = ['$state', '$stateParams', 'Auth', 'UserData', 'SweetAlert'];
@@ -23,7 +23,7 @@
         users: '=',
         state: '@'
       },
-      templateUrl: 'admin/usersTable/users-table-directive.tpl.html',
+      templateUrl: 'system/users/usersTable/users-table-directive.tpl.html',
       replace: false,
       controller: UsersTableCtrl,
       controllerAs: 'vm',

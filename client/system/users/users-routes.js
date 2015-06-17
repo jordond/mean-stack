@@ -2,24 +2,24 @@
   'use strict';
 
   angular
-    .module('admin')
+    .module('system.users')
     .config(config);
 
   function config($stateProvider) {
     $stateProvider
-      .state('admin', {
-        url: '/admin',
-        templateUrl: 'admin/admin.tpl.html',
-        controller: 'AdminCtrl',
+      .state('system.users', {
+        url: '/users',
+        templateUrl: 'system/users/users.tpl.html',
+        controller: 'UsersCtrl',
         controllerAs: 'vm',
         role: 'admin',
         resolve: {
           usersPrepService: usersPrepService
         }
       })
-      .state('admin.create', {
+      .state('system.users.create', {
         url: '/create',
-        templateUrl: 'admin/user/user.tpl.html',
+        templateUrl: 'system/users/user/user.tpl.html',
         controller: 'UserCtrl',
         controllerAs: 'vm',
         role: 'admin',
@@ -27,9 +27,9 @@
           userPrepService: userPrepService
         }
       })
-      .state('admin.edit', {
+      .state('system.users.edit', {
         url: '/edit/:userId',
-        templateUrl: 'admin/user/user.tpl.html',
+        templateUrl: 'system/users/user/user.tpl.html',
         controller: 'UserCtrl',
         controllerAs: 'vm',
         role: 'admin',
@@ -52,7 +52,7 @@
     }
     return UserData.find(id)
       .catch(function () {
-        $state.go('admin');
+        $state.go('system');
       });
   }
 }());

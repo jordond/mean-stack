@@ -2,12 +2,13 @@
   'use strict';
 
   /* @ngdoc object
-   * @name admin
+   * @name system
    * @description
    *
    */
   angular
-    .module('admin', [
-      'ui.router'
+    .module('system', [
+      'ui.router',
+      'system.users'
     ]);
 }());

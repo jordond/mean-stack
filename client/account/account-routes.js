@@ -21,12 +21,6 @@
         controllerAs: 'vm',
         role: 'guest'
       })
-      .state('settings', {
-        url: '/settings',
-        templateUrl: 'account/settings/settings.tpl.html',
-        controller: 'SettingsCtrl',
-        controllerAs: 'vm'
-      })
       .state('profile', {
         url: '/profile',
         templateUrl: 'account/profile/profile.tpl.html',

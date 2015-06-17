@@ -3,13 +3,13 @@
 
   /**
    * @ngdoc object
-   * @name admin.user.controller:UserCtrl
+   * @name system.user.controller:UserCtrl
    *
    * @description
    *
    */
   angular
-    .module('admin')
+    .module('system')
     .controller('UserCtrl', UserCtrl);
 
   UserCtrl.$inject = ['$state', 'userPrepService'];
@@ -39,7 +39,7 @@
     function callback(success) {
       if (angular.equals(success, true) || angular.isUndefined(success)) {
         vm.user = {};
-        $state.go('^', null, {reload: true});
+        $state.go('system.users', null, {reload: true});
       }
     }
   }
