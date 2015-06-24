@@ -26,7 +26,7 @@ var UserSchema = new Schema({
     type: []
   },
   settings: {
-    type: [],
+    type: {},
     default: defaultUserSettings
   }
 });

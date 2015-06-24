@@ -8,6 +8,7 @@
    */
   angular
     .module('account', [
-      'ui.router'
+      'ui.router',
+      'schemaForm'
     ]);
 }());

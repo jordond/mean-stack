@@ -30,6 +30,16 @@
         resolve: {
           profilePrepService: profilePrepService
         }
+      })
+      .state('settings', {
+        url: '/settings',
+        templateUrl: 'account/settings/settings.tpl.html',
+        controller: 'UserSettingsCtrl',
+        controllerAs: 'vm',
+        role: 'user',
+        resolve: {
+          profilePrepService: profilePrepService
+        }
       });
   }
 
