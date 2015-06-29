@@ -15,7 +15,7 @@
   UserSettingsCtrl.$injector = ['profilePrepService'];
 
   function UserSettingsCtrl(profilePrepService) {
-    var vm = this;
+    var vm = this
       , user = profilePrepService;
 
     vm.settings = angular.copy(user.settings);
