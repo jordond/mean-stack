@@ -3,6 +3,7 @@
 var _ = require('lodash')
   , buildConfig = require('./build.config')
   , config = {}
+  , fs = require('fs')
   , gulp = require('gulp')
   , gulpFiles = require('require-dir')('./gulp-files')
   , path = require('path')
@@ -41,6 +42,11 @@ config.buildJsFiles = path.join(config.buildJs, '**/*.js');
 config.serverMain = path.join(config.serverBuildDir, 'app.js');
 config.serverFiles = path.join(config.serverDir, '**/*.{js,html}');
 
+if (fs.existsSync(config.localEnvFile)) {
+  var env = require('./' + config.localEnvFile);
+  config.nodePort = env.port ? env.port : config.nodePort;
+}
+
 config.nodemonOptions = {
   script: config.serverMain,
   watch: config.serverBuildDir,
@@ -50,6 +56,10 @@ config.nodemonOptions = {
 for (key in gulpFiles) {
   gulpFiles[key](gulp, $, config);
 }
+
+gulp.task('install', function (cb) {
+  $.runSequence(['install:bower', 'install:node'], cb);
+});
 
 gulp.task('dev', ['server', 'build'], function () {
   gulp.start('browserSync');

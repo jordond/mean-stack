@@ -1,0 +1,31 @@
+@import (reference) "../../../app.less";
+
+@inputAddonMinWidth: 50px;
+
+.user-form {
+  padding: 15px;
+  .form-group {
+    .input-group {
+      .input-group-addon {
+        min-width: @inputAddonMinWidth;
+        &.btn {
+          background-color: none;
+        }
+      }
+      select {
+        padding-top: 8px;
+      }
+    }
+    .extra-button {
+      .btn {
+        min-width: @inputAddonMinWidth;
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .user-form {
+    padding: 0;
+  }
+}

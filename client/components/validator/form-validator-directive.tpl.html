@@ -1,0 +1,9 @@
+<div class="message-container col-sm-6 col-sm-offset-2"
+     ng-hide="control.$pristine">
+  <div class="form-error" ng-messages="control.$error">
+    <p ng-message="required">This field is required</p>
+    <p ng-message="minlength">Not long enough</p>
+    <p ng-message="email">Not a valid email</p>
+    <p ng-message="comparePassword">Passwords must match</p>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="login">
+  <div class="row login-container">
+    <div class="login-wrap">
+      <div class="login-title">
+        <h1>Sign In</h1>
+      </div>
+      <div class="login-body">
+        <form class="form" name="loginForm" ng-submit="vm.tryLogin(loginForm)" novalidate>
+          <div class="form-group"
+               ng-class="{'has-error': loginForm.email.$invalid && loginForm.email.$dirty,
+                          'has-success': loginForm.email.$valid}">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-user"></i></span>
+              <input type="email"
+                     name="email"
+                     placeholder="email"
+                     class="form-control"
+                     ng-model="vm.user.email"
+                     required>
+            </div>
+          </div>
+          <div class="form-group"
+               ng-class="{'has-error': loginForm.password.$invalid && loginForm.password.$dirty,
+                          'has-success': loginForm.password.$valid}">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-unlock-alt"></i></span>
+              <input type="password"
+                     name="password"
+                     placeholder="password"
+                     class="form-control"
+                     minlength="5"
+                     ng-model="vm.user.password"
+                     required>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary btn-block" type="submit"
+                    ng-disabled="loginForm.$invalid || vm.submitted">
+              <i class="fa fa-sign-in"></i> Login
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
